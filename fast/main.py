@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from __future__ import annotations
 
 from fastapi import FastAPI, Depends, HTTPException
@@ -7,14 +7,13 @@ from sqlalchemy.orm import Session
 import crud
 import schemas
 from db.engine import SessionLocal
-=======
+
 from fastapi import FastAPI
->>>>>>> b3bc96f40369c1d474e1a652116ac108a42a40c1
+
 
 app = FastAPI()
 
 
-<<<<<<< HEAD
 def get_db() -> Session:
     db = SessionLocal()
     try:
@@ -65,13 +64,3 @@ def read_book(skip: int = 0, limit: int = 10,
 @app.post("/books/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
-=======
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
->>>>>>> b3bc96f40369c1d474e1a652116ac108a42a40c1
