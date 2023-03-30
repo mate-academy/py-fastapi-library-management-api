@@ -13,12 +13,20 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
+class DBSession:
+    def __init__(self):
+        self._session = None
+
+    def __enter__(self):
+        self._session = SessionLocal()
+        return self._session
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._session.close()
+
 def get_db() -> Session:
-    db = SessionLocal()
-    try:
+    with DBSession() as db:
         yield db
-    finally:
-        db.close()
 
 
 @app.get("/")
