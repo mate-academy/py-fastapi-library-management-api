@@ -28,7 +28,7 @@ def root() -> dict:
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_author(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def read_author(db: Session = Depends(get_db)):
     return crud.get_all_author(db=db)
 
 
@@ -39,7 +39,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     if db_author:
         raise HTTPException(
             status_code=400,
-            detail="Such name is already exists"
+            detail="Such author already exists"
         )
     return crud.create_author(db=db, author=author)
 
@@ -55,9 +55,10 @@ def read_single_author(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_book(skip: int = 0, limit: int = 10,
+def read_book(
               author_id: int = None,
-              db: Session = Depends(get_db)):
+              db: Session = Depends(get_db)
+):
     return crud.get_book_list(db=db,  author_id=author_id)
 
 
