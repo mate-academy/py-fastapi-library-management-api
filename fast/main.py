@@ -24,6 +24,7 @@ class DBSession:
     def __exit__(self, exc_type, exc_value, traceback):
         self._session.close()
 
+
 def get_db() -> Session:
     with DBSession() as db:
         yield db
@@ -44,10 +45,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_name(db=db, name=author.name)
 
     if db_author:
-        raise HTTPException(
-            status_code=400,
-            detail="Such author already exists"
-        )
+        raise HTTPException(status_code=400, detail="Such author already exists")
     return crud.create_author(db=db, author=author)
 
 
@@ -62,11 +60,8 @@ def read_single_author(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_book(
-              author_id: int = None,
-              db: Session = Depends(get_db)
-):
-    return crud.get_book_list(db=db,  author_id=author_id)
+def read_book(author_id: int = None, db: Session = Depends(get_db)):
+    return crud.get_book_list(db=db, author_id=author_id)
 
 
 @app.post("/books/", response_model=schemas.Book)
