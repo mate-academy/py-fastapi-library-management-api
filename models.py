@@ -5,7 +5,7 @@ from database import Base
 
 
 class Author(Base):
-    __table_name__ = "authors"
+    __tablename__ = "authors"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), unique=True)
@@ -14,7 +14,7 @@ class Author(Base):
 
 
 class Book(Base):
-    __table_name__ = "books"
+    __tablename__ = "books"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(56))
