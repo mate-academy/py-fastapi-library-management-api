@@ -3,9 +3,9 @@ from __future__ import annotations
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-import crud
-import schemas
-from db.engine import SessionLocal
+from . import crud
+from . import schemas
+from .db.engine import SessionLocal
 
 from fastapi import FastAPI
 

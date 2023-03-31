@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from sqlalchemy.orm import relationship
-from db.engine import Base
+from .engine import Base
 
 
 class Author(Base):
