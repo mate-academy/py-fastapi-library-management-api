@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy.orm import Session
-from .db import models
-from . import schemas
+from . import schemas, models
 
 
 def get_all_author(
