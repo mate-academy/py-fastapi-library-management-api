@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Union
+
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -50,7 +52,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
-def read_single_author(author_id: int, db: Session = Depends(get_db)):
+def read_single_author(author_id: Union[int, None]=None, db: Session = Depends(get_db)):
     db_author = crud.get_author(db=db, author_id=author_id)
 
     if db_author is None:
