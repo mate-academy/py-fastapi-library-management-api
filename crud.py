@@ -12,6 +12,7 @@ from schemas import AuthorCreate, BookCreate
 class DBSession:
     def __init__(self):
         self._session = None
+
     def __enter__(self):
         self._session = SessionLocal()
         return self._session
@@ -30,9 +31,9 @@ class BookService:
         self.db = db
 
     def get_all_author(
-            self,
-            skip: int = 0,
-            limit: int = 100,
+        self,
+        skip: int = 0,
+        limit: int = 100,
     ) -> List[models.Author]:
         return self.db.query(models.Author).offset(skip).limit(limit).all()
 
@@ -44,9 +45,16 @@ class BookService:
         return db_author
 
     def get_author(self, author_id: int):
-        return self.db.query(models.Author).filter(models.Author.id == author_id).first()
+        return (
+            self.db.query(models.Author).filter(models.Author.id == author_id).first()
+        )
 
-    def get_books(self, author_id: Union[int, None] = None,  skip: int = 0, limit: int = 100, ) -> List[models.Book]:
+    def get_books(
+        self,
+        author_id: Union[int, None] = None,
+        skip: int = 0,
+        limit: int = 100,
+    ) -> List[models.Book]:
         queryset = self.db.query(models.Book)
         if author_id is not None:
             queryset = queryset.filter(models.Book.author_id == author_id)
