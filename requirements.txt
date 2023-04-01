@@ -5,3 +5,4 @@ uvicorn==0.21.1
 Mako==1.2.4
 MarkupSafe==2.1.2
 alembic==1.10.2
+pydantic~=1.10.7
