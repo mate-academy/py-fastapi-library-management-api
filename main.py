@@ -8,7 +8,6 @@ import models
 import schemas
 from database import SessionLocal, engine, Base
 
-
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
@@ -57,7 +56,6 @@ def get_books(
         limit: int = 100,
         db: Session = Depends(get_db)
 ) -> list[Type[models.Book]]:
-
     return crud.get_books(db=db, skip=skip, limit=limit)
 
 
@@ -80,7 +78,7 @@ def read_book(book_id: int, db: Session = Depends(get_db)):
 @app.get("/authors/{author_id}/books/",
          response_model=list[Type[schemas.Book]])
 def read_books_by_author(
-    author_id: int,
+        author_id: int,
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)

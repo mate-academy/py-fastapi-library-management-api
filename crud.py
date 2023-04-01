@@ -34,7 +34,7 @@ def get_author(db: Session, author_id: int) -> Optional[Author]:
 
 
 def update_author(
-    db: Session, author_id: int, author: AuthorUpdate
+        db: Session, author_id: int, author: AuthorUpdate
 ) -> Type[Author] | None:
     db_author = db.query(Author).filter(Author.id == author_id).first()
     if db_author is None:
@@ -85,7 +85,7 @@ def get_books(
 
 
 def get_books_by_author(
-    db: Session, author_id: int, skip: int = 0, limit: int = 100
+        db: Session, author_id: int, skip: int = 0, limit: int = 100
 ) -> list[Type[Book]]:
     return (
         db.query(Book)

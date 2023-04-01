@@ -42,7 +42,9 @@ class BookUpdate(BookBase):
 
 class Book(BookBase):
     id: int
-    author: Author
+    title = str
+    summary = str
+    author_id = int
 
     class Config:
         orm_mode = True
