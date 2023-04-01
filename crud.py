@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Type, Optional
 
 from sqlalchemy.orm import Session, joinedload
@@ -9,6 +11,16 @@ from schemas import (
     AuthorUpdate,
     BookUpdate
 )
+
+
+def create_author(db: Session, author: AuthorCreate) -> Author:
+    db_author = Author(name=author.name, bio=author.bio)
+    db.add(db_author)
+    db.commit()
+    db.refresh(db_author)
+    return db_author
+
+
 def get_authors(
         db: Session,
         skip: int = 0,
@@ -20,13 +32,6 @@ def get_authors(
 def get_author(db: Session, author_id: int) -> Optional[Author]:
     return db.query(Author).filter(Author.id == author_id).first()
 
-
-def create_author(db: Session, author: AuthorCreate) -> Author:
-    db_author = Author(name=author.name, bio=author.bio)
-    db.add(db_author)
-    db.commit()
-    db.refresh(db_author)
-    return db_author
 
 def update_author(
     db: Session, author_id: int, author: AuthorUpdate
