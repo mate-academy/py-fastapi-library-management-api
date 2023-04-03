@@ -25,7 +25,7 @@ def get_authors(
         db: Session,
         skip: int = 0,
         limit: int = 100
-) -> list[Type[Author]]:
+) -> list[Author]:
     return db.query(Author).offset(skip).limit(limit).all()
 
 
@@ -35,7 +35,7 @@ def get_author(db: Session, author_id: int) -> Optional[Author]:
 
 def update_author(
         db: Session, author_id: int, author: AuthorUpdate
-) -> Type[Author] | None:
+) -> Author | None:
     db_author = db.query(Author).filter(Author.id == author_id).first()
     if db_author is None:
         return None
@@ -47,7 +47,7 @@ def update_author(
     return db_author
 
 
-def delete_author(db: Session, author_id: int) -> Type[Author] | None:
+def delete_author(db: Session, author_id: int) -> Optional[Author] | None:
     db_author = db.query(Author).filter(Author.id == author_id).first()
     if db_author is None:
         return None
@@ -86,7 +86,7 @@ def get_books(
 
 def get_books_by_author(
         db: Session, author_id: int, skip: int = 0, limit: int = 100
-) -> list[Type[Book]]:
+) -> list[Book]:
     return (
         db.query(Book)
         .filter(Book.author_id == author_id)
@@ -109,7 +109,7 @@ def update_book(
         db: Session,
         book_id: int,
         book: BookUpdate
-) -> Type[Book] | None:
+) -> Book | None:
     db_book = db.query(Book).filter(Book.id == book_id).first()
     if db_book is None:
         return None
@@ -121,7 +121,7 @@ def update_book(
     return db_book
 
 
-def delete_book(db: Session, book_id: int) -> Type[Book] | None:
+def delete_book(db: Session, book_id: int) -> Book | None:
     db_book = db.query(Book).filter(Book.id == book_id).first()
     if db_book:
         db.delete(db_book)
