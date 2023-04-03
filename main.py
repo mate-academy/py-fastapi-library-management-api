@@ -1,5 +1,3 @@
-from typing import Type
-
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -26,7 +24,7 @@ def read_authors(
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db),
-) -> list[Type[models.Author]]:
+) -> list[models.Author]:
     return crud.get_authors(db, skip=skip, limit=limit)
 
 
@@ -50,12 +48,12 @@ def create_author(
     return db_author
 
 
-@app.get("/books/", response_model=list[Type[schemas.Book]])
+@app.get("/books/", response_model=list[schemas.Book])
 def get_books(
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)
-) -> list[Type[models.Book]]:
+) -> list[models.Book]:
     return crud.get_books(db=db, skip=skip, limit=limit)
 
 
@@ -76,13 +74,13 @@ def read_book(book_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/authors/{author_id}/books/",
-         response_model=list[Type[schemas.Book]])
+         response_model=list[schemas.Book])
 def read_books_by_author(
         author_id: int,
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)
-) -> list[Type[schemas.Book]]:
+) -> list[schemas.Book]:
     author = crud.get_author(db=db, author_id=author_id)
     if author is None:
         raise HTTPException(status_code=404, detail="Author not found")

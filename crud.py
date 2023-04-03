@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type, Optional
+from typing import Optional
 
 from sqlalchemy.orm import Session, joinedload
 
@@ -80,7 +80,7 @@ def get_books(
         db: Session,
         skip: int = 0,
         limit: int = 100
-) -> list[Type[Book]]:
+) -> list[Book]:
     return db.query(Book).offset(skip).limit(limit).all()
 
 
