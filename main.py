@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 
 from crud import BookService
 import schemas
-from database import SessionLocal
+from database import SessionLocal, Base, engine
+
+Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI()
 

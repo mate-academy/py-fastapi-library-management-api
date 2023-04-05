@@ -36,3 +36,6 @@ class Book(BookBase):
 
     class Config:
         orm_mode = True
+
+
+Author.update_forward_refs(Book=Book)
