@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
 import models
@@ -10,7 +12,7 @@ def get_all_authors(
     return db.query(models.Author).offset(skip).limit(limit).all()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     db_author = models.Author(
         name=author.name, bio=author.bio
     )
@@ -21,13 +23,13 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_single_author(db: Session, author_id: int) -> models.Author:
+def get_single_author(db: Session, author_id: int) -> Optional[models.Author]:
     return db.query(models.Author).filter(
         models.Author.id == author_id
     ).first()
 
 
-def get_author_by_name(db: Session, name: str) -> models.Author:
+def get_author_by_name(db: Session, name: str) -> Optional[models.Author]:
     return db.query(models.Author).filter(
         models.Author.name == name
     ).first()
@@ -61,7 +63,7 @@ def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
     return db_book
 
 
-def get_single_book(db: Session, book_id: int) -> models.Book:
+def get_single_book(db: Session, book_id: int) -> Optional[models.Book]:
     return db.query(models.Book).filter(
         models.Book.id == book_id
     ).first()
