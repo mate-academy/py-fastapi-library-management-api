@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class AuthorBase(BaseModel):
     name: str
-    bio: str = None
+    bio: str | None = None
 
 
 class AuthorCreate(AuthorBase):
@@ -21,8 +21,8 @@ class Author(AuthorBase):
 
 class BookBase(BaseModel):
     title: str
-    summary: str = None
-    publication_date: date = None
+    summary: str | None = None
+    publication_date: date | None = None
     author_id: int
 
 

@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
-import models
 import schemas
 from database import SessionLocal
 
@@ -76,15 +75,9 @@ def read_books_by_author(
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
 
-    db_books = (
-        db.query(models.Book)
-        .filter(models.Book.author_id == author_id)
-        .offset(skip)
-        .limit(limit)
-        .all()
+    return crud.get_books_by_author(
+        db=db, author_id=author_id, skip=skip, limit=limit
     )
-
-    return db_books
 
 
 @app.get("/books/{book_id}/", response_model=schemas.Book)
