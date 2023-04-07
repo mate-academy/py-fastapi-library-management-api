@@ -18,6 +18,9 @@ class Library:
             self.db.query(models.Author).filter(models.Author.id == author_id).first()
         )
 
+    def get_author_by_name(self, name: str) -> Optional[models.Author]:
+        return self.db.query(models.Author).filter(models.Author.name == name).first()
+
     def create_author(self, author: schemas.AuthorCreate):
         db_author = models.Author(
             name=author.name,
@@ -37,6 +40,15 @@ class Library:
 
     def get_book(self, book_id: int) -> Optional[models.Book]:
         return self.db.query(models.Book).filter(models.Book.id == book_id).first()
+
+    def get_books_by_author(self, author_id: int, skip: int = 0, limit: int = 100) -> list[models.Book]:
+        return (
+            self.db.query(models.Book)
+            .filter(models.Book.author_id == author_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
 
     def create_book(self, book: schemas.BookCreate) -> models.Book:
         db_book = models.Book(
