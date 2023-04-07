@@ -6,22 +6,22 @@ from library.engine import Base
 
 
 class Author(Base):
-    __tablename__ = "authors"
+    __tablename__ = "author"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), unique=True)
     bio = Column(String(255), nullable=False, unique=True)
 
-    books = relationship("Book", back_populates="authors")
+    book = relationship("Book")
 
 
 class Book(Base):
-    __tablename__ = "books"
+    __tablename__ = "book"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), unique=True)
     summary = Column(String(255))
     publication_date = Column(Date)
-    authot_id = Column(Integer, ForeignKey("author.id"))
+    author_id = Column(Integer, ForeignKey("author.id"))
 
-    authors = relationship("Author", back_populates="books")
+    author = relationship("Author")
