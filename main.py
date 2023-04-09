@@ -1,6 +1,8 @@
-from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends, HTTPException
-import crud, schemas
+from sqlalchemy.orm import Session
+
+import crud
+import schemas
 from library import models
 from library.engine import SessionLocal, engine
 
@@ -31,7 +33,7 @@ def create_book(
         db: Session = Depends(get_db)
 ):
     """Create a new book"""
-    db_book = crud.get_book_by_name(db=db, title=book.title)
+    db_book = crud.get_book_by_title(db=db, title=book.title)
 
     if db_book:
         raise HTTPException(
@@ -53,21 +55,23 @@ def create_author(
         db: Session = Depends(get_db)
 ):
     """Create a new author"""
-    db_author = crud.create_author(db=db, author=author)
+    db_author = crud.get_author_by_name(db=db, name=author.name)
+
     if db_author:
         raise HTTPException(
             status_code=400, detail="Such name for Author already exist"
         )
-    return db_author
+    return crud.create_author(db=db, author=author)
 
 
 @app.get("/authors/{author_id}", response_model=schemas.AuthorList)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     """Retrieve a single author by ID"""
-    db_author = crud.get_author(db, author_id=author_id)
+    db_author = crud.get_author_by_id(db, author_id=author_id)
 
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
+
     return db_author
 
 
