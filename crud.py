@@ -4,17 +4,17 @@ from library import models
 import schemas
 
 
-def get_all_books(db: Session):
-    return db.query(models.Book).all()
+def get_all_books(db: Session, skip: int = 0, limit: int = 5):
+    queryset = db.query(models.Book).offset(skip).limit(limit)
+    return queryset.all()
+
+
+def get_book_by_name(db: Session, title: str):
+    return db.query(models.Book).filter(models.Book.title == title).first()
 
 
 def create_book(db: Session, book: schemas.BookCreate):
-    db_book = models.Book(
-        title=book.title,
-        summary=book.summary,
-        publication_date=book.publication_date,
-
-    )
+    db_book = models.Book(**book.dict())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
@@ -22,26 +22,29 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def get_author(library: Session, author_id: int):
-    return library.query(models.Author).filter(
+def get_all_authors(db: Session, skip: int = 0, limit: int = 5):
+    return db.query(models.Author).offset(skip).limit(limit).all()
+
+
+def get_author(db: Session, author_id: int):
+    return db.query(models.Author).filter(
         models.Author.id == author_id
     ).first()
 
 
-def get_all_authors(library: Session):
-    return library.query(models.Author).all()
+def create_author(db: Session, author: schemas.AuthorCreate):
+    db_author = models.Author(**author.dict())
+    db.add(db_author)
+    db.commit()
+    db.refresh(db_author)
+
+    return db_author
 
 
-def create_author(library: Session, author: schemas.AuthorCreate):
-    library_author = models.Author(
-        name=author.name,
-        bio=author.bio,
-    )
-    library.add(library_author)
-    library.commit()
-    library.refresh(library_author)
+def create_author_book(db: Session, book: schemas.BookCreate, author_id: int):
+    db_book = models.Book(**book.dict(), author_id=author_id)
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
 
-    return library_author
-
-
-
+    return db_book
