@@ -40,7 +40,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)) -
 def get_author(
         author_id: int,
         db: Session = Depends(get_db),
-) -> HTTPException | schemas.AuthorRead:
+) -> schemas.AuthorRead:
     author = crud.get_single_author(db=db, author_id=author_id)
 
     if author is None:
