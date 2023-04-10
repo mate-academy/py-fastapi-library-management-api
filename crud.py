@@ -1,9 +1,11 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 import schemas
 import models
 
 
-def get_author_by_name(db: Session, name: str) -> models.Author:
+def get_author_by_name(db: Session, name: str) -> Optional[models.Author]:
     return db.query(models.Author).filter(models.Author.name == name).first()
 
 
@@ -15,7 +17,7 @@ def get_authors_list(
     return db.query(models.Author).offset(offset).limit(limit).all()
 
 
-def get_author(db: Session, author_id: int) -> models.Author:
+def get_author(db: Session, author_id: int) -> Optional[models.Author]:
     return db.query(models.Author).filter(
         models.Author.id == author_id
     ).first()
