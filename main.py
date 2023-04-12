@@ -147,7 +147,7 @@ def read_book(book_id: int, db: Session = Depends(get_db)):
 @app.put("/books/{book_id}", response_model=schemas.Book)
 def update_book(
         book_id: int,
-        book: schemas.BookUpdate,
+        book: schemas.BookCreate,
         db: Session = Depends(get_db)
 ) -> Type[Book]:
     db_book = crud.update_book(db=db, book_id=book_id, book=book)
