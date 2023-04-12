@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type, Optional
+from typing import Optional
 
 from sqlalchemy.orm import Session, joinedload
 
@@ -34,7 +34,7 @@ def get_author(db: Session, author_id: int) -> Optional[Author]:
 
 def update_author(
     db: Session, author_id: int, author: AuthorUpdate
-) -> Optional[Author] | None:
+) -> Optional[Author]:
     db_author = db.query(Author).filter(Author.id == author_id).first()
     if db_author is None:
         return None
@@ -46,7 +46,7 @@ def update_author(
     return db_author
 
 
-def delete_author(db: Session, author_id: int) -> Optional[Author] | None:
+def delete_author(db: Session, author_id: int) -> Optional[Author]:
     db_author = db.query(Author).filter(Author.id == author_id).first()
     if db_author is None:
         return None
@@ -79,7 +79,7 @@ def get_books(
         db: Session,
         skip: int = 0,
         limit: int = 100
-) -> list[Type[Book]]:
+) -> list[Book]:
     return db.query(Book).offset(skip).limit(limit).all()
 
 
@@ -108,7 +108,7 @@ def update_book(
         db: Session,
         book_id: int,
         book: BookCreate
-) -> Optional[Book] | None:
+) -> Optional[Book]:
     db_book = db.query(Book).filter(Book.id == book_id).first()
     if db_book is None:
         return None
@@ -120,7 +120,7 @@ def update_book(
     return db_book
 
 
-def delete_book(db: Session, book_id: int) -> Optional[Book] | None:
+def delete_book(db: Session, book_id: int) -> Optional[Book]:
     db_book = db.query(Book).filter(Book.id == book_id).first()
     if db_book:
         db.delete(db_book)

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Type
-
 from fastapi import (
     FastAPI,
     Depends,
@@ -42,7 +40,7 @@ def read_authors(
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)
-) -> list[Type[Author]]:
+) -> list[Author]:
     authors = crud.get_authors(db, skip=skip, limit=limit)
     return authors
 
@@ -63,7 +61,7 @@ def update_author(
     author_id: int,
         author: schemas.AuthorUpdate,
         db: Session = Depends(get_db)
-) -> Type[Author] | None:
+) -> Author:
     db_author = crud.get_author(db=db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -79,7 +77,7 @@ def update_author(
 def delete_author(
         author_id: int,
         db: Session = Depends(get_db)
-) -> Type[Author]:
+) -> Author:
     deleted_author = crud.delete_author(db=db, author_id=author_id)
     if deleted_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -87,13 +85,13 @@ def delete_author(
 
 
 @app.get("/authors/{author_id}/books/",
-         response_model=list[Type[schemas.Book]])
+         response_model=list[schemas.Book])
 def read_books_by_author(
     author_id: int,
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)
-) -> list[Type[schemas.Book]]:
+) -> list[schemas.Book]:
     author = crud.get_author(db=db, author_id=author_id)
     if author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -117,12 +115,12 @@ def create_book_for_author(
     return crud.create_book(db=db, book=book)
 
 
-@app.get("/books/", response_model=list[Type[schemas.Book]])
+@app.get("/books/", response_model=list[schemas.Book])
 def get_books(
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)
-) -> list[Type[schemas.Book]]:
+) -> list[schemas.Book]:
     books = db.query(
         models.Book).join(models.Author).offset(skip).limit(limit).all()
     return books
@@ -149,7 +147,7 @@ def update_book(
         book_id: int,
         book: schemas.BookCreate,
         db: Session = Depends(get_db)
-) -> Type[Book]:
+) -> Book:
     db_book = crud.update_book(db=db, book_id=book_id, book=book)
     if db_book is None:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -157,7 +155,7 @@ def update_book(
 
 
 @app.delete("/books/{book_id}", response_model=schemas.Book)
-def delete_book(book_id: int, db: Session = Depends(get_db)) -> Type[Book]:
+def delete_book(book_id: int, db: Session = Depends(get_db)) -> Book:
     deleted_book = crud.delete_book(db=db, book_id=book_id)
     if deleted_book is None:
         raise HTTPException(status_code=404, detail="Book not found")
