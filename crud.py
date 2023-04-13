@@ -1,4 +1,4 @@
-from typing import Type, Optional
+from typing import Optional
 
 from sqlalchemy.orm import Session
 from models import Author, Book
@@ -20,7 +20,7 @@ def get_authors_list(
         db: Session,
         skip: int = 0,
         limit: int = 100
-) -> list[Type[Author]]:
+) -> list[Author]:
     return db.query(Author).offset(skip).limit(limit).all()
 
 
@@ -44,7 +44,7 @@ def get_books_list(
         db: Session,
         skip: int = 0,
         limit: int = 100
-) -> list[Type[Book]]:
+) -> list[Book]:
     return db.query(Book).offset(skip).limit(limit).all()
 
 

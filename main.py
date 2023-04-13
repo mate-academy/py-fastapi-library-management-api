@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Optional
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 import crud
 import schemas
 from database import SessionLocal
-from models import Author, Book
 
 app = FastAPI()
 
@@ -25,19 +24,25 @@ def read_authors(
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)
-) -> list[Type[Author]]:
+) -> list[schemas.Author]:
     authors = crud.get_authors_list(db=db, skip=skip, limit=limit)
     return authors
 
 
 @app.post("/authors/", response_model=schemas.Author)
-def create_authors(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+def create_authors(
+        author: schemas.AuthorCreate,
+        db: Session = Depends(get_db)
+) -> schemas.Author:
     new_author = crud.create_author(db=db, author=author)
     return new_author
 
 
 @app.get("/authors/{author_id}", response_model=schemas.Author)
-def read_single_author(author_id: int, db: Session = Depends(get_db)):
+def read_single_author(
+        author_id: int,
+        db: Session = Depends(get_db)
+) -> Optional[schemas.Author]:
     author = crud.get_author(db, author_id=author_id)
     if author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -49,7 +54,7 @@ def read_books(
         skip: int = 0,
         limit: int = 100,
         db: Session = Depends(get_db)
-) -> list[Type[schemas.Book]]:
+) -> list[schemas.Book]:
     books = crud.get_books_list(db=db, limit=limit, skip=skip)
     return books
 
@@ -58,7 +63,7 @@ def read_books(
 def get_books_by_author(
     author_id: int,
     db: Session = Depends(get_db)
-) -> list[Type[schemas.Book]]:
+) -> list[schemas.Book]:
     books = crud.get_books_by_author(db=db, author_id=author_id)
     return books
 
@@ -68,7 +73,7 @@ def create_book_endpoint(
     author_id: int,
     book: schemas.BookCreate,
     db: Session = Depends(get_db)
-) -> Book:
+) -> schemas.Book:
     author = crud.get_author(db=db, author_id=author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Not found")
