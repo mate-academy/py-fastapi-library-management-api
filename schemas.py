@@ -34,11 +34,3 @@ class Book(BookBase):
 
     class Config:
         orm_mode = True
-
-
-class AuthorBooks(AuthorBase):
-    id: int
-    book: Book
-
-    class Config:
-        orm_mode = True
