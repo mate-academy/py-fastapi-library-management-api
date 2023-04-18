@@ -56,7 +56,7 @@ def read_books(skip: int = 0, limit: int = 5, db: Session = Depends(get_db)):
 
 @app.get("/books/author/{author_id}/")
 def read_books_filtered_by_author(
-        author_id: int = None, db: Session = Depends(get_db)
+    author_id: int = None, db: Session = Depends(get_db)
 ):
     books = crud.get_books_by_author_id(db, author_id)
     if books is None:
