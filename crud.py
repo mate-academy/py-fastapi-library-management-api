@@ -1,19 +1,21 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 import models
 import schemas
 
 
-def get_all_authors(db: Session) -> list[str]:
+def get_all_authors(db: Session) -> Optional[list[models.Author]]:
     return db.query(models.Author).all()
 
 
-def get_author_by_name(db: Session, name: str) -> str or None:
+def get_author_by_name(db: Session, name: str) -> Optional[models.Author]:
     return (
         db.query(models.Author).filter(models.Author.name == name).first()
     )
 
 
-def create_author(db: Session, author: schemas.AuthorCreate) -> str:
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     db_author = models.Author(
         name=author.name,
         bio=author.bio,
@@ -24,11 +26,11 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> str:
     return db_author
 
 
-def get_author(db: Session, author_id: int) -> str or None:
+def get_author(db: Session, author_id: int) -> Optional[models.Author]:
     return db.query(models.Author).filter(models.Author.id == author_id).first()
 
 
-def get_all_books(db: Session) -> list[str]:
+def get_all_books(db: Session) -> Optional[list[models.Book]]:
     return db.query(models.Book).all()
 
 
@@ -36,7 +38,7 @@ def get_books_list(
     db: Session,
     title: str | None = None,
     author_id: int | None = None,
-) -> list[str]:
+) -> Optional[list[models.Book]]:
     queryset = db.query(models.Book)
     if title is not None:
         queryset = queryset.filter(
@@ -49,11 +51,11 @@ def get_books_list(
     return queryset.all()
 
 
-def get_book(db: Session, author_id: int) -> str or None:
+def get_book(db: Session, author_id: int) -> Optional[models.Book]:
     return db.query(models.Book).filter(models.Book.author_id == author_id).first()
 
 
-def create_book(db: Session, book: schemas.BookCreate) -> str:
+def create_book(db: Session, book: schemas.BookCreate) -> Optional[models.Book]:
     db_book = models.Book(
         title=book.title,
         summary=book.summary,

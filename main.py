@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 import crud
 import models
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -22,7 +24,7 @@ def root() -> dict:
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(db: Session = Depends(get_db)) -> list[str]:
+def read_authors(db: Session = Depends(get_db)) -> list[models.Author]:
     return crud.get_all_authors(db=db)
 
 
@@ -30,7 +32,7 @@ def read_authors(db: Session = Depends(get_db)) -> list[str]:
 def create_author(
     author: schemas.AuthorCreate,
     db: Session = Depends(get_db),
-) -> str:
+) -> models.Author:
     db_author = crud.get_author_by_name(db=db, name=author.name)
     if db_author:
         raise HTTPException(
@@ -49,7 +51,7 @@ def read_single_author(author_id: int, db: Session = Depends(get_db)) -> models.
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_books(db: Session = Depends(get_db)) -> list[str]:
+def read_books(db: Session = Depends(get_db)) -> list[models.Book]:
     return crud.get_all_books(db=db)
 
 
@@ -57,12 +59,12 @@ def read_books(db: Session = Depends(get_db)) -> list[str]:
 def create_books(
     book: schemas.BookCreate,
     db: Session = Depends(get_db),
-) -> str:
+) -> models.Book:
     return crud.create_book(db=db, book=book)
 
 
 @app.get("/books/book_by_author_id/", response_model=schemas.Book)
-def read_single_book(author_id: int, db: Session = Depends(get_db)) -> str:
+def read_single_book(author_id: int, db: Session = Depends(get_db)) -> models.Book:
     db_book = crud.get_book(db=db, author_id=author_id)
     if db_book is None:
         raise HTTPException(status_code=404, detail="Book not found")
