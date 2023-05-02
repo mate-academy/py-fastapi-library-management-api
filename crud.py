@@ -35,8 +35,10 @@ def get_all_books(
         author_id: int | None = None
 ) -> List[models.DBBook]:
     query = db.query(models.DBBook)
+
     if author_id is not None:
         query = query.filter(models.DBBook.author_id == author_id)
+
     return query.all()
 
 

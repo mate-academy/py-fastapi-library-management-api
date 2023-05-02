@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from datetime import date
 from pydantic import BaseModel
 
@@ -14,7 +14,7 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-    books: List['Book'] = []
+    books: list["Book"] = []
 
     class Config:
         orm_mode = True
@@ -32,7 +32,6 @@ class BookCreate(BookBase):
 
 class Book(BookBase):
     id: int
-    author_id: int
     author: Optional[Author] = None
 
     class Config:
