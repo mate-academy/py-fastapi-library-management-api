@@ -7,7 +7,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from db.engine import Base
+from database import Base
 
 
 class Author(Base):

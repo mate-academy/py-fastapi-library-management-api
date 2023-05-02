@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from db.models import Author, Book
+from models import Author, Book
 from schemas import (
     AuthorCreate,
     BookCreate,
