@@ -1,14 +1,29 @@
-from datetime import datetime
+from datetime import date
 
 from pydantic import BaseModel
 
-from models import Book
+
+class BookBase(BaseModel):
+    title: str
+    summary: str = None
+    publication_date: date
+
+
+class BookCreate(BookBase):
+    author_id: int
+
+
+class Book(BookBase):
+    id: int
+    author_id: int
+
+    class Config:
+        orm_mode = True
 
 
 class AuthorBase(BaseModel):
     name: str
     bio: str = None
-    books: list[Book] = []
 
 
 class AuthorCreate(AuthorBase):
@@ -17,21 +32,7 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
+    books: list[Book] = []
 
     class Config:
         orm_mode = True
-
-
-class BookBase(BaseModel):
-    title: str
-    summary: str = None
-    author_id: int
-
-
-class BookCreate(BookBase):
-    pass
-
-
-class BookList(BookBase):
-    id: int
-    publication_date: datetime
