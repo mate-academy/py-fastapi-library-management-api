@@ -12,6 +12,10 @@ class BookCreate(BookBase):
     pass
 
 
+class BookUpdate(BookBase):
+    pass
+
+
 class Book(BookBase):
     id: int
     author_id: int
@@ -26,6 +30,10 @@ class AuthorBase(BaseModel):
 
 
 class AuthorCreate(AuthorBase):
+    pass
+
+
+class AuthorUpdate(AuthorBase):
     pass
 
 

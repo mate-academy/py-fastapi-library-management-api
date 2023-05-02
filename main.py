@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, Response, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import SessionLocal
-from app.utils import get_author_or_404
+from app.utils import get_author_or_404, get_book_or_404
 
 app = FastAPI()
 
@@ -29,12 +29,33 @@ def read_single_author_by_id(author_id: int, db: Session = Depends(get_db)):
 
 @app.post("/create_author/", response_model=schemas.Author)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
-    db_author = crud.get_author_by_name(db=db, author_name=author.name)
-    if db_author:
-        raise HTTPException(
-            status_code=400, detail="Name of the author is already taken!"
-        )
     return crud.create_author(db=db, author=author)
+
+
+@app.put("/authors/{author_id}/", response_model=schemas.Author)
+def update_author(
+        author: schemas.AuthorUpdate,
+        author_id: int,
+        db: Session = Depends(get_db)
+):
+    db_author = crud.update_author(author=author, author_id=author_id, db=db)
+    return db_author
+
+
+@app.patch("/authors/{author_id}/", response_model=schemas.Author)
+def partial_update_author(
+        author: schemas.AuthorUpdate,
+        author_id: int,
+        db: Session = Depends(get_db)
+):
+    db_author = crud.update_author(author=author, author_id=author_id, db=db)
+    return db_author
+
+
+@app.delete("/authors/{author_id}/")
+def destroy_author(author_id: int, db: Session = Depends(get_db)):
+    crud.delete_author(db=db, author_id=author_id)
+    return Response(status_code=204)
 
 
 @app.get("/authors/{author_id}/books", response_model=list[schemas.Book])
@@ -48,8 +69,32 @@ def read_books(skip: int = 0, limit: int = 5, db: Session = Depends(get_db)):
     return crud.get_book_list(db=db, skip=skip, limit=limit)
 
 
+@app.get("/books/{book_id}/", response_model=schemas.Book)
+def read_book_by_id(book_id: int, db: Session = Depends(get_db)):
+    db_book = get_book_or_404(db=db, book_id=book_id)
+    return db_book
+
+
 @app.post("/authors/{author_id}/create_book/", response_model=schemas.Book)
 def create_book(
     author_id: int, book: schemas.BookCreate, db: Session = Depends(get_db)
 ):
     return crud.create_book(db=db, book=book, author_id=author_id)
+
+
+@app.put("/books/{book_id}/", response_model=schemas.Book)
+def update_book(book_id: int, book: schemas.BookUpdate,  db: Session = Depends(get_db)):
+    db_book = crud.update_book(book_id=book_id, book=book, db=db)
+    return db_book
+
+
+@app.patch("/books/{book_id}/", response_model=schemas.Book)
+def partial_update_book(book_id: int, book: schemas.BookUpdate,  db: Session = Depends(get_db)):
+    db_book = crud.update_book(book_id=book_id, book=book, db=db)
+    return db_book
+
+
+@app.delete("/books/{book_id}/")
+def destroy_book(book_id: int, db: Session = Depends(get_db)):
+    crud.delete_book(db=db, book_id=book_id)
+    return Response(status_code=204)
