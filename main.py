@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, Response, HTTPException
+from typing import Annotated
+from fastapi import FastAPI, Depends, Response, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
@@ -17,8 +18,13 @@ def get_db():
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(skip: int = 0, limit: int = 5, db: Session = Depends(get_db)):
-    return crud.get_author_list(db=db, skip=skip, limit=limit)
+def read_authors(
+    name: Annotated[str | None, Query(max_length=30)] = None,
+    skip: int = 0,
+    limit: int = 5,
+    db: Session = Depends(get_db),
+):
+    return crud.get_author_list(name=name, db=db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
@@ -34,9 +40,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 @app.put("/authors/{author_id}/", response_model=schemas.Author)
 def update_author(
-        author: schemas.AuthorUpdate,
-        author_id: int,
-        db: Session = Depends(get_db)
+    author: schemas.AuthorUpdate, author_id: int, db: Session = Depends(get_db)
 ):
     db_author = crud.update_author(author=author, author_id=author_id, db=db)
     return db_author
@@ -44,9 +48,7 @@ def update_author(
 
 @app.patch("/authors/{author_id}/", response_model=schemas.Author)
 def partial_update_author(
-        author: schemas.AuthorUpdate,
-        author_id: int,
-        db: Session = Depends(get_db)
+    author: schemas.AuthorUpdate, author_id: int, db: Session = Depends(get_db)
 ):
     db_author = crud.update_author(author=author, author_id=author_id, db=db)
     return db_author
@@ -65,8 +67,13 @@ def read_books_by_author_id(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_books(skip: int = 0, limit: int = 5, db: Session = Depends(get_db)):
-    return crud.get_book_list(db=db, skip=skip, limit=limit)
+def read_books(
+    title: Annotated[str | None, Query(max_length=60)] = None,
+    skip: int = 0,
+    limit: int = 5,
+    db: Session = Depends(get_db),
+):
+    return crud.get_book_list(title=title, db=db, skip=skip, limit=limit)
 
 
 @app.get("/books/{book_id}/", response_model=schemas.Book)
@@ -83,13 +90,17 @@ def create_book(
 
 
 @app.put("/books/{book_id}/", response_model=schemas.Book)
-def update_book(book_id: int, book: schemas.BookUpdate,  db: Session = Depends(get_db)):
+def update_book(
+    book_id: int, book: schemas.BookUpdate, db: Session = Depends(get_db)
+):
     db_book = crud.update_book(book_id=book_id, book=book, db=db)
     return db_book
 
 
 @app.patch("/books/{book_id}/", response_model=schemas.Book)
-def partial_update_book(book_id: int, book: schemas.BookUpdate,  db: Session = Depends(get_db)):
+def partial_update_book(
+    book_id: int, book: schemas.BookUpdate, db: Session = Depends(get_db)
+):
     db_book = crud.update_book(book_id=book_id, book=book, db=db)
     return db_book
 

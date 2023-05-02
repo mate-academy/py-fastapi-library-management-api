@@ -10,8 +10,11 @@ def get_author_by_id(db: Session, author_id: int):
     )
 
 
-def get_author_list(db: Session, skip: int = 0, limit: int = 5):
-    return db.query(models.Author).offset(skip).limit(limit).all()
+def get_author_list(name: str, db: Session, skip: int = 0, limit: int = 5):
+    db_authors = db.query(models.Author)
+    if name:
+        db_authors = db_authors.filter(models.Author.name.ilike(f"%{name}%"))
+    return db_authors.offset(skip).limit(limit).all()
 
 
 def create_author(db: Session, author: schemas.AuthorCreate):
@@ -43,8 +46,11 @@ def get_book_by_id(db: Session, book_id: int):
     return db.query(models.Book).filter(models.Book.id == book_id).first()
 
 
-def get_book_list(db: Session, skip: int = 0, limit: int = 5):
-    return db.query(models.Book).offset(skip).limit(limit).all()
+def get_book_list(title: str, db: Session, skip: int = 0, limit: int = 5):
+    db_books = db.query(models.Book)
+    if title:
+        db_books = db_books.filter(models.Book.title.ilike(f"%{title}%"))
+    return db_books.offset(skip).limit(limit).all()
 
 
 def get_book_list_by_author_id(db: Session, author_id: int):
