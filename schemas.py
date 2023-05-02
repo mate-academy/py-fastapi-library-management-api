@@ -14,7 +14,7 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-    books: list["Book"] = []
+    books: list
 
     class Config:
         orm_mode = True
@@ -32,7 +32,7 @@ class BookCreate(BookBase):
 
 class Book(BookBase):
     id: int
-    author: Optional[Author] = None
+    author: Author
 
     class Config:
         orm_mode = True

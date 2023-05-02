@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.params import Query
 from sqlalchemy.orm import Session
 
 import crud
@@ -21,7 +20,12 @@ def get_db() -> Session:
         db.close()
 
 
-@app.get("/authors/", response_model=list[schemas.Author])
+@app.get("/")
+def root() -> dict:
+    return {"message": "Hello World"}
+
+
+@app.get("/authors", response_model=list[schemas.Author])
 def read_authors(db: Session = Depends(get_db)):
     return crud.get_all_authors(db)
 
@@ -59,6 +63,6 @@ def read_book_by_author(author_id: int, db: Session = Depends(get_db)):
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
 
-# alembic revision --autogenerate -m "Initial migration"
-# alembic upgrade head
-# uvicorn main:app --reload
+# # alembic revision --autogenerate -m "Initial migration"
+# # alembic upgrade head
+# # uvicorn main:app --reload
