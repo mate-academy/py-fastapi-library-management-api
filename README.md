@@ -53,3 +53,16 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
      - Filter books by author ID.
      
 Upon completion, you should have a functional library management API that allows the user to manage authors and their books.
+
+9. Optional tasks:
+Search functionality:
+Implement a search feature that allows users to search for authors or books by partial or complete names/titles. This can be added as a query parameter in the existing API endpoints for retrieving authors and books.
+
+Sorting:
+Add sorting functionality to the API endpoints for listing authors and books. Users should be able to sort the results based on various fields, such as name, title, or publication date, in ascending or descending order.
+
+Update and delete operations:
+Implement API endpoints for updating and deleting authors and books. This would provide a more complete CRUD (Create, Read, Update, and Delete) functionality for both authors and books.
+
+Authentication and authorization:
+Add authentication and authorization features to protect the API endpoints. This can be done using an authentication library like OAuth2 or JWT. Only authenticated users should be able to perform certain actions like creating, updating, or deleting authors and books.
