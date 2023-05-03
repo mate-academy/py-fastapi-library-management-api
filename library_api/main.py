@@ -100,7 +100,7 @@ def delete_book(id: int, db: Session = Depends(get_db)):
     if db_book is None:
         raise HTTPException(status_code=404, detail="Book not found")
     crud.delete_book(db=db, id=id)
-    return Response(status_code=200, content="Book deleted")
+    return Response(status_code=204, content="Book deleted")
 
 
 @app.delete("/authors/{author_id}")
@@ -109,4 +109,4 @@ def delete_author(author_id: int, db: Session = Depends(get_db)):
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
     crud.delete_author(db=db, author_id=author_id)
-    return Response(status_code=200, content="Author deleted")
+    return Response(status_code=204, content="Author deleted")
