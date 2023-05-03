@@ -1,5 +1,6 @@
 from app import models, schemas
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.expression import desc
 
 from app.utils import get_author_or_404, get_book_or_404
 
@@ -27,13 +28,13 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 
 def update_author(db: Session, author_id: int, author: schemas.AuthorUpdate):
     db_author = get_author_or_404(db=db, author_id=author_id)
-    if db_author:
-        db_author.name = author.name
-        db_author.bio = author.bio
-        db.add(db_author)
-        db.commit()
-        db.refresh(db_author)
-        return db_author
+    db_author.name = author.name
+    db_author.bio = author.bio
+
+    db.add(db_author)
+    db.commit()
+    db.refresh(db_author)
+    return db_author
 
 
 def delete_author(db: Session, author_id: int):
@@ -46,10 +47,23 @@ def get_book_by_id(db: Session, book_id: int):
     return db.query(models.Book).filter(models.Book.id == book_id).first()
 
 
-def get_book_list(title: str, db: Session, skip: int = 0, limit: int = 5):
+def get_book_list(
+    title: str,
+    db: Session,
+    sort_parameter: str = None,
+    sort_asc: bool = True,
+    skip: int = 0,
+    limit: int = 5,
+):
     db_books = db.query(models.Book)
     if title:
         db_books = db_books.filter(models.Book.title.ilike(f"%{title}%"))
+    if sort_parameter:
+        if sort_asc:
+            db_books = db_books.order_by(sort_parameter)
+        else:
+            db_books = db_books.order_by(desc(sort_parameter))
+
     return db_books.offset(skip).limit(limit).all()
 
 
@@ -72,6 +86,7 @@ def update_book(db: Session, book: schemas.BookUpdate, book_id: int):
     db_book.title = book.title
     db_book.summary = book.summary
     db_book.publication_date = book.publication_date
+
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
@@ -82,4 +97,3 @@ def delete_book(db: Session, book_id: int):
     db_book = get_book_or_404(book_id=book_id, db=db)
     db.delete(db_book)
     db.commit()
-

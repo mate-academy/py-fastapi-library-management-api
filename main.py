@@ -68,12 +68,21 @@ def read_books_by_author_id(author_id: int, db: Session = Depends(get_db)):
 
 @app.get("/books/", response_model=list[schemas.Book])
 def read_books(
+    sort_parameter: str = None,
+    sort_asc: bool = True,
     title: Annotated[str | None, Query(max_length=60)] = None,
     skip: int = 0,
     limit: int = 5,
     db: Session = Depends(get_db),
 ):
-    return crud.get_book_list(title=title, db=db, skip=skip, limit=limit)
+    return crud.get_book_list(
+        title=title,
+        db=db,
+        skip=skip,
+        limit=limit,
+        sort_parameter=sort_parameter,
+        sort_asc=sort_asc,
+    )
 
 
 @app.get("/books/{book_id}/", response_model=schemas.Book)
