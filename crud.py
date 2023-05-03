@@ -20,23 +20,15 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_book(db: Session, book_id: int):
-    return db.query(models.Book).filter(models.Book.id == book_id).first()
+def get_books_by_author(db: Session, author_id: int):
+    query = db.query(models.Book)
+    if author_id:
+        query = query.filter(models.Book.author_id == author_id)
+    return query.all()
 
 
 def get_all_books(db: Session):
     return db.query(models.Book).all()
-
-
-# book_publication_date_str = book_publication_date.strftime("%Y-%m-%d")
-# create_book(
-#     db, BookCreate(
-#         title="book title",
-#         summary="book summary",
-#         author_id=1,
-#         publication_date=book_publication_date_str
-#     )
-# )
 
 
 def create_book(db: Session, book: schemas.BookCreate):
