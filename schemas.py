@@ -3,6 +3,23 @@ from datetime import date
 from pydantic import BaseModel
 
 
+import uuid
+
+from fastapi_users import schemas
+
+
+class UserRead(schemas.BaseUser[uuid.UUID]):
+    pass
+
+
+class UserCreate(schemas.BaseUserCreate):
+    pass
+
+
+class UserUpdate(schemas.BaseUserUpdate):
+    pass
+
+
 class BookBase(BaseModel):
     title: str
     summary: str = None

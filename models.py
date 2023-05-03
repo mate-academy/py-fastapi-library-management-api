@@ -18,7 +18,7 @@ class Author(Base):
     name = Column(String(255), unique=True)
     bio = Column(String(512), nullable=True)
 
-    books = relationship("Book", back_populates="author")
+    books = relationship("Book", back_populates="author", lazy="selectin")
 
 
 class Book(Base):

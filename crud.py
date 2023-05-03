@@ -1,112 +1,151 @@
 from datetime import date
 
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 import models
 import schemas
+from sqlalchemy.orm import selectinload
 
 
-def get_authors(
-    db: Session,
-    skip,
-    limit,
-):
-    return db.query(models.Author).offset(skip).limit(limit).all()
+async def get_authors(db: AsyncSession, skip: int = 0, limit: int = 5):
+    stmt = (
+        select(models.Author)
+        .options(selectinload(models.Author.books))
+        .offset(skip)
+        .limit(limit)
+    )
+    result = await db.execute(stmt)
+    authors = result.scalars().all()
+    return [
+        {
+            "id": author.id,
+            "name": author.name,
+            "bio": author.bio,
+            "books": [
+                {
+                    "id": book.id,
+                    "title": book.title,
+                    "summary": book.summary,
+                    "publication_date": book.publication_date,
+                    "author_id": book.author_id,
+                }
+                for book in author.books
+            ],
+        }
+        for author in authors
+    ]
 
 
-def get_author(db: Session, author_id: int):
-    return db.query(models.Author).filter(models.Author.id == author_id).first()
+async def get_author(db: AsyncSession, author_id: int):
+    stmt = (
+        select(models.Author)
+        .options(selectinload(models.Author.books))
+        .where(models.Author.id == author_id)
+    )
+    result = await db.execute(stmt)
+    author = result.scalars().first()
+    return {
+        "id": author.id,
+        "name": author.name,
+        "bio": author.bio,
+        "books": [
+            {
+                "id": book.id,
+                "title": book.title,
+                "summary": book.summary,
+                "publication_date": book.publication_date,
+                "author_id": book.author_id,
+            }
+            for book in author.books
+        ],
+    }
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
-    db_author = models.Author(name=author.name, bio=author.bio)
+async def create_author(db: AsyncSession, author: schemas.AuthorCreate):
+    db_author = models.Author(**author.dict())
     db.add(db_author)
-    db.commit()
-    db.refresh(db_author)
+    await db.commit()
+    await db.refresh(db_author)
     return db_author
 
 
-def update_author(
-    db: Session,
+async def update_author(
+    db: AsyncSession,
     author_id: int,
     name: str = None,
     bio: str = None,
 ):
-    db_author = db.query(models.Author).filter(models.Author.id == author_id)
-    author = db_author.first()
-
+    db_author = await db.get(models.Author, author_id)
     if name:
-        author.name = name
+        db_author.name = name
     if bio:
-        author.bio = bio
-
-    db.commit()
-    db.refresh(author)
-    return author
-
-
-def delete_author(db: Session, author_id: int):
-    db_author = db.query(models.Author).filter(models.Author.id == author_id)
-    author = db_author.first()
-    db.delete(author)
-    db.commit()
-    return author
+        db_author.bio = bio
+    await db.commit()
+    await db.refresh(db_author)
+    return db_author
 
 
-def get_books(
-    db: Session,
+async def delete_author(db: AsyncSession, author_id: int):
+    db_author = await db.get(models.Author, author_id)
+    await db.delete(db_author)
+    await db.commit()
+    return db_author
+
+
+async def get_books(
+    db: AsyncSession,
     skip,
     limit,
     author_id: int = None,
 ):
-    queryset = db.query(models.Book)
-    if author_id is not None:
-        queryset = queryset.filter(models.Book.author_id == author_id)
-    return queryset.offset(skip).limit(limit).all()
+    stmt = select(models.Book).offset(skip).limit(limit)
+    if author_id:
+        stmt = stmt.where(models.Book.author_id == author_id)
+    result = await db.execute(stmt)
+    books = result.scalars().all()
+    return books
 
 
-def get_book(db: Session, book_id: int):
-    return db.query(models.Book).filter(models.Book.id == book_id).first()
+async def get_book(db: AsyncSession, book_id: int):
+    stmt = select(models.Book).where(models.Book.id == book_id)
+    result = await db.execute(stmt)
+    book = result.scalars().first()
+    return book
 
 
-def create_book(db: Session, book: schemas.BookCreate):
-    db_book = models.Book(
-        title=book.title, summary=book.summary, author_id=book.author_id
-    )
+async def create_book(db: AsyncSession, book: schemas.BookCreate):
+    db_book = models.Book(**book.dict())
     db.add(db_book)
-    db.commit()
-    db.refresh(db_book)
+    await db.commit()
+    await db.refresh(db_book)
     return db_book
 
 
-def update_book(
-    db: Session,
+async def update_book(
+    db: AsyncSession,
     book_id: int,
     title: str = None,
     summary: str = None,
-    author_id: int = None,
     publication_date: date = None,
+    author_id: int = None,
 ):
-    db_book = db.query(models.Book).filter(models.Book.id == book_id)
-    book = db_book.first()
-
+    db_book = await db.get(models.Book, book_id)
     if title:
-        book.title = title
+        db_book.title = title
     if summary:
-        book.summary = summary
-    if author_id:
-        book.author_id = author_id
+        db_book.summary = summary
     if publication_date:
-        book.publication_date = publication_date
+        db_book.publication_date = publication_date
+    if author_id:
+        db_book.author_id = author_id
+    await db.commit()
+    await db.refresh(db_book)
+    return db_book
 
-    db.commit()
-    db.refresh(book)
-    return book
 
-
-def delete_book(db: Session, book_id: int):
-    db_book = db.query(models.Book).filter(models.Book.id == book_id)
-    book = db_book.first()
-    db.delete(book)
-    db.commit()
-    return book
+async def delete_book(db: AsyncSession, book_id: int):
+    db_book = await db.get(models.Book, book_id)
+    await db.delete(db_book)
+    await db.commit()
+    return db_book
