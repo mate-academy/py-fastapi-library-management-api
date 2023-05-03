@@ -8,8 +8,13 @@ import schemas
 # Authors CRUD
 def get_all_authors(
         db: Session,
+        search: Optional[str] = None
 ) -> List[models.DBAuthor]:
-    return db.query(models.DBAuthor).all()
+    if search:
+        return (db.query(models.DBAuthor)
+                .filter(models.DBAuthor.name.icontains(f"%{search}%")).all())
+    else:
+        return db.query(models.DBAuthor).all()
 
 
 def get_author(db: Session, author_id: int) -> Optional[models.DBAuthor]:
@@ -18,7 +23,10 @@ def get_author(db: Session, author_id: int) -> Optional[models.DBAuthor]:
     ).first()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
+def create_author(
+        db: Session,
+        author: schemas.AuthorCreate
+) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio
@@ -32,14 +40,18 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
 # Books CRUD
 def get_all_books(
         db: Session,
-        author_id: int | None = None
+        author_id: int | None = None,
+        search: Optional[str] = None
 ) -> List[models.DBBook]:
     query = db.query(models.DBBook)
 
     if author_id is not None:
         query = query.filter(models.DBBook.author_id == author_id)
-
-    return query.all()
+    if search:
+        return (db.query(models.DBBook)
+                .filter(models.DBBook.title.icontains(f"%{search}%")).all())
+    else:
+        return query.all()
 
 
 def get_books_by_author(

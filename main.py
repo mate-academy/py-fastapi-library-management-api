@@ -20,14 +20,9 @@ def get_db() -> Session:
         db.close()
 
 
-@app.get("/")
-def root() -> dict:
-    return {"message": "Hello World"}
-
-
-@app.get("/authors", response_model=list[schemas.Author])
-def read_authors(db: Session = Depends(get_db)):
-    return crud.get_all_authors(db)
+@app.get("/authors/", response_model=list[schemas.Author])
+def read_authors(search: str = None, db: Session = Depends(get_db)):
+    return crud.get_all_authors(db=db, search=search)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
@@ -49,8 +44,8 @@ def create_author(
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_books(db: Session = Depends(get_db)):
-    books = crud.get_all_books(db=db)
+def read_books(search: str = None, db: Session = Depends(get_db)):
+    books = crud.get_all_books(db=db, search=search)
     return books
 
 
