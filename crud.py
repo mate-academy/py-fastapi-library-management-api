@@ -1,3 +1,4 @@
+from sqlalchemy import desc
 from sqlalchemy.orm import joinedload, Session
 
 import models
@@ -17,12 +18,24 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
 
 
 def get_authors(
-    name: str, db: Session, skip: int = 0, limit: int = 5
+    db: Session,
+    name: str = None,
+    sort_by: str = None,
+    sort_order: str = "asc",
+    skip: int = 0,
+    limit: int = 5,
 ) -> list[models.Author]:
-    queryset = db.query(models.Author)
+    query = db.query(models.Author)
     if name:
-        queryset = queryset.filter(models.Author.name.ilike(f"%{name}%"))
-    return queryset.offset(skip).limit(limit).all()
+        query = query.filter(models.Author.name.ilike(f"%{name}%"))
+
+    if sort_by:
+        if sort_order == "desc":
+            query = query.order_by(desc(sort_by))
+        else:
+            query = query.order_by(sort_by)
+
+    return query.offset(skip).limit(limit).all()
 
 
 def get_author(db: Session, author_id: int) -> models.Author:
@@ -48,12 +61,24 @@ def create_book(db: Session, book: schemas.BookCreate, author_id: int) -> models
 
 
 def get_books(
-    title: str, db: Session, skip: int = 0, limit: int = 5
+    db: Session,
+    title: str = None,
+    sort_by: str = None,
+    sort_order: str = "asc",
+    skip: int = 0,
+    limit: int = 5,
 ) -> list[models.Book]:
-    queryset = db.query(models.Book)
+    query = db.query(models.Book)
     if title:
-        queryset = queryset.filter(models.Book.title.ilike(f"%{title}%"))
-    return queryset.offset(skip).limit(limit).all()
+        query = query.filter(models.Book.title.ilike(f"%{title}%"))
+
+    if sort_by:
+        if sort_order == "desc":
+            query = query.order_by(desc(sort_by))
+        else:
+            query = query.order_by(sort_by)
+
+    return query.offset(skip).limit(limit).all()
 
 
 def get_book(db: Session, book_id: int) -> models.Book:
