@@ -22,6 +22,10 @@ class Book(BookBase):
         orm_mode = True
 
 
+class BookUpdate(BookBase):
+    pass
+
+
 class PaginatedBooks(BaseModel):
     total: int
     items: List[Book]
@@ -52,3 +56,7 @@ class PaginatedAuthors(BaseModel):
 class AuthorListQuery(BaseModel):
     skip: Optional[int] = 0
     limit: Optional[int] = 10
+
+
+class AuthorUpdate(AuthorBase):
+    pass
