@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from pydantic.types import date
+from datetime import date
 
 
 class AuthorBase(BaseModel):
@@ -18,6 +18,11 @@ class Author(AuthorBase):
         orm_mode = True
 
 
+class AuthorPartialUpdate(BaseModel):
+    name: str = None
+    bio: str = None
+
+
 class BookBase(BaseModel):
     title: str
     summary: str
@@ -34,3 +39,10 @@ class Book(BookBase):
 
     class Config:
         orm_mode = True
+
+
+class BookPartialUpdate(BaseModel):
+    title: str = None
+    summary: str = None
+    publication_date: date = None
+    author_id: int = None
