@@ -9,16 +9,18 @@ class DBAuthor(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
-    bio = Column(String(1023), nullable=True)
+    bio = Column(String(1023))
+
+    books = relationship("DBBook", back_populates="author")
 
 
 class DBBook(Base):
     __tablename__ = "books"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255))
-    summary = Column(String(1023), nullable=True)
-    publication_date = Column(Date,)
-    author_id = Column(Integer, ForeignKey("DBAuthor.id"))
+    title = Column(String(255), nullable=False)
+    summary = Column(String(1023))
+    publication_date = Column(Date, nullable=True)
+    author_id = Column(Integer, ForeignKey("authors.id"), nullable=True)
 
-    author = relationship(DBAuthor)
+    author = relationship(DBAuthor, back_populates="books")
