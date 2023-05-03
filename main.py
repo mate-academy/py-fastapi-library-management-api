@@ -1,7 +1,8 @@
-from typing import Any, Annotated, Generator
+from typing import Any, Generator
 
-from fastapi import Depends, FastAPI, HTTPException, Query
-from sqlalchemy.orm import joinedload, Session
+from fastapi import Depends, FastAPI, Response, HTTPException, Query
+
+from sqlalchemy.orm import Session
 
 import crud
 import models
@@ -19,6 +20,13 @@ def get_db() -> Generator:
         yield db
     finally:
         db.close()
+
+
+def get_or_404(db: Session, model: Any, id: int):
+    item = db.query(model).filter(model.id == id).first()
+    if item is None:
+        raise HTTPException(status_code=404, detail=f"{model.__name__} not found")
+    return item
 
 
 @app.post("/authors/", response_model=schemas.Author)
@@ -88,10 +96,28 @@ def read_author(author_id: int, db: Session = Depends(get_db)) -> Any:
     """
     Retrieve a single author by ID.
     """
-    db_author = crud.get_author(db, author_id=author_id)
-    if db_author is None:
-        raise HTTPException(status_code=404, detail="Author not found")
-    return db_author
+    return get_or_404(db, models.Author, author_id)
+
+
+@app.put("/authors/{author_id}", response_model=schemas.Author)
+def update_author(
+    author_id: int, author: schemas.AuthorUpdate, db: Session = Depends(get_db)
+) -> models.Author:
+    """
+    Update a single author by ID.
+    """
+    get_or_404(db, models.Author, author_id)
+    return crud.update_author(db=db, author=author, author_id=author_id)
+
+
+@app.delete("/authors/{author_id}", response_model=schemas.Author)
+def delete_author(author_id: int, db: Session = Depends(get_db)) -> Any:
+    """
+    Delete a single author by ID.
+    """
+    get_or_404(db, models.Author, author_id)
+    crud.delete_author(db=db, author_id=author_id)
+    return Response(status_code=204)
 
 
 @app.post("/authors/{author_id}/books/", response_model=schemas.Book)
@@ -101,7 +127,37 @@ def create_book_for_author(
     """
     Create a new book for a specific author.
     """
-    return crud.create_book(db=db, book=book, author_id=author_id)
+    db_author = get_or_404(db, models.Author, author_id)
+    return crud.create_book(db=db, book=book, author_id=db_author.id)
+
+
+@app.get("/books/{book_id}", response_model=schemas.Book)
+def read_book(book_id: int, db: Session = Depends(get_db)) -> Any:
+    """
+    Retrieve a single book by ID.
+    """
+    return get_or_404(db, models.Book, book_id)
+
+
+@app.put("/books/{book_id}", response_model=schemas.Book)
+def update_book(
+    book_id: int, book: schemas.BookUpdate, db: Session = Depends(get_db)
+) -> models.Book:
+    """
+    Update a single book by ID.
+    """
+    get_or_404(db, models.Book, book_id)
+    return crud.update_book(db=db, book=book, book_id=book_id)
+
+
+@app.delete("/books/{book_id}", response_model=schemas.Book)
+def delete_book(book_id: int, db: Session = Depends(get_db)) -> Any:
+    """
+    Delete a single book by ID.
+    """
+    get_or_404(db, models.Book, book_id)
+    crud.delete_book(db=db, book_id=book_id)
+    return Response(status_code=204)
 
 
 @app.get("/books/", response_model=list[schemas.Book])
@@ -165,5 +221,6 @@ def read_books_by_author(
     """
     Filter books by author ID.
     """
-    books = crud.get_books_by_author(db, author_id=author_id, skip=skip, limit=limit)
+    db_author = get_or_404(db, models.Author, author_id)
+    books = crud.get_books_by_author(db, author_id=db_author.id, skip=skip, limit=limit)
     return books

@@ -47,6 +47,23 @@ def get_author(db: Session, author_id: int) -> models.Author:
     )
 
 
+def update_author(
+    db: Session, author_id: int, author: schemas.AuthorUpdate
+) -> models.Author:
+    db_author = db.query(models.Author).filter(models.Author.id == author_id).first()
+    db_author.name = author.name
+    db_author.bio = author.bio
+    db.commit()
+    db.refresh(db_author)
+    return db_author
+
+
+def delete_author(db: Session, author_id: int) -> None:
+    db.query(models.Book).filter(models.Book.author_id == author_id).delete()
+    db.query(models.Author).filter(models.Author.id == author_id).delete()
+    db.commit()
+
+
 def create_book(db: Session, book: schemas.BookCreate, author_id: int) -> models.Book:
     db_book = models.Book(
         title=book.title,
@@ -58,6 +75,22 @@ def create_book(db: Session, book: schemas.BookCreate, author_id: int) -> models
     db.commit()
     db.refresh(db_book)
     return db_book
+
+
+def update_book(db: Session, book_id: int, book: schemas.BookUpdate) -> models.Book:
+    db_book = db.query(models.Book).filter(models.Book.id == book_id).first()
+    db_book.title = book.title
+    db_book.summary = book.summary
+    db_book.publication_date = book.publication_date
+    db.commit()
+    db.refresh(db_book)
+    return db_book
+
+
+def delete_book(db: Session, book_id: int) -> None:
+    db_book = db.query(models.Book).filter(models.Book.id == book_id).first()
+    db.delete(db_book)
+    db.commit()
 
 
 def get_books(
