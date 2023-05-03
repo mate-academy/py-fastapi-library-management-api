@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from schemas import AuthorBase, AuthorMain, AuthorCreate, BookBase, BookMain, BookCreate
+from schemas import AuthorCreate, BookCreate
 
 from models import Author, Book
 
@@ -13,8 +13,8 @@ def create_author(db: Session, author: AuthorCreate):
     return author
 
 
-def get_autor_by_id(db: Session, autor_id):
-    return db.query(Author).filter_by(id=autor_id).first()
+def get_author_by_id(db: Session, author_id):
+    return db.query(Author).filter_by(id=author_id).first()
 
 
 def get_autor_by_name(db: Session, autor_name):
@@ -25,22 +25,29 @@ def get_author_list(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Author).offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: BookCreate):
-    db_book = Book(
+def create_book(db: Session, book: BookCreate, author_ids: list[int]):
+    authors_objs = db.query(Author).filter(Author.id.in_(author_ids)).all()
+    book = Book(
         title=book.title,
         summary=book.summary,
         publication_date=book.publication_date,
-        authors=[db.query(Author).get(author_id) for author_id in book.author_ids],
+        authors=authors_objs,
     )
-    db.add(db_book)
+    db.add(book)
     db.commit()
-    db.refresh(db_book)
-    return db_book
+    db.refresh(book)
+    return book
 
 
 def get_book_by_id(db: Session, book_id):
     return db.query(Book).filter_by(id=book_id).first()
 
 
-def get_bool_list(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Book).offset(skip).limit(limit).all()
+def get_book_list(
+    db: Session, skip: int = 0, limit: int = 100, author_id: int | None = None
+):
+    query = db.query(Book)
+
+    if author_id:
+        query = query.filter(Author.id == author_id)
+    return query.offset(skip).limit(limit).all()
