@@ -31,7 +31,7 @@ def create_author(author: schemas.AuthorCreate, db: SessionLocal = Depends(get_d
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/books/", response_model=schemas.Book)
+@app.get("/books/", response_model=list[schemas.Book])
 def get_books(db: SessionLocal = Depends(get_db)):
     return crud.get_books(db=db)
 
