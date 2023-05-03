@@ -30,6 +30,10 @@ class AuthorCreate(AuthorBase):
     pass
 
 
+class AuthorUpdate(AuthorBase):
+    name: str = None
+
+
 class Author(AuthorBase):
     id: int
     books: list[Book] = []
