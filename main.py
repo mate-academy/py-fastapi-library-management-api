@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 import crud
 import schemas
 from database import SessionLocal
+from deps import get_current_user
+from utils import verify_password, create_access_token, create_refresh_token
 
 app = FastAPI()
 
@@ -71,7 +74,11 @@ def get_one_author(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/authors/", response_model=schemas.Author)
-def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+def create_author(
+    author: schemas.AuthorCreate,
+    user: schemas.UserAuth = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     db_author = crud.get_author_by_name(db=db, name=author.name)
 
     if db_author:
@@ -86,6 +93,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 def update_author(
     author: schemas.AuthorCreate,
     author_id: int,
+    user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     get_author(db=db, author_id=author_id)
@@ -97,6 +105,7 @@ def update_author(
 def partial_update_author(
     author: schemas.AuthorPartialUpdate,
     author_id: int,
+    user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     get_author(db=db, author_id=author_id)
@@ -109,6 +118,7 @@ def partial_update_author(
 @app.delete("/authors/{author_id}/")
 def delete_author(
     author_id: int,
+    user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     get_author(db=db, author_id=author_id)
@@ -142,7 +152,11 @@ def read_books(
 
 
 @app.post("/books/", response_model=schemas.Book)
-def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+def create_book(
+    book: schemas.BookCreate,
+    user: schemas.UserAuth = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     get_author(db=db, author_id=book.author_id)
 
     return crud.create_book(db=db, book=book)
@@ -152,6 +166,7 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 def update_book(
     book: schemas.BookCreate,
     book_id: int,
+    user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     get_author(db=db, author_id=book.author_id)
@@ -165,6 +180,7 @@ def update_book(
 def partial_update_book(
     book: schemas.BookPartialUpdate,
     book_id: int,
+    user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     if book.author_id:
@@ -178,8 +194,53 @@ def partial_update_book(
 @app.delete("/books/{book_id}/")
 def delete_book(
     book_id: int,
+    user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     get_book(db=db, book_id=book_id)
 
     return crud.delete_book(db=db, book_id=book_id)
+
+
+@app.post(
+    "/signup/", summary="Create new user", response_model=schemas.UserOut
+)
+def create_user(user: schemas.UserAuth, db: Session = Depends(get_db)):
+
+    db_user = crud.get_user_by_email(db, user.email)
+    if db_user:
+        raise HTTPException(
+            status_code=400, detail="Such user already exists"
+        )
+
+    return crud.create_user(db=db, user=user)
+
+
+@app.post("/login/", response_model=schemas.TokenSchema)
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    user = crud.get_user_by_email(db, form_data.username)
+    if user is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Incorrect email or password"
+        )
+
+    hashed_pass = user.hashed_password
+    if not verify_password(form_data.password, hashed_pass):
+        raise HTTPException(
+            status_code=400,
+            detail="Incorrect email or password"
+        )
+
+    return {
+        "access_token": create_access_token(user.email),
+        "refresh_token": create_refresh_token(user.email),
+    }
+
+
+@app.get("/me/", response_model=schemas.UserOut)
+def get_me(user: schemas.UserAuth = Depends(get_current_user)):
+    return user

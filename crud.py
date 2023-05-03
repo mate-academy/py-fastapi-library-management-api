@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 import models
 import schemas
+from utils import get_hashed_password
 
 
 def get_author_list(
@@ -160,7 +161,10 @@ def update_book(db: Session, book: schemas.BookCreate, book_id: int):
     return book_update
 
 
-def partial_update_book(db: Session, book: schemas.BookPartialUpdate, book_id: int):
+def partial_update_book(
+    db: Session,
+    book: schemas.BookPartialUpdate, book_id: int
+):
     book_update = (
         db.query(models.DBBook).
         filter(models.DBBook.id == book_id).first()
@@ -188,3 +192,21 @@ def delete_book(db: Session, book_id: int):
     db.delete(book)
     db.commit()
     return {"message": "Book deleted successfully"}
+
+
+def get_user_by_email(db: Session, email: str):
+    return (
+        db.query(models.DBUser).
+        filter(models.DBUser.email == email).first()
+    )
+
+
+def create_user(db: Session, user: schemas.UserAuth):
+    db_user = models.DBUser(
+        email=user.email, hashed_password=get_hashed_password(user.password)
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+
+    return db_user

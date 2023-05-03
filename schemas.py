@@ -46,3 +46,31 @@ class BookPartialUpdate(BaseModel):
     summary: str = None
     publication_date: date = None
     author_id: int = None
+
+
+class UserAuth(BaseModel):
+    email: str
+    password: str
+
+
+class UserOut(BaseModel):
+    id: int
+    email: str
+    is_active: bool
+
+    class Config:
+        orm_mode = True
+
+
+class TokenSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class TokenPayload(BaseModel):
+    sub: str
+    exp: int
+
+
+class SystemUser(UserOut):
+    pass
