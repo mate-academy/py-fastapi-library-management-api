@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date
 from sqlalchemy.orm import relationship
 
@@ -20,7 +22,10 @@ class Book(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     summary = Column(String, index=True)
-    publication_date = Column(Date)
+    publication_date = Column(String)
     author_id = Column(Integer, ForeignKey("authors.id"))
 
     author = relationship("Author", back_populates="books")
+
+    def set_publication_date(self, date_object):
+        self.publication_date = date_object.isoformat()
