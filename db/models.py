@@ -9,7 +9,7 @@ class Author(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
-    description = Column(String(255), nullable=False)
+    bio = Column(String(255), nullable=False)
 
     books = relationship("Book")
 
