@@ -1,5 +1,13 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Date,
+    ForeignKey,
+    DateTime
+)
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 from database import Base
 
@@ -24,3 +32,12 @@ class DBBook(Base):
     author_id = Column(Integer, ForeignKey("authors.id"))
 
     author = relationship("DBAuthor", back_populates="books")
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    hashed_pass = Column(String)
+    date_created = Column(DateTime, default=datetime.utcnow)

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from datetime import date
+from datetime import date, datetime
 
 
 class BookBase(BaseModel):
@@ -35,3 +35,22 @@ class AuthorCreate(AuthorBase):
 class Author(AuthorBase):
     id: int
     books: list[BookBase] = []
+
+
+class UserBase(BaseModel):
+    email: str
+
+
+class UserCreate(UserBase):
+    password: str
+
+    class Config:
+        orm_mode = True
+
+
+class User(UserBase):
+    id: int
+    date_created: datetime
+
+    class Config:
+        orm_mode = True

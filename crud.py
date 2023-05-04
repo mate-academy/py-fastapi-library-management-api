@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from fastapi import HTTPException, Response, status
 
-import models, schemas
+import models, schemas, utils
 
 
 def get_author(db: Session, author_id: int):
@@ -26,7 +26,10 @@ def get_author_list(
     return queryset.offset(skip).limit(limit).all()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(
+    db: Session,
+    author: schemas.AuthorCreate
+):
     new_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -46,13 +49,13 @@ def get_book(db: Session, book_id: int):
 
 
 def get_book_list(
-        db: Session,
-        skip: int = 0,
-        limit: int = 10,
-        author_id: int | None = None,
-        book_title: str | None = None,
-        sort_field: str | None = None
-    ):
+    db: Session,
+    skip: int = 0,
+    limit: int = 10,
+    author_id: int | None = None,
+    book_title: str | None = None,
+    sort_field: str | None = None
+):
     queryset = db.query(models.DBBook)
     if author_id is not None:
         queryset = queryset.filter(models.DBBook.author_id == author_id)
@@ -139,3 +142,19 @@ def delete_author(author_id: int, db: Session):
     db.delete(db_author)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+def get_user_by_email(email: str, db: Session):
+    return db.query(models.User).filter(models.User.email == email).first()
+
+
+def create_user(db: Session, user: schemas.UserCreate):
+    hashed_password = utils.get_password_hash(user.password)
+    user = models.User(
+        email=user.email,
+        hashed_pass=hashed_password
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
