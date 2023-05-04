@@ -1,7 +1,8 @@
 import os
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from jose import jwt
+from jose import jwt, JWTError
+from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from fastapi import Depends, security, HTTPException, status
 
@@ -86,8 +87,13 @@ def get_current_user(
             JWT_SECRET_KEY,
             algorithms=ALGORITHM
         )
+        if datetime.fromtimestamp(payload["exp"]) < datetime.now():
+            raise HTTPException(
+                status_code = status.HTTP_401_UNAUTHORIZED,
+                detail="Token expired",
+            )
         user = db.query(models.User).get(payload["id"])
-    except:
+    except(JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email of password"

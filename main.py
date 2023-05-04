@@ -175,7 +175,7 @@ def generate_token(
 
     access_token = utils.create_access_token(user=user)
     refresh_token = utils.create_refresh_token(user=user)
-    return {"access_token": access_token, "refresh_token": refresh_token }
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 @app.get("/users/me/", response_model=schemas.User)

@@ -41,11 +41,15 @@ def create_author(
 
 
 def get_author_by_name(db: Session, authorname: str):
-    return db.query(models.DBAuthor).filter(models.DBAuthor.name == authorname).first()
+    return db.query(models.DBAuthor).filter(
+        models.DBAuthor.name == authorname
+        ).first()
 
 
 def get_book(db: Session, book_id: int):
-    return db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
+    return db.query(models.DBBook).filter(
+        models.DBBook.id == book_id
+        ).first()
 
 
 def get_book_list(
