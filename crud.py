@@ -31,6 +31,12 @@ def get_author_by_id(db: Session, author_id: int):
     )
 
 
+def delete_author(db: Session, author_id: int):
+    db.query(models.Author).filter(models.Author.id == author_id).delete()
+    db.commit()
+    return {"message": "Author deleted successfully."}
+
+
 def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.Book(**book.dict())
     db.add(db_book)
@@ -49,3 +55,13 @@ def get_all_books(
         query = query.filter(models.Book.author_id == author_id)
 
     return query.offset(skip).limit(limit).all()
+
+
+def get_book_by_id(db: Session, book_id: int):
+    return db.query(models.Book).filter(models.Book.id == book_id).first()
+
+
+def delete_book(db: Session, book_id: int):
+    db.query(models.Book).filter(models.Book.id == book_id).delete()
+    db.commit()
+    return {"message": "Book deleted successfully."}

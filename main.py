@@ -1,5 +1,3 @@
-from typing import Union
-
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -45,6 +43,17 @@ def read_single_author(author_id: int, db: Session = Depends(get_db)):
     return db_author
 
 
+@app.delete("/authors/{author_id}")
+def delete_author(author_id: int, db: Session = Depends(get_db)):
+    db_author = crud.get_author_by_id(db=db, author_id=author_id)
+
+    if db_author is None:
+        raise HTTPException(status_code=400, detail="Author not found")
+
+    crud.delete_author(db=db, author_id=author_id)
+    return {"message": f"{db_author.name} deleted successfully."}
+
+
 @app.post("/books/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
@@ -53,3 +62,14 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 @app.get("/books/", response_model=list[schemas.Book])
 def read_books(author_id: int | None = None, db: Session = Depends(get_db)):
     return crud.get_all_books(db, author_id=author_id)
+
+
+@app.delete("/books/{book_id}")
+def delete_book(book_id: int, db: Session = Depends(get_db)):
+    db_book = crud.get_book_by_id(db=db, book_id=book_id)
+
+    if db_book is None:
+        raise HTTPException(status_code=400, detail="Book not found")
+
+    crud.delete_book(db=db, book_id=book_id)
+    return {"message": f"{db_book.title} deleted successfully."}
