@@ -16,6 +16,12 @@ class BookUpdate(BookBase):
     pass
 
 
+class BookPartialUpdate(BaseModel):
+    title: str | None
+    summary: str | None
+    publication_date: date | None
+
+
 class Book(BookBase):
     id: int
     author_id: int
@@ -35,6 +41,11 @@ class AuthorCreate(AuthorBase):
 
 class AuthorUpdate(AuthorBase):
     pass
+
+
+class AuthorPartialUpdate(BaseModel):
+    name: str | None
+    bio: str | None
 
 
 class Author(AuthorBase):

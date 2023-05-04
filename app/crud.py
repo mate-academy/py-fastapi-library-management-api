@@ -37,6 +37,19 @@ def update_author(db: Session, author_id: int, author: schemas.AuthorUpdate):
     return db_author
 
 
+def partial_update_author(
+    db: Session, author_id: int, author: schemas.AuthorPartialUpdate
+):
+    db_author = get_author_or_404(author_id=author_id, db=db)
+    db_author.name = author.name if author.name else db_author.name
+    db_author.bio = author.bio if author.bio else db_author.bio
+
+    db.add(db_author)
+    db.commit()
+    db.refresh(db_author)
+    return db_author
+
+
 def delete_author(db: Session, author_id: int):
     db_author = get_author_or_404(db=db, author_id=author_id)
     db.delete(db_author)
@@ -86,6 +99,24 @@ def update_book(db: Session, book: schemas.BookUpdate, book_id: int):
     db_book.title = book.title
     db_book.summary = book.summary
     db_book.publication_date = book.publication_date
+
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+    return db_book
+
+
+def partial_update_book(
+    db: Session, book: schemas.BookPartialUpdate, book_id: int
+):
+    db_book = get_book_or_404(book_id=book_id, db=db)
+    db_book.title = book.title if book.title else db_book.title
+    db_book.summary = book.summary if book.summary else db_book.summary
+    db_book.publication_date = (
+        book.publication_date
+        if book.publication_date
+        else db_book.publication_date
+    )
 
     db.add(db_book)
     db.commit()

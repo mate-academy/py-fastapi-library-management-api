@@ -48,9 +48,13 @@ def update_author(
 
 @app.patch("/authors/{author_id}/", response_model=schemas.Author)
 def partial_update_author(
-    author: schemas.AuthorUpdate, author_id: int, db: Session = Depends(get_db)
+    author: schemas.AuthorPartialUpdate,
+    author_id: int,
+    db: Session = Depends(get_db),
 ):
-    db_author = crud.update_author(author=author, author_id=author_id, db=db)
+    db_author = crud.partial_update_author(
+        author=author, author_id=author_id, db=db
+    )
     return db_author
 
 
@@ -108,9 +112,11 @@ def update_book(
 
 @app.patch("/books/{book_id}/", response_model=schemas.Book)
 def partial_update_book(
-    book_id: int, book: schemas.BookUpdate, db: Session = Depends(get_db)
+    book_id: int,
+    book: schemas.BookPartialUpdate,
+    db: Session = Depends(get_db),
 ):
-    db_book = crud.update_book(book_id=book_id, book=book, db=db)
+    db_book = crud.partial_update_book(book_id=book_id, book=book, db=db)
     return db_book
 
 
