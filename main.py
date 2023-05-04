@@ -23,7 +23,7 @@ def get_authors(
     return crud.get_authors(db, skip=skip, limit=limit)
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def get_author(author_id: int, db: SessionLocal = Depends(get_db)):
     return crud.get_author(db, author_id=author_id)
 
@@ -44,7 +44,7 @@ def get_books(
     return crud.get_books(db, skip=skip, limit=limit)
 
 
-@app.get("/books/{book_id}", response_model=schemas.Book)
+@app.get("/books/{book_id}/", response_model=schemas.Book)
 def get_book(book_id: int, db: SessionLocal = Depends(get_db)):
     return crud.get_book(db, book_id=book_id)
 
