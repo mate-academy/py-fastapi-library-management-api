@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+fastapi-library-management.db
 
 # C extensions
 *.so
