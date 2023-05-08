@@ -24,3 +24,4 @@ class Book(Base):
     publication_date = Column(Date)
     author_id = Column(Integer, ForeignKey("authors.id"))
 
+    author = relationship(Author)
