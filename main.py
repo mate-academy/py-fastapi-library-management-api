@@ -23,8 +23,8 @@ def root() -> dict:
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(db: Session = Depends(get_db)):
-    return crud.get_all_authors(db=db)
+def read_authors(db: Session = Depends(get_db), limit=2):
+    return crud.get_all_authors(db=db, limit=limit)
 
 
 @app.post("/authors/", response_model=schemas.Author)
@@ -74,16 +74,15 @@ def delete_author(
 @app.get("/books/", response_model=list[schemas.Book])
 def read_books(
         author_id: int | None = None,
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        skip=1,
+        limit=5
 ):
     return crud.get_all_books(
-        db=db, author_id=author_id
+        db=db, author_id=author_id, skip=skip, limit=limit
     )
 
 
 @app.post("/books/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
-
-
-#TODO PAGINATION
