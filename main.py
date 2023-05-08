@@ -57,3 +57,15 @@ def update_author(
     if not updated_author:
         raise HTTPException(status_code=404, detail="Author not found")
     return updated_author
+
+
+@app.delete("/authors/{author_id}/", response_model=schemas.Author)
+def delete_author(
+        author_id: int,
+        db: Session = Depends(get_db)
+):
+    deleted_author = crud.delete_author(db, author_id)
+
+    if not deleted_author:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return deleted_author
