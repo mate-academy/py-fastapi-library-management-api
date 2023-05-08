@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -17,9 +19,6 @@ class Author(AuthorBase):
         orm_mode = True
 
 
-class AuthorUpdate(BaseModel):
-    name: str = None
-    bio: str = None
-
-    class Config:
-        orm_mode = True
+class AuthorUpdate(AuthorBase):
+    name: Optional[str]
+    bio: Optional[str]

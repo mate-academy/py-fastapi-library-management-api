@@ -26,6 +26,22 @@ def get_detail_author(db: Session, author_id: int):
     )
 
 
-def update_author(db: Session, author_id: int, **kwargs):
-    author_to_update = db.query(models.Author).filter(models.Author.id == author_id).first()
-    
+def update_author(db: Session, author_id: int, author: schemas.AuthorUpdate):
+    author_to_update = get_detail_author(db, author_id)
+    if not author_to_update:
+        return None
+    for key, value in author.dict().items():
+        setattr(author_to_update, key, value)
+    db.commit()
+    db.refresh(author_to_update)
+    return author_to_update
+
+
+def delete_author(db: Session, author_id: int):
+    author_to_delete = get_detail_author(db, author_id)
+    if not author_to_delete:
+        return None
+    db.delete(author_to_delete)
+    db.commit()
+    return author_to_delete
+
