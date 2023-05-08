@@ -69,3 +69,6 @@ def delete_author(
     if not deleted_author:
         raise HTTPException(status_code=404, detail="Author not found")
     return deleted_author
+
+
+#TODO PAGINATION

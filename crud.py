@@ -45,3 +45,30 @@ def delete_author(db: Session, author_id: int):
     db.commit()
     return author_to_delete
 
+
+def get_all_books(
+        db: Session,
+        author_id: int | None = None
+):
+    queryset = db.query(models.Book)
+
+    if author_id is not None:
+        queryset = queryset.filter(
+            models.Book.author_id == author_id
+        )
+
+    return queryset.all()
+
+
+def create_book(db: Session, book: schemas.BookCreate):
+    db_book = models.Book(
+        title=book.title,
+        summary=book.summary,
+        publication_date=book.publication_date,
+        author_id=book.author_id
+    )
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+    return db_book
+
