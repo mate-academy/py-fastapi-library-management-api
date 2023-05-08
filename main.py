@@ -23,8 +23,8 @@ def root() -> dict:
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(db: Session = Depends(get_db), limit=2):
-    return crud.get_all_authors(db=db, limit=limit)
+def read_authors(db: Session = Depends(get_db), skip=0, limit=2):
+    return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.post("/authors/", response_model=schemas.Author)
