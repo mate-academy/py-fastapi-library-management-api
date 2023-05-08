@@ -4,8 +4,8 @@ import models
 import schemas
 
 
-def get_all_authors(db: Session):
-    return db.query(models.Author).all()
+def get_all_authors(db: Session, skip: int = 0, limit: int = 10):
+    return db.query(models.Author).offset(skip).limit(limit).all()
 
 
 def create_author(db: Session, author: schemas.Author):
@@ -48,7 +48,9 @@ def delete_author(db: Session, author_id: int):
 
 def get_all_books(
         db: Session,
-        author_id: int | None = None
+        author_id: int | None = None,
+        skip: int = 0,
+        limit: int = 10
 ):
     queryset = db.query(models.Book)
 
@@ -57,7 +59,7 @@ def get_all_books(
             models.Book.author_id == author_id
         )
 
-    return queryset.all()
+    return queryset.offset(skip).limit(limit).all()
 
 
 def create_book(db: Session, book: schemas.BookCreate):
