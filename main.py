@@ -71,4 +71,19 @@ def delete_author(
     return deleted_author
 
 
+@app.get("/books/", response_model=list[schemas.Book])
+def read_books(
+        author_id: int | None = None,
+        db: Session = Depends(get_db)
+):
+    return crud.get_all_books(
+        db=db, author_id=author_id
+    )
+
+
+@app.post("/books/", response_model=schemas.Book)
+def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+    return crud.create_book(db=db, book=book)
+
+
 #TODO PAGINATION
