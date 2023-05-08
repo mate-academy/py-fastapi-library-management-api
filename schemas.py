@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -22,3 +23,21 @@ class Author(AuthorBase):
 class AuthorUpdate(AuthorBase):
     name: Optional[str]
     bio: Optional[str]
+
+
+class BookBase(BaseModel):
+    title: str
+    summary: str
+    publication_date: datetime
+
+
+class BookCreate(BookBase):
+    author_id: int
+
+
+class Book(BookBase):
+    id: int
+    author: Author
+
+    class Config:
+        orm_mode = True
