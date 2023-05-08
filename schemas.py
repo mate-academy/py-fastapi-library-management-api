@@ -15,3 +15,11 @@ class Author(AuthorBase):
 
     class Config:
         orm_mode = True
+
+
+class AuthorUpdate(BaseModel):
+    name: str = None
+    bio: str = None
+
+    class Config:
+        orm_mode = True
