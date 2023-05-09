@@ -57,7 +57,3 @@ def read_book_by_author(author_id: int, db: Session = Depends(get_db)):
 @app.post("/books/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
-
-# # alembic revision --autogenerate -m "Initial migration"
-# # alembic upgrade head
-# # uvicorn main:app --reload
