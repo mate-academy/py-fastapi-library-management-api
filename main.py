@@ -91,7 +91,7 @@ def read_authors(
     return authors
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author(author_id: int, db: Session = Depends(get_db)) -> Any:
     """
     Retrieve a single author by ID.
@@ -99,7 +99,7 @@ def read_author(author_id: int, db: Session = Depends(get_db)) -> Any:
     return get_or_404(db, models.Author, author_id)
 
 
-@app.put("/authors/{author_id}", response_model=schemas.Author)
+@app.put("/authors/{author_id}/", response_model=schemas.Author)
 def update_author(
     author_id: int, author: schemas.AuthorUpdate, db: Session = Depends(get_db)
 ) -> models.Author:
@@ -110,7 +110,7 @@ def update_author(
     return crud.update_author(db=db, author=author, author_id=author_id)
 
 
-@app.delete("/authors/{author_id}", response_model=schemas.Author)
+@app.delete("/authors/{author_id}/", response_model=schemas.Author)
 def delete_author(author_id: int, db: Session = Depends(get_db)) -> Any:
     """
     Delete a single author by ID.
@@ -131,7 +131,7 @@ def create_book_for_author(
     return crud.create_book(db=db, book=book, author_id=db_author.id)
 
 
-@app.get("/books/{book_id}", response_model=schemas.Book)
+@app.get("/books/{book_id}/", response_model=schemas.Book)
 def read_book(book_id: int, db: Session = Depends(get_db)) -> Any:
     """
     Retrieve a single book by ID.
@@ -139,7 +139,7 @@ def read_book(book_id: int, db: Session = Depends(get_db)) -> Any:
     return get_or_404(db, models.Book, book_id)
 
 
-@app.put("/books/{book_id}", response_model=schemas.Book)
+@app.put("/books/{book_id}/", response_model=schemas.Book)
 def update_book(
     book_id: int, book: schemas.BookUpdate, db: Session = Depends(get_db)
 ) -> models.Book:
@@ -150,7 +150,7 @@ def update_book(
     return crud.update_book(db=db, book=book, book_id=book_id)
 
 
-@app.delete("/books/{book_id}", response_model=schemas.Book)
+@app.delete("/books/{book_id}/", response_model=schemas.Book)
 def delete_book(book_id: int, db: Session = Depends(get_db)) -> Any:
     """
     Delete a single book by ID.
