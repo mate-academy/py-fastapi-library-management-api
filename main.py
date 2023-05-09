@@ -13,11 +13,6 @@ import crud, schemas, utils
 app = FastAPI()
 
 
-@app.get("/")
-def root():
-    return {"Hello": "World"}
-
-
 @app.get("/authors/", response_model=list[schemas.Author])
 def read_authors(
     skip: int = 0,
@@ -34,7 +29,7 @@ def read_authors(
     )
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author(author_id: int, db: Session = Depends(utils.get_db)):
     author = crud.get_author(db, author_id=author_id)
     if author is None:
@@ -78,7 +73,7 @@ def read_books(
     )
 
 
-@app.get("/books/{book_id}", response_model=schemas.Book)
+@app.get("/books/{book_id}/", response_model=schemas.Book)
 def read_book(book_id: int, db: Session = Depends(utils.get_db)):
     book = crud.get_book(db, book_id=book_id)
     if book is None:
@@ -103,7 +98,7 @@ def create_book(
     return crud.create_book(db=db, book=book)
 
 
-@app.patch("/books/{book_id}", response_model=schemas.Book)
+@app.patch("/books/{book_id}/", response_model=schemas.Book)
 def patch_book(
     book_id: int,
     book: schemas.BookCreate,
@@ -116,7 +111,7 @@ def patch_book(
     )
 
 
-@app.delete("/books/{book_id}")
+@app.delete("/books/{book_id}/")
 def delete_book(book_id: int, db: Session = Depends(utils.get_db)):
     return crud.delete_book(
         book_id=book_id,
@@ -124,7 +119,7 @@ def delete_book(book_id: int, db: Session = Depends(utils.get_db)):
     )
 
 
-@app.patch("/authors/{author_id}", response_model=schemas.Author)
+@app.patch("/authors/{author_id}/", response_model=schemas.Author)
 def patch_author(
     author_id: int,
     author: schemas.AuthorCreate,
@@ -137,7 +132,7 @@ def patch_author(
     )
 
 
-@app.delete("/authors/{author_id}")
+@app.delete("/authors/{author_id}/")
 def delete_author(author_id: int, db: Session = Depends(utils.get_db)):
     return crud.delete_author(
         author_id=author_id,
