@@ -12,7 +12,6 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-# Dependency to get database session
 def get_db():
     db = SessionLocal()
     try:
@@ -21,10 +20,9 @@ def get_db():
         db.close()
 
 
-# Author API endpoints
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
-    db_author = crud.get_author_by_name(db, name=author.name)
+    db_author = db.query(models.Author).filter(models.Author.name == author.name).first()
     if db_author:
         raise HTTPException(status_code=400, detail="Author with this name already exists")
     return crud.create_author(db=db, author=author)
