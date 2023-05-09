@@ -17,12 +17,12 @@ def get_db() -> Session:
 
 
 @app.get("/authors/", response_model=list[Author])
-def get_authors(db: Session = Depends(get_db)):
+def get_authors(db: Session = Depends(get_db)) -> list[Author]:
     return crud.get_all_authors(db=db)
 
 
-@app.get("/authors/{author_id}", response_model=Author)
-def get_author_by_id(author_id: int, db: Session = Depends(get_db)):
+@app.get("/authors/{author_id}/", response_model=Author)
+def get_author_by_id(author_id: int, db: Session = Depends(get_db)) -> Author:
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -31,7 +31,7 @@ def get_author_by_id(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/authors/", response_model=Author)
-def create_author(author: AuthorCreate, db: Session = Depends(get_db)):
+def create_author(author: AuthorCreate, db: Session = Depends(get_db)) -> Author:
     db_author = crud.get_author_by_name(db=db, name=author.name)
     if db_author:
         raise HTTPException(status_code=400, detail="Author already registered")
@@ -40,12 +40,12 @@ def create_author(author: AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[Book])
-def get_books(db: Session = Depends(get_db)):
+def get_books(db: Session = Depends(get_db)) -> list[Book]:
     return crud.get_all_books(db=db)
 
 
-@app.get("/authors/{author_id}/books", response_model=list[Book])
-def get_books_by_author_id(author_id: int, db: Session = Depends(get_db)):
+@app.get("/authors/{author_id}/books/", response_model=list[Book])
+def get_books_by_author_id(author_id: int, db: Session = Depends(get_db)) -> list[Book]:
     db_author = crud.get_author_by_id(db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -54,15 +54,18 @@ def get_books_by_author_id(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/books/", response_model=Book)
-def create_book(book: BookCreate, db: Session = Depends(get_db)):
+def create_book(book: BookCreate, db: Session = Depends(get_db)) -> Book:
     return crud.create_book(db=db, book=book)
 
 
-@app.post("/authors/{author_id}/books", response_model=Book)
-def create_book_for_author(author_id: int, book: BookCreateForAuthor, db: Session = Depends(get_db)):
+@app.post("/authors/{author_id}/books/", response_model=Book)
+def create_book_for_author(
+        author_id: int,
+        book: BookCreateForAuthor,
+        db: Session = Depends(get_db)
+) -> Book:
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
 
     return crud.create_book_for_author(db=db, author_id=author_id, book=book)
-
