@@ -1,24 +1,24 @@
+from typing import List, Optional
+
 from sqlalchemy.orm import Session
 
 from db import models
 import schemas
 
 
-def get_all_authors(db: Session, skip: int = 0, limit: int = 5):
+def get_all_authors(db: Session, skip: int = 0, limit: int = 5) -> List[models.DBAuthor]:
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
-def get_author_by_name(db: Session, name: str):
-    return (
-        db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
-    )
+def get_author_by_name(db: Session, name: str) -> Optional[models.DBAuthor]:
+    return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
 
 
-def get_author(db: Session, author_id: int):
+def get_author(db: Session, author_id: int) -> Optional[models.DBAuthor]:
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -29,7 +29,7 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def update_author(db: Session, author_id: int, author: schemas.Author):
+def update_author(db: Session, author_id: int, author: schemas.Author) -> Optional[models.DBAuthor]:
     db_author = db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
     if not db_author:
         return None
@@ -41,7 +41,7 @@ def update_author(db: Session, author_id: int, author: schemas.Author):
     return db_author
 
 
-def delete_author(db: Session, author_id: int):
+def delete_author(db: Session, author_id: int) -> Optional[models.DBAuthor]:
     db_author = db.query(models.DBAuthor).filter(
         models.DBAuthor.id == author_id
     ).first()
@@ -54,10 +54,10 @@ def delete_author(db: Session, author_id: int):
 
 def get_book_list(
         db: Session,
-        author: str | None = None,
+        author: Optional[str] = None,
         skip: int = 0,
         limit: int = 5,
-):
+) -> List[models.DBBook]:
     queryset = db.query(models.DBBook).offset(skip).limit(limit)
 
     if author is not None:
@@ -66,11 +66,11 @@ def get_book_list(
     return queryset.all()
 
 
-def get_book(db: Session, book_id: int):
+def get_book(db: Session, book_id: int) -> Optional[models.DBBook]:
     return db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -83,7 +83,7 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def update_book(db: Session, book_id: int, book: schemas.BookBase):
+def update_book(db: Session, book_id: int, book: schemas.BookBase) -> Optional[models.DBBook]:
     db_book = db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
     if not db_book:
         return None
@@ -95,7 +95,7 @@ def update_book(db: Session, book_id: int, book: schemas.BookBase):
     return db_book
 
 
-def delete_book(db: Session, book_id: int):
+def delete_book(db: Session, book_id: int) -> Optional[models.DBBook]:
     db_book = db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
     if not db_book:
         return None
