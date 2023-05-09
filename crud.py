@@ -1,15 +1,20 @@
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 import models
 import schemas
 
 
-def get_all_authors(db: Session):
+def get_all_authors(
+        db: Session
+):
     return db.query(models.DBAuthor).all()
 
 
-def retrieve_author(db: Session, author_id: int):
+def retrieve_author(
+        db: Session,
+        author_id: int
+) -> models.DBAuthor:
     author = (
         db.query(models.DBAuthor).
         filter(models.DBAuthor.id == author_id).first()
@@ -19,7 +24,7 @@ def retrieve_author(db: Session, author_id: int):
     return author
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -30,7 +35,10 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_all_books(db: Session, author_id: int = None):
+def get_all_books(
+        db: Session,
+        author_id: int = None
+) -> Query["models.DBBook"]:
     queryset = db.query(models.DBBook)
 
     if author_id:
@@ -39,7 +47,11 @@ def get_all_books(db: Session, author_id: int = None):
     return queryset.all()
 
 
-def create_book(db: Session, book: schemas.BookCreate, author_id=None):
+def create_book(
+        db: Session,
+        book: schemas.BookCreate,
+        author_id=None
+) -> models.DBBook:
     if author_id is None and book.author_id is None:
         raise ValueError("Author ID is required")
 
@@ -56,7 +68,7 @@ def create_book(db: Session, book: schemas.BookCreate, author_id=None):
     return db_book
 
 
-def retrieve_book(db: Session, book_id: int):
+def retrieve_book(db: Session, book_id: int) -> models.DBBook:
     book = db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
