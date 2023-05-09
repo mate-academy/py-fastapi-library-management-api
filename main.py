@@ -30,7 +30,7 @@ async def read_authors(db: Session = Depends(get_db)):
 
 
 @app.get(
-    "/authors/{author_id}",
+    "/authors/{author_id}/",
     response_model=schemas.AuthorWithBooks
 )
 async def read_author(
