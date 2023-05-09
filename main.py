@@ -16,18 +16,13 @@ def get_db():
         db.close()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 @app.get("/authors/", response_model=list[schemas.Author])
 def get_authors(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     authors = crud.get_all_authors(db=db)
     return authors[skip: skip + limit]
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def get_author(author_id: int, db: Session = Depends(get_db)):
     author = crud.get_author(db=db, author_id=author_id)
     if author is None:
@@ -40,7 +35,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/books", response_model=list[schemas.Book])
+@app.get("/books/", response_model=list[schemas.Book])
 def get_all_books(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     books = crud.get_all_books(db=db)
     return books[skip: skip + limit]
