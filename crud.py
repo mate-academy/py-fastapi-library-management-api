@@ -6,15 +6,15 @@ from db import models
 import schemas
 
 
-def get_all_books(db: Session):
+def get_all_books(db: Session) -> List[models.DBBook]:
     return db.query(models.DBBook).all()
 
 
-def get_book_by_title(db: Session, title: str):
+def get_book_by_title(db: Session, title: str) -> Optional[models.DBBook]:
     return db.query(models.DBBook).filter(models.DBBook.title == title).first()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -48,7 +48,7 @@ def get_all_authors(
     return authors
 
 
-def get_author_by_name(db: Session, name: str):
+def get_author_by_name(db: Session, name: str) -> Optional[models.DBAuthor]:
     return (
         db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
     )
