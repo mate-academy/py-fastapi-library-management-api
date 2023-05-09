@@ -19,13 +19,13 @@ def get_db() -> Session:
 @app.get("/authors/", response_model=list[Author])
 def read_authors(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
-):
+) -> list[Author]:
     authors = crud.get_all_authors(db, skip=skip, limit=limit)
     return authors
 
 
-@app.get("/authors/{id}", response_model=Author)
-def read_author_by_id(id: int, db: Session = Depends(get_db)):
+@app.get("/authors/{id}/", response_model=Author)
+def read_author_by_id(id: int, db: Session = Depends(get_db)) -> Author:
     db_author = crud.get_author_by_id(db=db, id=id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -33,7 +33,9 @@ def read_author_by_id(id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/authors/", response_model=Author)
-def create_authors(author: AuthorCreate, db: Session = Depends(get_db)):
+def create_authors(
+    author: AuthorCreate, db: Session = Depends(get_db)
+) -> Response:
     db_author = crud.get_author_by_name(db=db, name=author.name)
     if db_author:
         raise HTTPException(status_code=400, detail="Author already exists")
@@ -42,13 +44,15 @@ def create_authors(author: AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[Book])
-def read_books(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_books(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+) -> list[Book]:
     books = crud.get_all_books(db, skip=skip, limit=limit)
     return books
 
 
-@app.get("/books/{id}", response_model=Book)
-def read_book_by_id(id: int, db: Session = Depends(get_db)):
+@app.get("/books/{id}/", response_model=Book)
+def read_book_by_id(id: int, db: Session = Depends(get_db)) -> Book:
     db_book = crud.get_book_by_id(db=db, id=id)
     if db_book is None:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -56,7 +60,9 @@ def read_book_by_id(id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/authors/{author_id}/books/", response_model=list[Book])
-def read_books_by_author_id(author_id: int, db: Session = Depends(get_db)):
+def read_books_by_author_id(
+    author_id: int, db: Session = Depends(get_db)
+) -> list[Book]:
     db_author = crud.get_author_by_id(db=db, id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -64,7 +70,9 @@ def read_books_by_author_id(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/books/", response_model=Book)
-def create_book(book: BookCreate, db: SessionLocal = Depends(get_db)):
+def create_book(
+    book: BookCreate, db: SessionLocal = Depends(get_db)
+) -> Response:
     crud.create_book(db=db, book=book)
     return Response(
         status_code=200,
@@ -83,7 +91,7 @@ def read_books_by_author_name(author_name: str, db: Session = Depends(get_db)):
 @app.post("/authors/{author_id}/books/", response_model=Book)
 def create_book_for_author(
     author_id: int, book: BookCreate, db: Session = Depends(get_db)
-):
+) -> Response:
     db_author = crud.get_author_by_id(db=db, id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -94,8 +102,8 @@ def create_book_for_author(
     )
 
 
-@app.delete("/books/{id}")
-def delete_book(id: int, db: Session = Depends(get_db)):
+@app.delete("/books/{id}/")
+def delete_book(id: int, db: Session = Depends(get_db)) -> Response:
     db_book = crud.get_book_by_id(db=db, id=id)
     if db_book is None:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -103,8 +111,8 @@ def delete_book(id: int, db: Session = Depends(get_db)):
     return Response(status_code=204, content="Book deleted")
 
 
-@app.delete("/authors/{author_id}")
-def delete_author(author_id: int, db: Session = Depends(get_db)):
+@app.delete("/authors/{author_id}/")
+def delete_author(author_id: int, db: Session = Depends(get_db)) -> Response:
     db_author = crud.get_author_by_id(db=db, id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")

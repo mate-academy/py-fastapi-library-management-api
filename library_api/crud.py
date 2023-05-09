@@ -1,22 +1,25 @@
+from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from library_api.db.models import DBAuthor, DBBook
 from library_api.schemas import AuthorCreate, BookCreate
 
 
-def get_all_authors(db: Session, skip: int = 0, limit: int = 50):
+def get_all_authors(
+    db: Session, skip: int = 0, limit: int = 50
+) -> List[DBAuthor]:
     return db.query(DBAuthor).offset(skip).limit(limit).all()
 
 
-def get_author_by_name(db: Session, name: str):
+def get_author_by_name(db: Session, name: str) -> Optional[DBAuthor]:
     return db.query(DBAuthor).filter(DBAuthor.name == name).first()
 
 
-def get_author_by_id(db: Session, id: int):
+def get_author_by_id(db: Session, id: int) -> Optional[DBAuthor]:
     return db.query(DBAuthor).filter(DBAuthor.id == id).first()
 
 
-def create_author(db: Session, author: AuthorCreate):
+def create_author(db: Session, author: AuthorCreate) -> DBAuthor:
     db_author = DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -28,7 +31,7 @@ def create_author(db: Session, author: AuthorCreate):
     return db_author
 
 
-def create_book(db: Session, book: BookCreate):
+def create_book(db: Session, book: BookCreate) -> DBBook:
     db_book = DBBook(
         title=book.title,
         summary=book.summary,
@@ -41,24 +44,24 @@ def create_book(db: Session, book: BookCreate):
     return db_book
 
 
-def get_all_books(db: Session, skip: int = 0, limit: int = 50):
+def get_all_books(db: Session, skip: int = 0, limit: int = 50) -> List[DBBook]:
     return db.query(DBBook).offset(skip).limit(limit).all()
 
 
-def get_book_by_id(db: Session, id: int):
+def get_book_by_id(db: Session, id: int) -> Optional[DBBook]:
     return db.query(DBBook).filter(DBBook.id == id).first()
 
 
-def get_books_by_author_id(db: Session, author_id: int):
+def get_books_by_author_id(db: Session, author_id: int) -> List[DBBook]:
     return db.query(DBBook).filter(DBBook.author_id == author_id).all()
 
 
-def delete_book(db: Session, id: int):
+def delete_book(db: Session, id: int) -> None:
     db.query(DBBook).filter(DBBook.id == id).delete()
     db.commit()
 
 
-def delete_author(db: Session, author_id: int):
+def delete_author(db: Session, author_id: int) -> bool:
     db.query(DBAuthor).filter(DBAuthor.id == author_id).delete()
     db.commit()
     return True
