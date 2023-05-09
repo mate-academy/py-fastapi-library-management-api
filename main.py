@@ -20,29 +20,6 @@ def get_db() -> Session:
         db.close()
 
 
-def get_author(db: Session, author_id: int) -> schemas.Author:
-    author = crud.get_author_by_id(db=db, author_id=author_id)
-
-    if not author:
-        raise HTTPException(status_code=404, detail="Author not found")
-
-    return author
-
-
-def get_book(db: Session, book_id: int) -> schemas.Book:
-    book = crud.get_book_by_id(db=db, book_id=book_id)
-
-    if not book:
-        raise HTTPException(status_code=404, detail="Book not found")
-
-    return book
-
-
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
-
-
 @app.get("/authors/", response_model=list[schemas.Author])
 def read_authors(
     db: Session = Depends(get_db),
@@ -68,7 +45,10 @@ def read_authors(
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
 def get_one_author(author_id: int, db: Session = Depends(get_db)):
-    author = get_author(db=db, author_id=author_id)
+    author = crud.get_author_by_id(db=db, author_id=author_id)
+
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
 
     return author
 
@@ -96,7 +76,9 @@ def update_author(
     user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    get_author(db=db, author_id=author_id)
+
+    if not crud.get_author_by_id(db=db, author_id=author_id):
+        raise HTTPException(status_code=404, detail="Author not found")
 
     return crud.update_author(db=db, author=author, author_id=author_id)
 
@@ -108,7 +90,8 @@ def partial_update_author(
     user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    get_author(db=db, author_id=author_id)
+    if not crud.get_author_by_id(db=db, author_id=author_id):
+        raise HTTPException(status_code=404, detail="Author not found")
 
     return crud.partial_update_author(
         db=db, author=author, author_id=author_id
@@ -121,7 +104,8 @@ def delete_author(
     user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    get_author(db=db, author_id=author_id)
+    if not crud.get_author_by_id(db=db, author_id=author_id):
+        raise HTTPException(status_code=404, detail="Author not found")
 
     return crud.delete_author(db=db, author_id=author_id)
 
@@ -157,7 +141,8 @@ def create_book(
     user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    get_author(db=db, author_id=book.author_id)
+    if not crud.get_author_by_id(db=db, author_id=book.author_id):
+        raise HTTPException(status_code=404, detail="Author not found")
 
     return crud.create_book(db=db, book=book)
 
@@ -169,9 +154,11 @@ def update_book(
     user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    get_author(db=db, author_id=book.author_id)
+    if not crud.get_author_by_id(db=db, author_id=book.author_id):
+        raise HTTPException(status_code=404, detail="Author not found")
 
-    get_book(db=db, book_id=book_id)
+    if not crud.get_book_by_id(db=db, book_id=book_id):
+        raise HTTPException(status_code=404, detail="Book not found")
 
     return crud.update_book(db=db, book=book, book_id=book_id)
 
@@ -183,10 +170,13 @@ def partial_update_book(
     user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    if book.author_id:
-        get_author(db=db, author_id=book.author_id)
+    if book.author_id and not crud.get_author_by_id(
+        db=db, author_id=book.author_id
+    ):
+        raise HTTPException(status_code=404, detail="Author not found")
 
-    get_book(db=db, book_id=book_id)
+    if not crud.get_book_by_id(db=db, book_id=book_id):
+        raise HTTPException(status_code=404, detail="Book not found")
 
     return crud.partial_update_book(db=db, book=book, book_id=book_id)
 
@@ -197,7 +187,8 @@ def delete_book(
     user: schemas.UserAuth = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    get_book(db=db, book_id=book_id)
+    if not crud.get_book_by_id(db=db, book_id=book_id):
+        raise HTTPException(status_code=404, detail="Book not found")
 
     return crud.delete_book(db=db, book_id=book_id)
 

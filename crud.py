@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 import models
 import schemas
@@ -10,7 +10,7 @@ def get_author_list(
     search_name: str = None,
     sorting_column: str = None,
     ascending: bool = True
-):
+) -> Query:
     queryset = db.query(models.DBAuthor)
     if search_name:
         queryset = queryset.filter(
@@ -27,21 +27,23 @@ def get_author_list(
     return queryset.all()
 
 
-def get_author_by_name(db: Session, name: str):
+def get_author_by_name(db: Session, name: str) -> models.DBAuthor:
     return (
         db.query(models.DBAuthor).
         filter(models.DBAuthor.name == name).first()
     )
 
 
-def get_author_by_id(db: Session, author_id: int):
+def get_author_by_id(db: Session, author_id: int) -> models.DBAuthor:
     return (
         db.query(models.DBAuthor).
         filter(models.DBAuthor.id == author_id).first()
     )
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(
+    db: Session, author: schemas.AuthorCreate
+) -> models.DBAuthor:
     db_author = models.DBAuthor(name=author.name, bio=author.bio)
     db.add(db_author)
     db.commit()
@@ -50,7 +52,9 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def update_author(db: Session, author: schemas.AuthorCreate, author_id: int):
+def update_author(
+    db: Session, author: schemas.AuthorCreate, author_id: int
+) -> models.DBAuthor:
     author_update = (
         db.query(models.DBAuthor).
         filter(models.DBAuthor.id == author_id).first()
@@ -66,7 +70,7 @@ def update_author(db: Session, author: schemas.AuthorCreate, author_id: int):
 
 def partial_update_author(
     db: Session, author: schemas.AuthorPartialUpdate, author_id: int
-):
+) -> models.DBAuthor:
     author_update = (
         db.query(models.DBAuthor).
         filter(models.DBAuthor.id == author_id).first()
@@ -82,7 +86,7 @@ def partial_update_author(
     return author_update
 
 
-def delete_author(db: Session, author_id: int):
+def delete_author(db: Session, author_id: int) -> dict:
     author = (
         db.query(models.DBAuthor).
         filter(models.DBAuthor.id == author_id).first()
@@ -104,7 +108,7 @@ def get_book_list(
     book_title: str = None,
     sorting_column: str = None,
     ascending: bool = True
-):
+) -> Query:
     queryset = db.query(models.DBBook)
     if author_id:
         queryset = queryset.filter(models.DBBook.author_id == author_id)
@@ -124,7 +128,7 @@ def get_book_list(
     return queryset.all()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -138,14 +142,16 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def get_book_by_id(db: Session, book_id: int):
+def get_book_by_id(db: Session, book_id: int) -> models.DBBook:
     return (
         db.query(models.DBBook).
         filter(models.DBBook.id == book_id).first()
     )
 
 
-def update_book(db: Session, book: schemas.BookCreate, book_id: int):
+def update_book(
+    db: Session, book: schemas.BookCreate, book_id: int
+) -> models.DBBook:
     book_update = (
         db.query(models.DBBook).
         filter(models.DBBook.id == book_id).first()
@@ -164,7 +170,7 @@ def update_book(db: Session, book: schemas.BookCreate, book_id: int):
 def partial_update_book(
     db: Session,
     book: schemas.BookPartialUpdate, book_id: int
-):
+) -> models.DBBook:
     book_update = (
         db.query(models.DBBook).
         filter(models.DBBook.id == book_id).first()
@@ -184,7 +190,7 @@ def partial_update_book(
     return book_update
 
 
-def delete_book(db: Session, book_id: int):
+def delete_book(db: Session, book_id: int) -> dict:
     book = (
         db.query(models.DBBook).
         filter(models.DBBook.id == book_id).first()
@@ -194,14 +200,14 @@ def delete_book(db: Session, book_id: int):
     return {"message": "Book deleted successfully"}
 
 
-def get_user_by_email(db: Session, email: str):
+def get_user_by_email(db: Session, email: str) -> models.DBUser:
     return (
         db.query(models.DBUser).
         filter(models.DBUser.email == email).first()
     )
 
 
-def create_user(db: Session, user: schemas.UserAuth):
+def create_user(db: Session, user: schemas.UserAuth) -> models.DBUser:
     db_user = models.DBUser(
         email=user.email, hashed_password=get_hashed_password(user.password)
     )
