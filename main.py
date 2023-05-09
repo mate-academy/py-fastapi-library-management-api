@@ -33,7 +33,7 @@ def read_authors(limit: int = 50, db: Session = Depends(get_db)):
     return authors
 
 
-@app.get("/authors/{author_id}", response_model=schemas.AuthorMain)
+@app.get("/authors/{author_id}/", response_model=schemas.AuthorMain)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     author = crud.get_author_by_id(db=db, author_id=author_id)
     if not author:
