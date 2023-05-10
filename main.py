@@ -16,12 +16,6 @@ def get_db() -> SessionLocal:
     finally:
         db.close()
 
-
-@app.get("/")
-def root():
-    return {"message": "Hallo world"}
-
-
 @app.get("/books/", response_model=list[schemas.Book])
 def books_list(
         skip: int = 0, limit: int = 100,
