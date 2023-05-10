@@ -34,8 +34,10 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 
 def get_book_list(
     db: Session,
+    skip: int = 0,
+    limit: int = 50,
     title: str | None = None,
-    summary: str | None = None,
+    summary: str | None = None
 ):
     queryset = db.query(models.DBBook)
 
@@ -49,7 +51,7 @@ def get_book_list(
             models.DBBook.summary.like(f"%{summary}%")
         )
 
-    return queryset.all()
+    return queryset.offset(skip).limit(limit).all()
 
 
 def get_book(db: Session, book_id: int):

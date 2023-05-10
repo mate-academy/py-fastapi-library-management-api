@@ -1,8 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
 
-from typing import List
-from pydantic import BaseModel
-
 from fastapi_pagination import Page, add_pagination, LimitOffsetPage
 from fastapi_pagination.ext.sqlalchemy import paginate
 
@@ -14,8 +11,8 @@ import crud
 from db.engine import SessionLocal
 import db.models as models
 
-app = FastAPI()
 
+app = FastAPI()
 
 def get_db() -> Session:
     db = SessionLocal()
@@ -62,30 +59,18 @@ def create_author(
     return crud.create_author(db=db, author=author)
 
 
-class BookListResponse(BaseModel):
-    items: List[schemas.Book]
-    total: int
-    limit: int
-    offset: int
-
-
-@app.get("/book/", response_model=BookListResponse)
-def read_book(
-    title: str | None = None,
-    summary: str | None = None,
-    skip: int = 0,
-    limit: int = 10,
-    db: Session = Depends(get_db),
+@app.get("/book/", response_model=list[schemas.Book])
+def read_books(
+        skip: int = 0,
+        limit: int = 50,
+        title: str | None = None,
+        summary: str | None = None,
+        db: Session = Depends(get_db)
 ):
-    items = crud.get_book_list(
-        db=db, title=title, summary=summary
-    )
-    total = len(items)
-    items = items[skip: skip + limit]
-    return BookListResponse(items=items, total=total, limit=limit, offset=skip)
+    return crud.get_book_list(db=db, skip=skip, limit=limit, title=title, summary=summary)
 
 
-@app.get("/book/{book_id}", response_model=schemas.Book)
+@app.get("/book/{book_id}/", response_model=schemas.Book)
 def read_single_book(
     book_id: int,
     db: Session = Depends(get_db),
@@ -112,6 +97,5 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
         )
 
     return crud.create_book(db=db, book=book)
-
 
 add_pagination(app)
