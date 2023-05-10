@@ -27,21 +27,21 @@ def get_all_author(
     return queryset.all()
 
 
-def get_author(db: Session, author_id: int) -> models.Author:
+def get_author(db: Session, author_id: int) -> models.Author | None:
     return (
         db.query(models.Author).filter(models.Author.id == author_id).first()
     )
 
 
-def get_author_by_name(db: Session, name: str) -> models.Author:
+def get_author_by_name(db: Session, name: str) -> models.Author | None:
     return db.query(models.Author).filter(models.Author.name == name).first()
 
 
 def update_author(
     db: Session, db_author: models.Author, author: schemas.AuthorUpdate
 ) -> models.Author:
-    for key, value in author.dict(exclude_unset=True).items():
-        setattr(db_author, key, value)
+    for field, value in author.dict(exclude_unset=True).items():
+        setattr(db_author, field, value)
     db.add(db_author)
     db.commit()
     db.refresh(db_author)
@@ -75,7 +75,7 @@ def get_books_list(
     return queryset.all()
 
 
-def get_book_by_title(db: Session, title: str) -> models.Book:
+def get_book_by_title(db: Session, title: str) -> models.Book | None:
     return db.query(models.Book).filter(models.Book.title == title).first()
 
 
@@ -92,15 +92,15 @@ def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
     return db_book
 
 
-def get_book(db: Session, book_id: int) -> models.Book:
+def get_book(db: Session, book_id: int) -> models.Book | None:
     return db.query(models.Book).filter(models.Book.id == book_id).first()
 
 
 def update_book(
     db: Session, db_book: models.Book, book: schemas.BookUpdate
 ) -> models.Book:
-    for key, value in book.dict(exclude_unset=True).items():
-        setattr(db_book, key, value)
+    for field, value in book.dict(exclude_unset=True).items():
+        setattr(db_book, field, value)
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
