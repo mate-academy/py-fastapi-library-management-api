@@ -4,17 +4,21 @@ import models
 import schemas
 
 
-def get_authors(db: Session, skip: int = 0, limit: int = 50):
+def get_authors(
+        db: Session,
+        skip: int = 0,
+        limit: int = 50
+)->list[models.Author]:
     return db.query(models.Author).offset(skip).limit(limit).all()
 
 
-def get_author(db: Session, author_id: int):
+def get_author(db: Session, author_id: int) -> models.Author:
     return (
         db.query(models.Author).filter(models.Author.id == author_id).first()
     )
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     author = models.Author(
         name=author.name,
         bio=author.bio,
@@ -31,7 +35,7 @@ def get_books(
         skip: int = 0,
         limit: int = 50,
         author_id: int | None = None
-):
+) -> list[models.Book]:
     queryset = db.query(models.Book)
 
     if author_id is not None:
@@ -40,7 +44,7 @@ def get_books(
     return queryset.offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
     book = models.Book(
         title=book.title,
         summary=book.summary,
