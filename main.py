@@ -6,6 +6,8 @@ import models
 import schemas
 from database import SessionLocal
 
+PAGE_SIZE = 10
+
 app = FastAPI()
 
 
@@ -16,19 +18,6 @@ def get_db() -> Session:
         yield db
     finally:
         db.close()
-
-
-def paginate(objects: list[any], skip: int, limit: int) -> list[any] | str:
-    amount_of_objects = len(objects)
-    if not 0 <= skip < amount_of_objects:
-        return (
-            "Skip should be greater or equal 0 and less then "
-            f"{amount_of_objects}"
-        )
-
-    if limit < 1:
-        return "Limit should be greater or equal 1"
-    return objects[skip : skip + limit]
 
 
 @app.post("/library/authors/", response_model=schemas.Author)
@@ -44,14 +33,10 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 @app.get("/library/authors/", response_model=list[schemas.Author])
 def read_authors(
     skip: int = 0,
-    limit: int = 10,
+    limit: int = PAGE_SIZE,
     db: Session = Depends(get_db),
 ):
-    authors = crud.get_all_author(db=db)
-    page = paginate(authors, skip=skip, limit=limit)
-    if isinstance(page, str):
-        raise HTTPException(status_code=400, detail=page)
-    return page
+    return crud.get_all_author(db=db, skip=skip, limit=limit)
 
 
 @app.get("/library/authors/{author_id}/", response_model=schemas.Author)
@@ -98,14 +83,12 @@ def create_books(
 def read_books(
     author_ids: str | None = None,
     skip: int = 0,
-    limit: int = 10,
+    limit: int = PAGE_SIZE,
     db: Session = Depends(get_db),
 ) -> list[models.Book]:
-    books = crud.get_books_list(db=db, author_ids=author_ids)
-    page = paginate(books, skip=skip, limit=limit)
-    if isinstance(page, str):
-        raise HTTPException(status_code=400, detail=page)
-    return page
+    return crud.get_books_list(
+        db=db, author_ids=author_ids, skip=skip, limit=limit
+    )
 
 
 @app.get("/library/books/{books_id}/", response_model=schemas.Book)

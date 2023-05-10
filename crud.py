@@ -16,8 +16,15 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     return db_author
 
 
-def get_all_author(db: Session) -> list[models.Author]:
-    return db.query(models.Author).all()
+def get_all_author(
+    db: Session, skip: int = 0, limit: int | None = None
+) -> list[models.Author]:
+    queryset = db.query(models.Author)
+    if limit:
+        queryset = queryset.limit(limit)
+    if skip:
+        queryset = queryset.offset(skip * limit)
+    return queryset.all()
 
 
 def get_author(db: Session, author_id: int) -> models.Author:
@@ -50,13 +57,21 @@ def delete_author(db: Session, author_id: int) -> int:
 
 
 def get_books_list(
-    db: Session, author_ids: str | None = None
+    db: Session,
+    author_ids: str | None = None,
+    skip: int = 0,
+    limit: int | None = None,
 ) -> list[models.Book]:
     queryset = db.query(models.Book)
 
     if author_ids:
         author_ids = str_to_int(author_ids)
         queryset = queryset.filter(models.Book.author.id.in_(author_ids))
+
+    if limit:
+        queryset = queryset.limit(limit)
+    if skip:
+        queryset = queryset.offset(skip * limit)
     return queryset.all()
 
 
