@@ -25,7 +25,7 @@ def get_author_list(
         author_name: str = None,
         limit: int = None,
         db: Session = Depends(get_db)
-):
+) -> Page[schemas.Author]:
     authors = paginate(
         crud.get_author_list(
             db=db,
@@ -42,7 +42,7 @@ def get_author_list(
 def get_author_by_id(
         author_id: int = None,
         db: Session = Depends(get_db)
-):
+) -> schemas.Author:
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
 
     if db_author is None:
@@ -58,7 +58,7 @@ def get_author_by_id(
 def create_author(
         author: schemas.AuthorCreate,
         db: Session = Depends(get_db)
-):
+) -> schemas.AuthorBase:
     db_author = crud.get_author_by_name(db=db, name=author.name)
     if db_author is not None:
         raise HTTPException(
@@ -76,7 +76,7 @@ def get_book_list(
         book_title: str = None,
         limit: int = None,
         db: Session = Depends(get_db)
-):
+) -> Page[schemas.Book]:
     books = paginate(crud.get_book_list(
         db=db,
         author_id=author_id,
@@ -89,7 +89,10 @@ def get_book_list(
 
 
 @app.post("/books/", response_model=schemas.BookBase)
-def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+def create_book(
+        book: schemas.BookCreate,
+        db: Session = Depends(get_db)
+) -> schemas.BookBase:
     db_book = crud.get_book_by_title(db=db, book_title=book.title)
 
     if db_book is not None:

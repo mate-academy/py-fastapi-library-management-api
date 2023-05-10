@@ -31,13 +31,16 @@ def get_author_by_id(db: Session, author_id: int):
     ).first()
 
 
-def get_author_by_name(db: Session, name: str):
+def get_author_by_name(db: Session, name: str) -> models.DBAuthor:
     return db.query(models.DBAuthor).filter(
         models.DBAuthor.name == name
     ).first()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(
+        db: Session,
+        author: schemas.AuthorCreate
+) -> models.DBAuthor:
     db_author = models.DBAuthor(**author.dict())
 
     db.add(db_author)
@@ -53,7 +56,7 @@ def get_book_list(
         author_name: str,
         book_title: str,
         limit: int
-):
+) -> list[models.DBBook]:
     queryset = db.query(
         models.DBBook
     ).options(joinedload(models.DBBook.author))
@@ -80,13 +83,13 @@ def get_book_list(
 def get_book_by_title(
         db: Session,
         book_title: str,
-):
+) -> models.DBBook:
     return db.query(models.DBBook).filter(
         models.DBBook.title == book_title
     ).first()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
     db_book = models.DBBook(**book.dict())
 
     db.add(db_book)
