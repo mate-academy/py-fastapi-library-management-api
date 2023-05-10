@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 import schemas
 from db import models
@@ -15,7 +15,7 @@ def get_all_books(
         author_id: int | None = None,
         title: str | None = None,
         sort_by: str | None = None
-):
+) -> Query:
     query = db.query(models.DBBook)
     if author_id is not None:
         query = query.filter(models.DBBook.author_id == author_id)
