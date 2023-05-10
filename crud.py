@@ -8,7 +8,7 @@ from schemas import (AuthorCreate,
 def create_author(
         db: Session,
         author: AuthorCreate
-):
+) -> Author:
     db_author = Author(
         name=author.name,
         bio=author.bio
@@ -23,7 +23,7 @@ def update_author(
         db: Session,
         author: AuthorUpdate,
         author_id: int
-):
+) -> Author:
     db_author = db.query(Author).get(Author.id == author_id)
     db_author.name = author.name
     db_author.bio = author.bio
@@ -36,7 +36,7 @@ def update_author(
 def get_author_by_id(
         db: Session,
         author_id: int
-):
+) -> Session.query:
     return db.query(Author).get(Author.id == author_id)
 
 
@@ -44,14 +44,14 @@ def get_author_list(
         db: Session,
         skip: int = 0,
         limit: int = 5
-):
+) -> list[Session.query]:
     return db.query(Author).offset(skip).limit(limit).all()
 
 
 def get_book_by_author_id(
         db: Session,
         author_id: int
-):
+) -> Session.query:
     return db.query(Book).filter(Book.author_id == author_id)
 
 
@@ -59,14 +59,14 @@ def get_book_list(
         db: Session,
         skip: int = 0,
         limit: int = 5
-):
+) -> list[Session.query]:
     return db.query(Book).offset(skip).limit(limit).all()
 
 
 def create_book(
         db: Session,
         book: BookCreate
-):
+) -> Book:
     db_book = Book(
         title=book.title,
         summary=book.summary,

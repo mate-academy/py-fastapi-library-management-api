@@ -41,14 +41,14 @@ def create_author(
     return db_author
 
 
-@app.put("authors/{author_id}/update/", response_model=schemas.Author)
-def update_author(
-        author: schemas.AuthorUpdate,
-        author_id: int,
-        db: Session = Depends(get_db)
-):
-    db_author = crud.update_author(author=author, author_id=author_id, db=db)
-    return db_author
+# @app.put("authors/{author_id}/update/", response_model=schemas.Author)
+# def update_author(
+#         author: schemas.AuthorUpdate,
+#         author_id: int,
+#         db: Session = Depends(get_db)
+# ):
+#     db_author = crud.update_author(author=author, author_id=author_id, db=db)
+#     return db_author
 
 
 @app.get("/books/", response_model=list[schemas.Book])

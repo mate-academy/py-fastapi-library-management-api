@@ -13,7 +13,7 @@ class BookBase(BaseModel):
 
 
 class BookCreate(BookBase):
-    pass
+    author_id: int
 
 
 class BookUpdate(BookBase):
@@ -22,7 +22,6 @@ class BookUpdate(BookBase):
 
 class Book(BookBase):
     id: int
-    author_id: int
 
 
 class AuthorBase(BaseModel):
@@ -30,7 +29,7 @@ class AuthorBase(BaseModel):
     bio: str | None = None
 
     class Config:
-        orm_mode: True
+        orm_mode = True
 
 
 class AuthorCreate(AuthorBase):
@@ -43,4 +42,4 @@ class AuthorUpdate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-    books: list[Book]
+    books: list[Book] = []
