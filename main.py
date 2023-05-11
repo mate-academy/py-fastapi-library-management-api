@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi_pagination import add_pagination
 from sqlalchemy.orm import Session
 
 import crud
@@ -17,14 +16,14 @@ def get_db() -> Session:
     finally:
         db.close()
 
-@app.get("/")
-def root() -> dict:
-    return {"message": "Hello world"}
-
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(db: Session = Depends(get_db)):
-    return crud.get_all_authors(db=db)
+def read_authors(
+        limit: int = 10,
+        offset: int = 10,
+        db: Session = Depends(get_db)
+):
+    return crud.get_all_authors(db=db, limit=limit, offset=offset)
 
 
 @app.get("/authors/{authors_id}/", response_model=schemas.Author)
@@ -58,11 +57,13 @@ def create_author(
 
 @app.get("/book/", response_model=list[schemas.Book])
 def read_book(
+    limit: int = 10,
+    offset: int = 0,
     author_id: int | None = None,
     db: Session = Depends(get_db)
 ):
     return crud.get_book_list(
-        db=db, author_id=author_id
+        db=db, author_id=author_id, limit=limit, offset=offset
     )
 
 @app.get("/book/{book_id}/", response_model=schemas.Book)
@@ -81,6 +82,3 @@ def read_single_book(book_id: int, db: Session = Depends(get_db)):
 @app.post("/book/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
-
-
-add_pagination(app)
