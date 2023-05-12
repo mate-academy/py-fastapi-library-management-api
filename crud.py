@@ -1,7 +1,8 @@
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 import models
-from schemas import AuthorCreate, BookCreate, Author
+from schemas import AuthorCreate, BookCreate, AuthorUpdate
 
 
 def create_author(db: Session, author: AuthorCreate):
@@ -15,19 +16,21 @@ def create_author(db: Session, author: AuthorCreate):
     return db_author
 
 
-def author_update(db: Session, author_id: int, author: Author):
+def update_author(db: Session, author_id: int, author: AuthorUpdate):
     author_for_update = get_author(db, author_id)
+    data_for_update = {}
     if author_for_update:
         for field, value in author.dict().items():
             if value:
-                setattr(db, field, value)
+                data_for_update[field] = value
+        db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).update(data_for_update)
         db.commit()
         db.refresh(author_for_update)
         return author_for_update
     return None
 
 
-def author_delete(db: Session, author_id: int):
+def delete_author(db: Session, author_id: int):
     author_to_delete = get_author(db, author_id)
 
     if author_to_delete:
@@ -81,7 +84,7 @@ def get_book(db: Session, book_id: int):
     )
 
 
-def book_delete(db: Session, book_id: int):
+def delete_book(db: Session, book_id: int):
     book_to_delete = get_book(db, book_id)
 
     if book_to_delete:

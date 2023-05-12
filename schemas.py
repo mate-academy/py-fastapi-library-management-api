@@ -19,6 +19,11 @@ class Author(AuthorBase):
         orm_mode = True
 
 
+class AuthorUpdate(AuthorBase):
+    name: str | None
+    bio: str | None
+
+
 class BookBase(BaseModel):
     title: str
     summary: str

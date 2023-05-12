@@ -2,10 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
+import models
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine
 
 app = FastAPI()
+
+models.Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Session:
@@ -38,8 +41,8 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.patch("/authors/{author_id}/", response_model=schemas.Author)
-def update_author(author_id: int, author: schemas.Author, db: Session = Depends(get_db)):
-    db_author = crud.author_update(db=db, author_id=author_id, author=author)
+def update_author(author_id: int, author: schemas.AuthorUpdate, db: Session = Depends(get_db)):
+    db_author = crud.update_author(db=db, author_id=author_id, author=author)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author is not found")
     return db_author
@@ -47,7 +50,7 @@ def update_author(author_id: int, author: schemas.Author, db: Session = Depends(
 
 @app.delete("/authors/{author_id}/", response_model=schemas.Author)
 def delete_author(author_id: int, db: Session = Depends(get_db)):
-    db_author = crud.author_delete(db=db, author_id=author_id)
+    db_author = crud.delete_author(db=db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author is not found")
     return db_author
@@ -76,7 +79,7 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 
 @app.delete("/books/{book_id}/", response_model=schemas.Book)
 def delete_book(book_id: int, db: Session = Depends(get_db)):
-    db_book = crud.book_delete(db=db, book_id=book_id)
+    db_book = crud.delete_book(db=db, book_id=book_id)
     if db_book is None:
         raise HTTPException(status_code=404, detail="Book is not found")
     return db_book
