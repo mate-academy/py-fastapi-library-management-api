@@ -1,20 +1,22 @@
 from fastapi import HTTPException, Response
 from sqlalchemy.orm import Session
 from starlette import status
+from typing import Type
 
+from database import Base
 from models import DBAuthor, DBBook
 from schemas import BookNoId
 
 
-def get_many(db_session: Session, db_model):
+def get_many(db_session: Session, db_model: Type) -> list:
     return db_session.query(db_model).all()
 
 
-def get_one(ident: int, db_session: Session, db_model):
+def get_one(ident: int, db_session: Session, db_model: Type) -> Base:
     return db_session.get(db_model, ident)
 
 
-def add_item(db_session: Session, item_data, db_model):
+def add_item(db_session: Session, item_data, db_model: Type) -> Base:
     new_item = db_model(**item_data.dict())
 
     db_session.add(new_item)
@@ -24,14 +26,14 @@ def add_item(db_session: Session, item_data, db_model):
     return new_item
 
 
-def update_item(ident: int, db_session: Session, update_data, db_model):
+def update_item(ident: int, db_session: Session, update_data, db_model: Type) -> Base:
     db_session.query(db_model).filter(db_model.id == ident).update(update_data.dict())
     db_session.commit()
 
     return db_session.get(db_model, ident)
 
 
-def delete_item(ident: int, db_session: Session, db_model):
+def delete_item(ident: int, db_session: Session, db_model: Type) -> Response:
     obj = db_session.get(db_model, ident)
     if not obj:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -41,7 +43,7 @@ def delete_item(ident: int, db_session: Session, db_model):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-def get_books(db_session: Session, author_ids: str | None = None):
+def get_books(db_session: Session, author_ids: str | None = None) -> list:
     queryset = db_session.query(DBBook)
 
     if author_ids:
@@ -51,7 +53,7 @@ def get_books(db_session: Session, author_ids: str | None = None):
     return queryset.all()
 
 
-def add_book(db_session: Session, book_data: BookNoId):
+def add_book(db_session: Session, book_data: BookNoId) -> DBBook:
     data = book_data.dict()
     author_id = data["author_id"]
     author = db_session.get(DBAuthor, author_id)
