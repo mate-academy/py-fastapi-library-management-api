@@ -19,7 +19,7 @@ def create_author(db: Session, author: AuthorCreate) -> models.DBAuthor:
 def update_author(db: Session, author_id: int, author: AuthorUpdate) -> models.DBAuthor | None:
     author_for_update = get_author(db, author_id)
     data_for_update = {}
-    if author_for_update:
+    if author_for_update is not None:
         for field, value in author.dict().items():
             if value:
                 data_for_update[field] = value
@@ -27,17 +27,15 @@ def update_author(db: Session, author_id: int, author: AuthorUpdate) -> models.D
         db.commit()
         db.refresh(author_for_update)
         return author_for_update
-    return None
 
 
 def delete_author(db: Session, author_id: int) -> models.DBAuthor | None:
     author_to_delete = get_author(db, author_id)
 
-    if author_to_delete:
+    if author_to_delete is not None:
         db.delete(author_to_delete)
         db.commit()
         return author_to_delete
-    return None
 
 
 def get_all_authors(db: Session, skip: int = 0, limit: int = 10) -> list[models.DBAuthor]:
@@ -87,11 +85,10 @@ def get_book(db: Session, book_id: int) -> models.DBBook | None:
 def delete_book(db: Session, book_id: int) -> models.DBBook | None:
     book_to_delete = get_book(db, book_id)
 
-    if book_to_delete:
+    if book_to_delete is not None:
         db.delete(book_to_delete)
         db.commit()
         return book_to_delete
-    return None
 
 
 def get_book_by_title(db: Session, title: str) -> models.DBBook | None:
