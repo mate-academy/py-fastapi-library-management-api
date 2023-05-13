@@ -9,8 +9,8 @@ class DBAuthor(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
-    bio = Column(String(500), nullable=False)
-    books = relationship("DBBook", back_populates="authors")
+    bio = Column(String(500), nullable=True)
+    books = Column(Integer, ForeignKey("book.id"))
 
 
 class DBBook(Base):
@@ -18,8 +18,8 @@ class DBBook(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False, unique=True)
-    summary = Column(String(255), nullable=False)
-    publication_date = Column(Date, nullable=False)
+    summary = Column(String(255), nullable=True)
+    publication_date = Column(Date)
     author_id = Column(Integer, ForeignKey("author.id"))
 
     author = relationship(DBAuthor)
