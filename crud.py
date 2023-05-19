@@ -15,13 +15,14 @@ def get_all_books(
         author_id: int | None = None,
         title: str | None = None,
         sort_by: str | None = None
-):
+) -> list[models.DBAuthor]:
     query = db.query(models.DBBook)
     if author_id is not None:
         query = query.filter(models.DBBook.author_id == author_id)
     if title is not None:
-        query = query.filter(func.lower
-                             (models.DBBook.title).contains(title.lower()))
+        query = query.filter(
+            func.lower(models.DBBook.title).contains(title.lower())
+        )
     if sort_by == "title":
         query = query.order_by(models.DBBook.title)
     elif sort_by == "date":
@@ -33,7 +34,7 @@ def get_all_books(
 def create_book(
         db: Session,
         book: BookCreate
-):
+) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -51,7 +52,7 @@ def get_book_count(
         db: Session,
         skip: Optional[int] = 0,
         limit: Optional[int] = 10
-):
+) -> int:
     query = db.query(models.DBBook).offset(skip).limit(limit)
     count = query.count()
     return count
@@ -60,15 +61,16 @@ def get_book_count(
 def get_book(
         db: Session,
         book_id: int
-):
-    return db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
+) -> models.DBBook | None:
+    return db.query(
+        models.DBBook).filter(models.DBBook.id == book_id).first()
 
 
 def update_book(
         db: Session,
         db_book: models.DBBook,
         book: schemas.BookUpdate
-):
+) -> models.DBBook | None:
     for field, value in book.dict(exclude_unset=True).items():
         setattr(db_book, field, value)
     db.commit()
@@ -79,7 +81,7 @@ def update_book(
 def delete_book(
         db: Session,
         db_book: models.DBBook
-):
+) -> None:
     db.delete(db_book)
     db.commit()
 
@@ -90,11 +92,12 @@ def get_all_authors(
         limit: int = 10,
         name: str | None = None,
         sort_by: str | None = None
-):
+) -> list[models.DBAuthor]:
     query = db.query(models.DBAuthor)
     if name is not None:
-        query = query.filter(func.lower
-                             (models.DBAuthor.name).contains(name.lower()))
+        query = query.filter(
+            func.lower(models.DBAuthor.name).contains(name.lower())
+        )
     if sort_by == "name":
         query = query.order_by(models.DBAuthor.name)
     return query.offset(skip).limit(limit).all()
@@ -104,7 +107,7 @@ def get_author_count(
         db: Session,
         skip: Optional[int] = 0,
         limit: Optional[int] = 10
-):
+) -> int:
     query = db.query(models.DBAuthor).offset(skip).limit(limit)
     count = query.count()
     return count
@@ -113,7 +116,7 @@ def get_author_count(
 def create_author(
         db: Session,
         author: AuthorCreate
-):
+) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio
@@ -128,7 +131,7 @@ def create_author(
 def get_author(
         db: Session,
         author_id: int
-):
+) -> models.DBAuthor | None:
     return db.query(models.DBAuthor).filter(
         models.DBAuthor.id == author_id).first()
 
@@ -137,7 +140,7 @@ def update_author(
         db: Session,
         db_author: models.DBAuthor,
         author: schemas.AuthorUpdate
-):
+) -> models.DBAuthor | None:
     for field, value in author.dict(exclude_unset=True).items():
         setattr(db_author, field, value)
     db.commit()
@@ -148,6 +151,6 @@ def update_author(
 def delete_author(
         db: Session,
         db_author: models.DBAuthor
-):
+) -> None:
     db.delete(db_author)
     db.commit()
