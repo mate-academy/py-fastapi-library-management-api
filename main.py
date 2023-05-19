@@ -2,10 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
+from db import models
 import schemas
-from db.database import SessionLocal
+from db.database import SessionLocal, engine
 
 app = FastAPI()
+
+models.Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Session:
@@ -29,7 +32,7 @@ def read_books(
         skip: int = 0,
         limit: int = 10,
         db: Session = Depends(get_db)
-):
+) -> schemas.PaginatedBooks:
     books = crud.get_all_books(db=db,
                                author_id=author_id,
                                skip=skip,
@@ -44,7 +47,7 @@ def read_books(
 def create_book(
         book: schemas.BookCreate,
         db: Session = Depends(get_db)
-):
+) -> models.DBBook | HTTPException:
     if not crud.get_author(db=db, author_id=book.author_id):
         raise HTTPException(status_code=404, detail="Author not found")
     return crud.create_book(db=db, book=book)
@@ -55,7 +58,7 @@ def update_book(
         book_id: int,
         db: Session = Depends(get_db),
         book: schemas.BookUpdate = None
-):
+) -> models.DBBook | HTTPException:
     db_book = crud.get_book(db=db, book_id=book_id)
     if not db_book:
         raise HTTPException(status_code=404,
@@ -70,7 +73,7 @@ def update_book(
 def delete_book(
         book_id: int,
         db: Session = Depends(get_db)
-):
+) -> HTTPException | dict:
     db_book = crud.get_book(db=db, book_id=book_id)
     if not db_book:
         raise HTTPException(status_code=404,
@@ -86,7 +89,7 @@ def read_authors(
         skip: int = 0,
         limit: int = 10,
         db: Session = Depends(get_db)
-):
+) -> schemas.PaginatedAuthors:
     authors = crud.get_all_authors(db=db,
                                    skip=skip,
                                    limit=limit,
@@ -100,7 +103,7 @@ def read_authors(
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(
         author: schemas.AuthorCreate,
-        db: Session = Depends(get_db)):
+        db: Session = Depends(get_db)) -> models.DBAuthor:
     return crud.create_author(db=db, author=author)
 
 
@@ -108,7 +111,7 @@ def create_author(
 def read_author(
         author_id: int,
         db: Session = Depends(get_db)
-):
+) -> models.DBAuthor:
     db_author = crud.get_author(db=db, author_id=author_id)
 
     if db_author is None:
@@ -124,7 +127,8 @@ def read_author(
 def update_author(
         author_id: int,
         db: Session = Depends(get_db),
-        author: schemas.AuthorUpdate = None):
+        author: schemas.AuthorUpdate = None
+) -> models.DBAuthor | HTTPException:
     db_author = crud.get_author(db=db, author_id=author_id)
     if not db_author:
         raise HTTPException(
@@ -140,7 +144,7 @@ def update_author(
 @app.delete("/authors/{author_id}/")
 def delete_author(
         author_id: int,
-        db: Session = Depends(get_db)):
+        db: Session = Depends(get_db)) -> HTTPException | dict:
     db_author = crud.get_author(db=db, author_id=author_id)
     if not db_author:
         raise HTTPException(
