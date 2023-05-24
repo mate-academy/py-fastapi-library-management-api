@@ -1,49 +1,38 @@
 from datetime import datetime
 
-from pydantic import BaseModel
 
-from db.models import Book
+from pydantic import BaseModel
 
 
 class AuthorBase(BaseModel):
     name: str
     bio: str
-    book: list[Book] = []
+
+
+class Authors(AuthorBase):
+    id: int
 
     class Config:
-        arbitrary_types_allowed = True
+        orm_mode = True
 
 
 class CreateAuthor(AuthorBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-class UpdateAuthor(AuthorBase):
-    id: int
-
-    class Config:
-        orm_mode = True
+    pass
 
 
 class BookBase(BaseModel):
     title: str
     summary: str
     publication_date: datetime
+
+
+class Books(BookBase):
+    id: int
     author_id: int
+
+    class Config:
+        orm_mode = True
 
 
 class CreateBook(BookBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-class UpdateBook(BookBase):
-    id: int
-
-    class Config:
-        orm_mode = True
+    pass
