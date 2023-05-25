@@ -45,9 +45,9 @@ def create_author_book(
 
 def get_all_books(
     db: Session,
-        skip: int = 0,
-        limit: int = 100,
-        author_id: str | None = None
+    skip: int = 0,
+    limit: int = 100,
+    author_id: str | None = None
 ) -> list[Type[models.Book]]:
     queryset = db.query(models.Book)
 

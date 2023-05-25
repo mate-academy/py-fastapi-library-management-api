@@ -61,6 +61,6 @@ def read_books(
     limit: int = 100,
     db: Session = Depends(get_db),
     author_id: str | None = None,
-) -> list[Type[models.Book]] | None:
+) -> list[Type[models.Book]] | []:
     books = crud.get_all_books(db, skip=skip, limit=limit, author_id=author_id)
     return books
