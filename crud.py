@@ -7,7 +7,7 @@ from schemas import BookCreate, AuthorCreate
 
 
 def get_all_books(
-        db: Session, author_id: DBAuthor.id | None = None,
+        db: Session, author_id: int | None = None,
         skip: int = 0, limit: int = 100
 ) -> list[DBBook]:
     queryset = db.query(DBBook)
