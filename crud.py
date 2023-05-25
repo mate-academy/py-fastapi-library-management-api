@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Optional
 from sqlalchemy.orm import Session
 import schemas
 from db import models
@@ -6,7 +6,7 @@ from db import models
 
 def get_all_author(
         db: Session, skip: int = 0, limit: int = 100
-) -> list[Type[models.Author]]:
+) -> list[models.Author]:
     return db.query(
         models.Author
     ).offset(skip).limit(limit).all()
@@ -14,7 +14,7 @@ def get_all_author(
 
 def get_author(
         db: Session, author_id: int
-) -> list[Type[models.Author]]:
+) -> Optional[models.Author]:
     return db.query(models.Author).filter(
         models.Author.id == author_id
     ).first()
@@ -48,7 +48,7 @@ def get_all_books(
     skip: int = 0,
     limit: int = 100,
     author_id: str | None = None
-) -> list[Type[models.Book]]:
+) -> list[models.Book]:
     queryset = db.query(models.Book)
 
     if author_id:
