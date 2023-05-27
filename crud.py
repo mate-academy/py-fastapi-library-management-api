@@ -1,4 +1,4 @@
-from typing import Type, Optional
+from typing import Optional
 from sqlalchemy.orm import Session
 import schemas
 from db import models
