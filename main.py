@@ -3,9 +3,10 @@ from sqlalchemy.orm import Session
 
 import crud
 from db import models
-from db.engine import SessionLocal
+from db.engine import SessionLocal, engine
 from schemas import Authors, Books, CreateAuthor, CreateBook
 
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
@@ -59,6 +60,6 @@ def read_books(
     limit: int = 100,
     db: Session = Depends(get_db),
     author_id: str | None = None,
-) -> list[models.Book] | []:
+) -> list[models.Book] | list:
     books = crud.get_all_books(db, skip=skip, limit=limit, author_id=author_id)
     return books
