@@ -6,9 +6,7 @@ import models
 import schemas
 
 
-def get_authors(
-    db: Session, skip: int = 0, limit: int = 100
-) -> list[Type[models.DBAuthor]]:
+def get_authors(db: Session, skip: int = 0, limit: int = 100) -> list[models.DBAuthor]:
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
@@ -31,7 +29,7 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
 
 def get_books(
     db: Session, skip: int = 0, limit: int = 100, author_id: int | None = None
-) -> list[Type[models.DBBook]]:
+) -> list[models.DBBook]:
     queryset = db.query(models.DBBook)
     if author_id:
         queryset = queryset.filter(models.DBBook.author_id == author_id)
