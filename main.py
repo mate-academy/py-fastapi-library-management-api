@@ -2,7 +2,6 @@ from typing import List
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-
 import crud
 import schemas
 from database import SessionLocal
