@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from datetime import date
+
+from pydantic import BaseModel
 
 
 class BookBase(BaseModel):
@@ -7,8 +8,10 @@ class BookBase(BaseModel):
     summary: str
     publication_date: date
 
+
 class BookCreate(BookBase):
     pass
+
 
 class Book(BookBase):
     id: int
@@ -25,6 +28,7 @@ class AuthorBase(BaseModel):
 
 class AuthorCreate(AuthorBase):
     pass
+
 
 class Author(AuthorBase):
     id: int

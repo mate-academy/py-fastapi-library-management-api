@@ -16,7 +16,7 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.Author(
         name=author.name,
         bio=author.bio,
-        )
+    )
     db.add(db_author)
     db.commit()
     db.refresh(db_author)
