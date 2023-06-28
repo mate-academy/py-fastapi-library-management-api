@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 import schemas, models
 
 
-def get_author_by_name(db: Session, author_name: str) -> models.DBAuthor:
+def get_author_by_name(db: Session, author_name: str) -> models.DBAuthor | None:
     return db.query(models.DBAuthor).filter(models.DBAuthor.name == author_name).first()
 
 
@@ -29,7 +29,7 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     return db_author
 
 
-def get_book(db: Session, book_title: str) -> models.DBBook:
+def get_book(db: Session, book_title: str) -> models.DBBook | None:
     return db.query(models.DBBook).filter(models.DBBook.title == book_title).first()
 
 
