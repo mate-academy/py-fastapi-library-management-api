@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from database import Base
 
+
 class Book(Base):
     __tablename__ = "books"
 
@@ -11,6 +12,7 @@ class Book(Base):
     publication_date = Column(Date)
     author_id = Column(Integer, ForeignKey('authors.id'))
     author = relationship('Author', back_populates='books')
+
 
 class Author(Base):
     __tablename__ = "authors"
