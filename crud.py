@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 import models
 import schemas
@@ -53,7 +53,9 @@ def get_books(
         skip: int = 0,
         limit: int = 33,
 ) -> list[models.Book]:
-    return db.query(models.Book).offset(skip).limit(limit).all()
+    return db.query(models.Book).options(
+        joinedload(models.Book.author)
+    ).offset(skip).limit(limit).all()
 
 
 def get_books_list_by_author_id(
