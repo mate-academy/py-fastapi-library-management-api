@@ -29,7 +29,7 @@ def get_author(db: Session, author_id: int) -> models.Author | None:
 def get_authors(
         db: Session,
         skip: int = 0,
-        limit: int = 33,
+        limit: int = 100,
 ) -> list[models.Author]:
     return db.query(models.Author).offset(skip).limit(limit).all()
 
@@ -51,7 +51,7 @@ def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
 def get_books(
         db: Session,
         skip: int = 0,
-        limit: int = 33,
+        limit: int = 100,
 ) -> list[models.Book]:
     return db.query(models.Book).options(
         joinedload(models.Book.author)
@@ -59,11 +59,12 @@ def get_books(
 
 
 def get_books_list_by_author_id(
-    db: Session, author_id: int | None = None
+        db: Session,
+        author_id: int | None = None,
 ) -> list[models.Book]:
     queryset = db.query(models.Book)
 
     if author_id is not None:
-        return queryset.filter(models.Book.author_id == author_id).all()
+        queryset = queryset.filter(models.Book.author_id == author_id)
 
     return queryset.all()
