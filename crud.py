@@ -35,7 +35,7 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
 def delete_author(db: Session, author_id: int) -> Optional[models.DBAuthor]:
     db_author = get_author(db, author_id)
 
-    if db_author:
+    if db_author is not None:
         db.delete(db_author)
         db.commit()
 
