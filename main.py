@@ -94,13 +94,16 @@ def read_book_by_title(book_title: str, db: Session = Depends(get_db)):
 
 @app.get("/books/{author_id}", response_model=list[schemas.Book])
 def read_books_by_author_id(
-        author_id: int,
-        skip: int = 0,
-        limit: int = 100,
-        db: Session = Depends(get_db),
+    author_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
 ):
-    return crud.get_books_by_author_id(
-        db=db, author_id=author_id, skip=skip, limit=limit,
+    return crud.get_books(
+        db=db,
+        author_id=author_id,
+        skip=skip,
+        limit=limit,
     )
 
 
@@ -112,7 +115,9 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 
     db_book = crud.get_book_by_title(db=db, title=book.title)
     if db_book:
-        raise HTTPException(status_code=409, detail="Book with this title already exists.")
+        raise HTTPException(
+            status_code=409, detail="Book with this title already exists."
+        )
 
     return crud.create_book(db=db, book=book)
 
@@ -128,7 +133,9 @@ def delete_book(book_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/books/{book_id}", response_model=schemas.Book)
-def update_book(book_id: int, book_data: schemas.BookCreate, db: Session = Depends(get_db)):
+def update_book(
+    book_id: int, book_data: schemas.BookCreate, db: Session = Depends(get_db)
+):
     db_book = crud.update_book(
         db=db, book_id=book_id, updated_data=book_data.model_dump()
     )
