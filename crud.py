@@ -5,11 +5,11 @@ import models
 import schemas
 
 
-def get_author_by_name(db: Session, author_name: str) -> models.Author:
+def get_author_by_name(db: Session, author_name: str) -> models.Author | None:
     return db.query(models.Author).filter(author_name == models.Author.name).first()
 
 
-def get_author(db: Session, author_id: int) -> models.Author:
+def get_author(db: Session, author_id: int) -> models.Author | None:
     return db.query(models.Author).filter(author_id == models.Author.id).first()
 
 
@@ -25,7 +25,7 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     return db_author
 
 
-def get_book(db: Session, book_id: int) -> models.Book:
+def get_book(db: Session, book_id: int) -> models.Book | None:
     return db.query(models.Book).filter(book_id == models.Book.id).first()
 
 
