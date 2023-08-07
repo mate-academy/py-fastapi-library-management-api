@@ -1,5 +1,3 @@
-from typing import List, Type
-
 from sqlalchemy.orm import Session
 import models
 import schemas
@@ -13,7 +11,7 @@ def get_author(db: Session, author_id: int) -> models.Author | None:
     return db.query(models.Author).filter(author_id == models.Author.id).first()
 
 
-def get_authors(db: Session, skip: int = 0, limit: int = 5) -> List[Type[models.Author]]:
+def get_authors(db: Session, skip: int = 0, limit: int = 5) -> list[models.Author]:
     return db.query(models.Author).offset(skip).limit(limit).all()
 
 
@@ -31,7 +29,7 @@ def get_book(db: Session, book_id: int) -> models.Book | None:
 
 def get_books(
         db: Session, skip: int = 0, limit: int = 10, author_id: int = None
-) -> List[Type[models.Book]]:
+) -> list[models.Book]:
     query = db.query(models.Book)
     if author_id:
         query = query.filter(author_id == models.Book.author_id)
