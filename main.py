@@ -1,9 +1,8 @@
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from fastapi import FastAPI, Depends, HTTPException
-
 from database import SessionLocal
 
 app = FastAPI()
@@ -24,8 +23,14 @@ def read_root():
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(db: Session = Depends(get_db), name: str | None = None):
-    return crud.get_all_authors(db=db, name=name)
+def read_authors(
+    db: Session = Depends(get_db),
+    name: str | None = None,
+    skip: int = 0,
+    limit: int = 10,
+):
+    db_authors = crud.get_all_authors(db=db, name=name)
+    return db_authors[skip : skip + limit]
 
 
 @app.get("/authors/{author_id}", response_model=schemas.Author)
@@ -48,8 +53,11 @@ def read_books(
     db: Session = Depends(get_db),
     title: str | None = None,
     author_id: int | None = None,
+    skip: int = 0,
+    limit: int = 10,
 ):
-    return crud.get_all_books(db=db, title=title, author_id=author_id)
+    db_books = crud.get_all_books(db=db, title=title, author_id=author_id)
+    return db_books[skip : skip + limit]
 
 
 @app.get("/books/{book_id}/", response_model=schemas.Book)
