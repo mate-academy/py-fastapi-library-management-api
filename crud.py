@@ -18,11 +18,11 @@ def get_authors(db: Session, page: int = 0, page_size: int = 100) -> list[models
     return db.query(models.Author).offset(page).limit(page_size).all()
 
 
-def get_detailed_author(db: Session, author_id: int) -> models.Author:
+def get_detailed_author(db: Session, author_id: int) -> models.Author | None:
     return db.query(models.Author).filter(models.Author.id == author_id).first()
 
 
-def get_author_by_name(db: Session, author_name: str) -> models.Author:
+def get_author_by_name(db: Session, author_name: str) -> models.Author | None:
     return db.query(models.Author).filter(models.Author.name == author_name).first()
 
 
@@ -37,8 +37,7 @@ def update_author(
             setattr(db_author, key, value)
         db.commit()
         db.refresh(db_author)
-        return db_author
-    return None
+    return db_author
 
 
 def delete_author(db: Session, author_id_to_delete: int) -> models.Author | None:
@@ -46,8 +45,7 @@ def delete_author(db: Session, author_id_to_delete: int) -> models.Author | None
     if db_author is not None:
         db.delete(db_author)
         db.commit()
-        return db_author
-    return None
+    return db_author
 
 
 # ⬇️ --- BOOKS CRUD --- ⬇️
@@ -65,7 +63,7 @@ def get_books(db: Session, page: int = 0, page_size: int = 100) -> list[models.B
     return db.query(models.Book).offset(page).limit(page_size).all()
 
 
-def get_detailed_book(db: Session, book_id: int) -> models.Book:
+def get_detailed_book(db: Session, book_id: int) -> models.Book | None:
     return db.query(models.Book).filter(models.Book.id == book_id).first()
 
 
@@ -79,11 +77,10 @@ def update_book(
             setattr(db_book, key, value)
         db.commit()
         db.refresh(db_book)
-        return db_book
-    return None
+    return db_book
 
 
-def get_book_by_title(db: Session, book_title: str) -> models.Book:
+def get_book_by_title(db: Session, book_title: str) -> models.Book | None:
     return db.query(models.Book).filter(models.Book.title == book_title).first()
 
 
