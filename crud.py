@@ -44,7 +44,7 @@ def create_book(db: Session, book: BookCreate):
         title=book.title,
         summary=book.summary,
         publication_date=book.publication_date,
-        author_id=book.author_id
+        author_id=book.author_id,
     )
     db.add(db_book)
     db.commit()
