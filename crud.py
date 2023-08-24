@@ -38,6 +38,10 @@ def get_author_by_name(db: Session, name: str):
     return db.query(AuthorDB).filter(AuthorDB.name == name).first()
 
 
+def get_author_by_id(db: Session, author_id: int):
+    return db.query(AuthorDB).filter(AuthorDB.id == author_id).first()
+
+
 def create_book(db: Session, book: BookBaseCreate):
     db_book = BookDB(
         title=book.title,
