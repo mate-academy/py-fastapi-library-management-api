@@ -8,15 +8,24 @@ class AuthorBase(BaseModel):
     bio: str
 
 
-class AuthorCreate(AuthorBase):
-    pass
-
-
-class Author(BaseModel):
+class Author(AuthorBase):
     id: int
 
     class Config:
         orm_mode = True
+
+
+class AuthorCreate(AuthorBase):
+    pass
+
+
+class AuthorUpdate(AuthorBase):
+    name: str
+    bio: str
+
+
+class AuthorDelete(BaseModel):
+    id: int
 
 
 class BookBase(BaseModel):
@@ -26,12 +35,19 @@ class BookBase(BaseModel):
     author_id: int
 
 
-class BookBaseCreate(BaseModel):
+class BookBaseCreate(BookBase):
     pass
 
 
-class Book(BaseModel):
+class Book(BookBase):
     id: int
 
     class Config:
         orm_mode = True
+
+
+class BookUpdate(BookBase):
+    title: str
+    summary: str
+    publication_date: date
+    author_id: int
