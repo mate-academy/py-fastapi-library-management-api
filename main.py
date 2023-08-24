@@ -17,18 +17,15 @@ def get_db() -> Session:
         db.close()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_name(db=db, name=author.name)
+
     if db_author:
         raise HTTPException(
             status_code=400, detail="Such name for Author already exists"
         )
+
     return crud.create_author(db=db, author=author)
 
 
@@ -53,8 +50,10 @@ def update_author(
     db: Session = Depends(get_db),
 ):
     db_author = crud.get_author_by_name(db=db, name=author_update.name)
+
     if not db_author:
         raise HTTPException(status_code=404, detail="Such Author not found")
+
     return crud.update_author(db=db, author_id=author_id, author=author_update)
 
 
@@ -87,6 +86,8 @@ def update_book(
     db: Session = Depends(get_db),
 ):
     db_book = crud.get_book_by_id(db=db, book_id=book_id)
+
     if not db_book:
         raise HTTPException(status_code=404, detail="Such Book not found")
+
     return crud.update_book(db=db, book_id=book_id, book=book_update)
