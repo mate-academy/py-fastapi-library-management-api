@@ -21,6 +21,7 @@ class Author(AuthorBase):
 
 class BookBase(BaseModel):
     title: str
+    summary: str
     publication_date: date
 
 

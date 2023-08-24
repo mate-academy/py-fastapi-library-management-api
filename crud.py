@@ -43,6 +43,7 @@ def get_book(db: Session, book_id: int):
 def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.Book(
         title=book.title,
+        summary=book.summary,
         publication_date=book.publication_date,
         author_id=book.author_id,
     )
