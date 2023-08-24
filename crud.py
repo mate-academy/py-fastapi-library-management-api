@@ -17,8 +17,8 @@ def create_author(db: Session, author: AuthorCreate):
     return db_author
 
 
-def read_all_authors(db: Session):
-    return db.query(AuthorDB).all()
+def read_all_authors(db: Session, skip: int = 0, limit: int = 10):
+    return db.query(AuthorDB).offset(skip).limit(limit).all()
 
 
 def update_author(db: Session, author_id: int, author: AuthorUpdate):
@@ -56,13 +56,15 @@ def create_book(db: Session, book: BookBaseCreate):
     return db_book
 
 
-def read_all_books(db: Session, author_id: int | None = None):
+def read_all_books(
+    db: Session, author_id: int | None = None, skip: int = 0, limit: int = 10
+):
     queryset = db.query(BookDB)
 
     if author_id is not None:
         queryset = queryset.filter(BookDB.author_id == author_id)
 
-    return queryset.all()
+    return queryset.offset(skip).limit(limit).all()
 
 
 def update_book(db: Session, book_id: int, book: BookUpdate):

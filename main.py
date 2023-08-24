@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 import crud
@@ -33,8 +33,12 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(db: Session = Depends(get_db)):
-    return crud.read_all_authors(db=db)
+def read_authors(
+    db: Session = Depends(get_db),
+    skip: int = Query(0, description="Number of records to skip"),
+    limit: int = Query(10, description="Number of records to fetch"),
+):
+    return crud.read_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}", response_model=schemas.Author)
@@ -60,8 +64,15 @@ def create_book(book: schemas.BookBaseCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_books(db: Session = Depends(get_db), author_id: int | None = None):
-    return crud.read_all_books(db=db, author_id=author_id)
+def read_books(
+    db: Session = Depends(get_db),
+    author_id: int | None = None,
+    skip: int = Query(0, description="Number of records to skip"),
+    limit: int = Query(10, description="Number of records to fetch"),
+):
+    return crud.read_all_books(
+        db=db, author_id=author_id, skip=skip, limit=limit
+    )
 
 
 @app.get("/books/{book_id}", response_model=schemas.Book)
