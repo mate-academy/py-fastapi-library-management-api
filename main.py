@@ -58,8 +58,8 @@ def create_author(
 
 @app.get("/books/", response_model=Page[schemas.Book])
 def read_books_list(
-    author_id: int | None = None,
-    db: Session = Depends(get_db)
+        author_id: int | None = None,
+        db: Session = Depends(get_db)
 ):
     return paginate(db, crud.get_book_list(db=db, author_id=author_id))
 
