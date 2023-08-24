@@ -23,8 +23,8 @@ def read_root():
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_author(db: Session = Depends(get_db)):
-    return crud.read_all_authors(db)
+def read_authors(db: Session = Depends(get_db)):
+    return crud.read_all_authors(db=db)
 
 
 @app.post("/authors/", response_model=schemas.Author)
@@ -43,4 +43,33 @@ def update_author(
     author_update: schemas.AuthorUpdate,
     db: Session = Depends(get_db),
 ):
+    db_author = crud.get_author_by_name(db=db, name=author_update.name)
+    if not db_author:
+        raise HTTPException(
+            status_code=404, detail="Such Author not found"
+        )
     return crud.update_author(db=db, author_id=author_id, author=author_update)
+
+
+@app.post("/books/", response_model=schemas.Book)
+def create_book(book: schemas.BookBaseCreate, db: Session = Depends(get_db)):
+    return crud.create_book(db=db, book=book)
+
+
+@app.get("/books/", response_model=list[schemas.Book])
+def read_books(db: Session = Depends(get_db)):
+    return crud.read_all_books(db=db)
+
+
+@app.put("/books/{book_id}", response_model=schemas.Book)
+def update_book(
+    book_id: int,
+    book_update: schemas.BookUpdate,
+    db: Session = Depends(get_db),
+):
+    db_book = crud.get_book_by_id(db=db, book_id=book_id)
+    if not db_book:
+        raise HTTPException(
+            status_code=404, detail="Such Book not found"
+        )
+    return crud.update_book(db=db, book_id=book_id, book=book_update)
