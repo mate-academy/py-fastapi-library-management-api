@@ -32,7 +32,7 @@ def read_authors(
 
 
 @app.post("/authors/", response_model=schemas.Author)
-def create_cheese_type(
+def create_author(
     author: schemas.AuthorCreate,
     data_base: Session = Depends(get_data_base)
 ):
@@ -55,6 +55,14 @@ def read_single_author(author_id: int, data_base: Session = Depends(get_data_bas
         raise HTTPException(status_code=404, detail="Author not found")
 
     return data_base_author
+
+
+@app.delete("/authors/{author_id}/", response_model=bool)
+def delete_single_author(author_id: int, data_base: Session = Depends(get_data_base)):
+    deleted = crud.delete_author(data_base=data_base, author_id=author_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return True
 
 
 @app.get("/books/", response_model=list[schemas.Book])
@@ -82,3 +90,11 @@ def read_single_book(book_id: int, data_base: Session = Depends(get_data_base)):
 @app.post("/books/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, data_base: Session = Depends(get_data_base)):
     return crud.create_book(data_base=data_base, book=book)
+
+
+@app.delete("/books/{book_id}/", response_model=bool)
+def delete_single_book(book_id: int, data_base: Session = Depends(get_data_base)):
+    deleted = crud.delete_book(data_base=data_base, book_id=book_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return True

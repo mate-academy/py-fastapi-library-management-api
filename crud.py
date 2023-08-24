@@ -30,6 +30,15 @@ def create_author(data_base: Session, author: AuthorCreate):
     return data_base_author
 
 
+def delete_author(data_base: Session, author_id: int):
+    author = data_base.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+    if author:
+        data_base.delete(author)
+        data_base.commit()
+        return True
+    return False
+
+
 def get_all_books(
         data_base: Session,
         page: int,
@@ -59,3 +68,12 @@ def create_book(data_base: Session, book: BookCreate):
     data_base.commit()
     data_base.refresh(data_base_book)
     return data_base_book
+
+
+def delete_book(data_base: Session, book_id: int):
+    book = data_base.query(models.DBBook).filter(models.DBBook.id == book_id).first()
+    if book:
+        data_base.delete(book)
+        data_base.commit()
+        return True
+    return False
