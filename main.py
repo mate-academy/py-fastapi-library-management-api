@@ -38,12 +38,12 @@ def read_authors(
     return crud.read_all_authors(db=db, skip=skip, limit=limit)
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     return crud.get_author_by_id(db=db, author_id=author_id)
 
 
-@app.put("/authors/{author_id}", response_model=schemas.Author)
+@app.put("/authors/{author_id}/", response_model=schemas.Author)
 def update_author(
     author_id: int,
     author_update: schemas.AuthorUpdate,
@@ -74,12 +74,12 @@ def read_books(
     )
 
 
-@app.get("/books/{book_id}", response_model=schemas.Book)
+@app.get("/books/{book_id}/", response_model=schemas.Book)
 def read_book(book_id: int, db: Session = Depends(get_db)):
     return crud.get_book_by_id(db=db, book_id=book_id)
 
 
-@app.put("/books/{book_id}", response_model=schemas.Book)
+@app.put("/books/{book_id}/", response_model=schemas.Book)
 def update_book(
     book_id: int,
     book_update: schemas.BookUpdate,
