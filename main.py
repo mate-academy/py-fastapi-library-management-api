@@ -60,8 +60,8 @@ def create_book(book: schemas.BookBaseCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_books(db: Session = Depends(get_db)):
-    return crud.read_all_books(db=db)
+def read_books(db: Session = Depends(get_db), author_id: int | None = None):
+    return crud.read_all_books(db=db, author_id=author_id)
 
 
 @app.get("/books/{book_id}", response_model=schemas.Book)

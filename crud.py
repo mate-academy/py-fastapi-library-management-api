@@ -56,8 +56,13 @@ def create_book(db: Session, book: BookBaseCreate):
     return db_book
 
 
-def read_all_books(db: Session):
-    return db.query(BookDB).all()
+def read_all_books(db: Session, author_id: int | None = None):
+    queryset = db.query(BookDB)
+
+    if author_id is not None:
+        queryset = queryset.filter(BookDB.author_id == author_id)
+
+    return queryset.all()
 
 
 def update_book(db: Session, book_id: int, book: BookUpdate):
