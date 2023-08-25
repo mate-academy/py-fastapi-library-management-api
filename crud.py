@@ -4,21 +4,23 @@ import models
 from schemas import AuthorCreate, BookCreate
 
 
-def get_all_authors(db: Session, skip: int, limit: int):
+def get_all_authors(
+        db: Session, skip: int, limit: int
+) -> list[models.Author]:
     return db.query(models.Author).offset(skip).limit(limit).all()
 
 
-def get_author_by_id(db: Session, author_id: int):
+def get_author_by_id(db: Session, author_id: int) -> models.Author:
     return (
         db.query(models.Author).filter(models.Author.id == author_id).first()
     )
 
 
-def get_author_by_name(db: Session, name: str):
+def get_author_by_name(db: Session, name: str) -> models.Author:
     return db.query(models.Author).filter(models.Author.name == name).first()
 
 
-def create_author(db: Session, author: AuthorCreate):
+def create_author(db: Session, author: AuthorCreate) -> models.Author:
     db_author = models.Author(name=author.name, bio=author.bio)
     db.add(db_author)
     db.commit()
@@ -27,7 +29,9 @@ def create_author(db: Session, author: AuthorCreate):
     return db_author
 
 
-def get_all_books(db: Session, skip: int, limit: int, author_id: int = None):
+def get_all_books(
+    db: Session, skip: int, limit: int, author_id: int = None
+) -> list[models.Book]:
     queryset = db.query(models.Book)
     if author_id is not None:
         queryset = queryset.filter(models.Book.author_id == author_id)
@@ -35,11 +39,11 @@ def get_all_books(db: Session, skip: int, limit: int, author_id: int = None):
     return queryset.offset(skip).limit(limit).all()
 
 
-def get_book_by_title(db: Session, title: str):
+def get_book_by_title(db: Session, title: str) -> models.Book:
     return db.query(models.Book).filter(models.Book.title == title).first()
 
 
-def create_book(db: Session, book: BookCreate):
+def create_book(db: Session, book: BookCreate) -> models.Book:
     db_book = models.Book(
         title=book.title,
         summary=book.summary,
