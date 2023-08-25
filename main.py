@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi_pagination import paginate, Page, add_pagination
 from sqlalchemy.orm import Session
