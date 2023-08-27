@@ -4,16 +4,21 @@ from db.models import DBBook, DBAuthor
 from schemas import BookCreate, AuthorCreate
 
 
-def get_all_books(db: Session):
-    return db.query(DBBook).all()
+def get_all_books(db: Session,
+                  skip: int,
+                  limit: int):
+    return db.query(DBBook).offset(skip).limit(limit).all()
 
 
-def get_books_by_author_id(db: Session, author_id: int):
+def get_books_by_author_id(db: Session,
+                           author_id: int,
+                           skip: int,
+                           limit: int):
     queryset = db.query(DBBook)
     if author_id:
         queryset = queryset.filter(DBBook.author_id == author_id)
 
-    return queryset.all()
+    return queryset.offset(skip).limit(limit).all()
 
 
 def create_book(db: Session, book: BookCreate):
@@ -29,8 +34,12 @@ def create_book(db: Session, book: BookCreate):
     return db_book
 
 
-def get_all_authors(db: Session):
-    return db.query(DBAuthor).all()
+def get_all_authors(db: Session,
+                    skip: int,
+                    limit: int):
+    return db.query(
+        DBAuthor
+                    ).offset(skip).limit(limit).all()
 
 
 def get_author(db: Session, author_id: int):
