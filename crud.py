@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from db import models
-from db.schemas import AuthorCreate, BookCreate
+from schemas import AuthorCreate, BookCreate
 
 
 def get_all_authors(db: Session):

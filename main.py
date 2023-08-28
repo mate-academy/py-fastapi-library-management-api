@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from db import schemas, crud
+import crud
+import schemas
 from db.engine import SessionLocal
 
 from fastapi_pagination import paginate
