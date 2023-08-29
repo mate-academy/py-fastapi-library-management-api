@@ -34,7 +34,7 @@ def create_author(
     return db_author
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author_by_id(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author(db=db, author_id=author_id)
     if db_author is None:
@@ -50,7 +50,7 @@ def read_books(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
     return crud.get_books(db=db, skip=skip, limit=limit)
 
 
-@app.get("/authors/{author_id}/book", response_model=list[schemas.Book])
+@app.get("/authors/{author_id}/book/", response_model=list[schemas.Book])
 def read_books_by_authors_id(author_id: int, db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
     db_author = crud.get_author(db=db, author_id=author_id)
     if db_author is None:
@@ -63,7 +63,7 @@ def read_books_by_authors_id(author_id: int, db: Session = Depends(get_db), skip
     return db_book
 
 
-@app.post("/authors/{author_id}/book", response_model=schemas.BookCreate)
+@app.post("/authors/{author_id}/book/", response_model=schemas.BookCreate)
 def create_book(
     book: schemas.BookCreate,
     author_id: int,
