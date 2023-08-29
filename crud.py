@@ -14,7 +14,7 @@ def get_author_by_id(db: Session, author_id: int):
     ).first()
 
 
-def create_author(db: Session, author: AuthorCreate) -> :
+def create_author(db: Session, author: AuthorCreate):
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio
