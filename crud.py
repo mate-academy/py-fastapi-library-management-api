@@ -5,12 +5,6 @@ from schemas import AuthorCreate, Book, BookCreate
 
 
 def get_authors_list(db: Session):
-
-    # queryset = db.query(models.DBAuthor)
-    # if author_id:
-    #     queryset = queryset.filter(
-    #         models.DBAuthor.id == author_id
-    #     )
     return db.query(models.DBAuthor).all()
 
 
@@ -20,7 +14,7 @@ def get_author_by_id(db: Session, author_id: int):
     ).first()
 
 
-def create_author(db: Session, author: AuthorCreate):
+def create_author(db: Session, author: AuthorCreate) -> :
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio
