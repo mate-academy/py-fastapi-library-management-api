@@ -31,7 +31,7 @@ def read_authors(db: Session = Depends(get_db)):
     return paginate(crud.get_all_authors(db=db))
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author(
         author_id: int,
         db: Session = Depends(get_db)
@@ -67,7 +67,7 @@ def read_books(
     return paginate(crud.get_all_books(db=db, author_id=author_id))
 
 
-@app.get("/books/{book_id}", response_model=schemas.Author)
+@app.get("/books/{book_id}/", response_model=schemas.Author)
 def read_book(book_id: int, db: Session = Depends(get_db)):
     db_book = crud.get_book(book_id=book_id, db=db)
 
