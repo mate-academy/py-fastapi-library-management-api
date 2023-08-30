@@ -17,7 +17,7 @@ def get_db() -> Session:
         db.close()
 
 
-@app.post("/authors/create", response_model=schemas.Author)
+@app.post("/authors/create/", response_model=schemas.Author)
 def create_authors(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return crud.create_author(db=db, author=author)
 
