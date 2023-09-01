@@ -32,7 +32,7 @@ def read_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     return authors
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author(db, author_id=author_id)
     if db_author is None:
@@ -40,11 +40,17 @@ def read_author(author_id: int, db: Session = Depends(get_db)):
     return db_author
 
 
-@app.post("/authors/{author_id}/books/", response_model=schemas.Book)
-def create_book_for_author(
-    author_id: int, book: schemas.BookCreate, db: Session = Depends(get_db)
-):
-    return crud.create_book(db=db, book=book, author_id=author_id)
+@app.post("/books/", response_model=schemas.Book)
+def create_book(book: schemas.BookBase, db: Session = Depends(get_db)):
+    db_book = crud.get_book_by_title(db=db, title=book.title)
+
+    if db_book:
+        raise HTTPException(
+            status_code=400,
+            detail="Such book title already exists"
+        )
+
+    return crud.create_book(db, book)
 
 
 @app.get("/books/", response_model=list[schemas.Book])

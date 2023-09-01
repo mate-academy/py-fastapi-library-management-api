@@ -27,8 +27,14 @@ def get_books(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Book).offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate, author_id: int):
-    db_book = models.Book(**book.dict(), author_id=author_id)
+def get_book_by_title(db: Session, title: str):
+    return (
+        db.query(models.Book).filter(models.Book.title == title).first()
+    )
+
+
+def create_book(db: Session, book: schemas.BookBase):
+    db_book = models.Book(**book.model_dump())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)

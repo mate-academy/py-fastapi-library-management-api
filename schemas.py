@@ -8,11 +8,11 @@ class BookBase(BaseModel):
     author_id: int
 
 
-class BookCreate(BookBase):
-    title: str
-    summary: str | None = None
-    publication_date: str
-    author_id: int
+# class BookCreate(BookBase):
+#     title: str
+#     summary: str | None = None
+#     publication_date: str
+#     author_id: int
 
 
 class Book(BookBase):
