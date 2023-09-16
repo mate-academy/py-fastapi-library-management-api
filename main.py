@@ -20,12 +20,12 @@ def get_db() -> Session:
 
 
 @app.get("/authors/", response_model=Page[schemas.Author])
-def read_authors(db: Session = Depends(get_db)):
+def read_authors(db: Session = Depends(get_db)) -> Page[schemas.Author]:
     return paginate(crud.get_all_authors(db))
 
 
 @app.get("/authors/{author_id}", response_model=schemas.Author)
-def read_single_author(author_id: int, db: Session = Depends(get_db)):
+def read_single_author(author_id: int, db: Session = Depends(get_db)) -> schemas.Author:
     db_author = crud.get_author_by_id(db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found.")
@@ -34,7 +34,9 @@ def read_single_author(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/authors/", response_model=schemas.Author)
-def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+def create_author(
+    author: schemas.AuthorCreate, db: Session = Depends(get_db)
+) -> schemas.Author:
     db_author = crud.get_author_by_name(db=db, name=author.name)
 
     if db_author:
@@ -43,10 +45,14 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=Page[schemas.Book])
-def read_books(author_id: str | None = None, db: Session = Depends(get_db)):
+def read_books(
+    author_id: str | None = None, db: Session = Depends(get_db)
+) -> Page[schemas.Book]:
     return paginate(crud.get_books_list(db=db, author_id=author_id))
 
 
 @app.post("/books/", response_model=schemas.Book)
-def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+def create_book(
+    book: schemas.BookCreate, db: Session = Depends(get_db)
+) -> schemas.Book:
     return crud.create_book(db=db, book=book)
