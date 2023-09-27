@@ -5,10 +5,9 @@ from sqlalchemy.orm import Session
 
 import crud
 import database
-import models
 import schemas
 
-models.Base.metadata.create_all(bind=database)
+database.Base.metadata.create_all(bind=database)
 
 app = FastAPI()
 
