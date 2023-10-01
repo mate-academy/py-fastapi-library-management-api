@@ -22,7 +22,7 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
 3. Create SQLAlchemy models for 'Author' and 'Book' in the `models.py` file.
 
 4. The 'Author' model should have the following fields:
-``` 
+```
 - id (integer, primary key)
 - name (string, unique)
 - bio (string)
