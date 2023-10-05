@@ -104,5 +104,3 @@ def delete_book(db: Session, book_id: int) -> Type[Book] | None:
         db.delete(db_book)
         db.commit()
         return db_book
-    else:
-        return None
