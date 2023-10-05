@@ -3,12 +3,7 @@ from typing import Type, Optional
 from sqlalchemy.orm import Session, joinedload
 
 from models import Author, Book
-from schemas import (
-    AuthorCreate,
-    BookCreate,
-    AuthorUpdate,
-    BookUpdate
-)
+from schemas import AuthorCreate, BookCreate, AuthorUpdate, BookUpdate
 
 
 def create_author(db: Session, author: AuthorCreate) -> Author:
@@ -19,11 +14,7 @@ def create_author(db: Session, author: AuthorCreate) -> Author:
     return db_author
 
 
-def get_authors(
-        db: Session,
-        skip: int = 0,
-        limit: int = 100
-) -> list[Type[Author]]:
+def get_authors(db: Session, skip: int = 0, limit: int = 100) -> list[Type[Author]]:
     return db.query(Author).offset(skip).limit(limit).all()
 
 
@@ -62,11 +53,7 @@ def create_book(db: Session, book: BookCreate) -> Book:
     return db_book
 
 
-def create_book_for_author(
-        db: Session,
-        book: BookCreate,
-        author_id: int
-) -> Book:
+def create_book_for_author(db: Session, book: BookCreate, author_id: int) -> Book:
     db_book = Book(**book.dict(), author_id=author_id)
     db.add(db_book)
     db.commit()
@@ -74,11 +61,7 @@ def create_book_for_author(
     return db_book
 
 
-def get_books(
-        db: Session,
-        skip: int = 0,
-        limit: int = 100
-) -> list[Type[Book]]:
+def get_books(db: Session, skip: int = 0, limit: int = 100) -> list[Type[Book]]:
     return db.query(Book).offset(skip).limit(limit).all()
 
 
@@ -103,11 +86,7 @@ def get_book(db: Session, book_id: int) -> Optional[Book]:
     )
 
 
-def update_book(
-        db: Session,
-        book_id: int,
-        book: BookUpdate
-) -> Type[Book] | None:
+def update_book(db: Session, book_id: int, book: BookUpdate) -> Type[Book] | None:
     db_book = db.query(Book).filter(Book.id == book_id).first()
     if db_book is None:
         return None
