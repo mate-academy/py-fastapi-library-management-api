@@ -8,7 +8,7 @@ def get_authors_list(
         db: Session,
         skip: int = 0,
         limit: int = 100
-) -> [models.DBAuthor]:
+) -> list[models.DBAuthor]:
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
@@ -23,7 +23,7 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     return db_author
 
 
-def get_single_author(db: Session, author_id: int) -> models.DBAuthor:
+def get_single_author(db: Session, author_id: int) -> models.DBAuthor | None:
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
 
 
@@ -32,7 +32,7 @@ def get_books_list(
         skip: int = 0,
         limit: int = 100,
         author_id: int | None = None
-) -> [models.DBBook]:
+) -> list[models.DBBook]:
     queryset = db.query(models.DBBook)
 
     if author_id is not None:
@@ -42,7 +42,7 @@ def get_books_list(
     return queryset.offset(skip).limit(limit).all()
 
 
-def get_single_book(db: Session, book_id: int) -> models.DBBook:
+def get_single_book(db: Session, book_id: int) -> models.DBBook | None:
     return db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
 
 
