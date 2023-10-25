@@ -22,7 +22,7 @@ def get_authors(
         skip: int = Query(0, alias="skip"),
         limit: int = Query(10, alias="limit"),
         db: Session = Depends(get_db)
-):
+) -> list[schemas.Author]:
     authors = crud.get_all_authors(db)
     return authors[skip: skip + limit]
 
@@ -31,7 +31,7 @@ def get_authors(
 def create_author(
     author: schemas.AuthorCreate,
     db: Session = Depends(get_db)
-):
+) -> schemas.Author:
     return crud.create_author(db=db, author=author)
 
 
@@ -39,7 +39,7 @@ def create_author(
 def read_single_author(
         author_id: int,
         db: Session = Depends(get_db)
-):
+) -> schemas.Author:
     data_base_author = crud.get_author_by_id(db=db, author_id=author_id)
 
     if data_base_author is None:
@@ -54,14 +54,17 @@ def get_all_books(
         limit: int = Query(10, alias="limit"),
         author_id: int = Query(None, alias="author_id"),
         db: Session = Depends(get_db)
-):
+) -> list[schemas.Book]:
     books = crud.get_all_books(db, author_id)
 
     return books[skip: skip + limit]
 
 
 @app.get("/books/book_id/", response_model=schemas.Book)
-def read_single_book(book_id: int, db: Session = Depends(get_db)):
+def read_single_book(
+        book_id: int,
+        db: Session = Depends(get_db)
+) -> schemas.Book:
     data_base_book = crud.get_book_by_id(db=db, book_id=book_id)
 
     if data_base_book is None:
@@ -74,5 +77,6 @@ def read_single_book(book_id: int, db: Session = Depends(get_db)):
 def create_book_for_author(
         author_id: int,
         book: schemas.BookCreate,
-        db: Session = Depends(get_db)):
+        db: Session = Depends(get_db)
+) -> schemas.Book:
     return crud.create_book(db, book, author_id)
