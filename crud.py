@@ -1,22 +1,26 @@
+from __future__ import annotations
+
 from sqlalchemy.orm import Session
 
 import models
 import schemas
 
 
-def get_author_list(db: Session, skip: int = 0, limit: int = 100):
+def get_author_list(
+    db: Session, skip: int = 0, limit: int = 100
+) -> list[models.DBAuthor]:
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
-def get_author_by_name(db: Session, name: str):
+def get_author_by_name(db: Session, name: str) -> models.DBAuthor | None:
     return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
 
 
-def get_author(db: Session, author_id: int):
+def get_author(db: Session, author_id: int) -> models.DBAuthor | None:
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     db_author = models.DBAuthor(name=author.name, bio=author.bio)
     db.add(db_author)
     db.commit()
@@ -24,7 +28,9 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_book_list(db: Session, skip: int = 0, limit: int = 100, author_id: int = None):
+def get_book_list(
+    db: Session, skip: int = 0, limit: int = 100, author_id: int = None
+) -> list[models.DBBook]:
     queryset = db.query(models.DBBook)
 
     if author_id:
@@ -33,7 +39,7 @@ def get_book_list(db: Session, skip: int = 0, limit: int = 100, author_id: int =
     return queryset.offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate, author_id: int):
+def create_book(db: Session, book: schemas.BookCreate, author_id: int) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
