@@ -17,7 +17,7 @@ app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
 
-def get_db():
+def get_db() -> Session:
     db = SessionLocal()
     try:
         yield db
