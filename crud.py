@@ -20,10 +20,14 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 
 
 def get_author_by_id(db: Session, author_id: int):
-    return db.query(models.Author).filter(models.Author.id == author_id).first()
+    return (
+        db.query(models.Author).filter(models.Author.id == author_id).first()
+    )
 
 
-def get_all_books(db: Session, author_id: int = None, skip: int = 0, limit: int = 10):
+def get_all_books(
+    db: Session, author_id: int = None, skip: int = 0, limit: int = 10
+):
     query = db.query(models.Book)
     if author_id:
         query = query.filter(models.Book.author_id == author_id)
