@@ -3,13 +3,10 @@ import schemas
 from database import SessionLocal
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from fastapi_pagination import paginate, Page, add_pagination
 
 from crud import get_all_authors
 
 app = FastAPI()
-
-add_pagination(app)
 
 
 def get_db() -> Session:
@@ -26,9 +23,12 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/authors/", response_model=Page[schemas.Author])
-def read_authors(db: Session = Depends(get_db)):
-    return paginate(get_all_authors(db))
+@app.get("/authors/", response_model=list[schemas.Author])
+def read_authors(
+        skip: int | None = None,
+        limit: int | None = None,
+        db: Session = Depends(get_db)):
+    return get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
@@ -59,9 +59,14 @@ def create_author(
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/books/", response_model=Page[schemas.Book])
-def read_books(db: Session = Depends(get_db)):
-    return paginate(crud.get_all_books(db))
+@app.get("/books/", response_model=list[schemas.Book])
+def read_books(
+        author_id: int | None = None,
+        skip: int | None = None,
+        limit: int | None = None,
+        db: Session = Depends(get_db)
+):
+    return crud.get_books(db=db, pk=author_id, skip=skip, limit=limit)
 
 
 @app.post("/books/", response_model=schemas.Book)
@@ -77,16 +82,3 @@ def create_book(
         )
 
     return crud.create_book(db=db, book=book)
-
-
-@app.get("/books/{author_id}", response_model=list[schemas.Book])
-def retrieve_book(author_id: int, db: Session = Depends(get_db)):
-    db_author = crud.get_book_by_author_id(db=db, pk=author_id)
-
-    if not db_author:
-        raise HTTPException(
-            status_code=404,
-            detail="Book with such author not found"
-        )
-
-    return db_author
