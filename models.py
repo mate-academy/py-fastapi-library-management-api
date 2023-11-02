@@ -10,7 +10,7 @@ class Author(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True)
     bio = Column(String)
-    book = relationship("Book", back_populates="author")
+    books = relationship("Book", back_populates="author")
 
 
 class Book(Base):
@@ -21,4 +21,4 @@ class Book(Base):
     summary = Column(String)
     publication_date = Column(Date)
     author_id = Column(Integer, ForeignKey("authors.id"))
-    author = relationship("Author", back_populates="book")
+    author = relationship("Author", back_populates="books")

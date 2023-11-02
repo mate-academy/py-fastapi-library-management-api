@@ -38,7 +38,7 @@ class AuthorList(AuthorBase):
 
 
 class AuthorRetrieve(AuthorList):
-    book: list[BookBase]
+    books: list[BookBase]
 
 
 class AuthorCreate(AuthorList):
