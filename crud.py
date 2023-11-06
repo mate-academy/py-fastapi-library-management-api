@@ -4,7 +4,7 @@ import models
 import schemas
 
 
-def get_author(db: Session, author_id: int):
+def get_author_by_id(db: Session, author_id: int):
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
 
 
@@ -35,9 +35,17 @@ def create_author_book(db: Session, book: schemas.BookCreate, author_id: int):
     return db_book
 
 
-def get_book(db: Session, book_id: int):
-    return db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
+def get_books(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    author_id: int | None = None
+):
+    queryset = db.query(models.DBBook)
 
+    if author_id:
+        queryset = queryset.filter(
+            models.DBBook.author_id == author_id
+        )
 
-def get_books(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.DBBook).offset(skip).limit(limit).all()
+    return queryset.offset(skip).limit(limit).all()

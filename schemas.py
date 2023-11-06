@@ -16,14 +16,13 @@ class Author(AuthorBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class BookBase(BaseModel):
     title: str
     summary: str
     publication_date: date
-    author_id: int
 
 
 class BookCreate(BookBase):
@@ -32,6 +31,7 @@ class BookCreate(BookBase):
 
 class Book(BookBase):
     id: int
+    author: Author
 
     class Config:
-        orm_mode = True
+        from_attributes = True
