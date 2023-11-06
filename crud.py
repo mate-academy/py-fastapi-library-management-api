@@ -4,8 +4,12 @@ import models
 import schemas
 
 
-def get_author(db: Session, user_id: int):
-    return db.query(models.DBAuthor).filter(models.DBAuthor.id == user_id).first()
+def get_author(db: Session, author_id: int):
+    return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+
+
+def get_author_by_name(db: Session, author_name: str):
+    return db.query(models.DBAuthor).filter(models.DBAuthor.name == author_name).first()
 
 
 def get_authors(db: Session, skip: int = 0, limit: int = 100):
@@ -15,7 +19,7 @@ def get_authors(db: Session, skip: int = 0, limit: int = 100):
 def create_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.DBAuthor(
         name=author.name,
-        bio=author.name
+        bio=author.bio
     )
     db.add(db_author)
     db.commit()
