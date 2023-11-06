@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -6,6 +8,10 @@ import schemas
 from db.database import SessionLocal
 
 app = FastAPI()
+
+
+async def common_parameters(q: str | None = None, skip: int = 0, limit: int = 100):
+    return {"q": q, "skip": skip, "limit": limit}
 
 
 def get_db() -> Session:
@@ -19,12 +25,8 @@ def get_db() -> Session:
 
 @app.get("/books/", response_model=list[schemas.Book])
 def read_books(
-        db: Session = Depends(get_db),
-        author_id: int = None,
-        skip: int = 0,
-        limit: int = 100
-):
-    return crud.get_all_books(db=db, author_id=author_id)[skip: skip + limit]
+        commons: Annotated[dict, Depends(common_parameters)]):
+    return commons
 
 
 @app.get("/books/{book_id}", response_model=schemas.Book)
@@ -44,11 +46,8 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 
 @app.get("/authors/", response_model=list[schemas.Author])
 def read_authors(
-        db: Session = Depends(get_db),
-        skip: int = 0,
-        limit: int = 100
-):
-    return crud.get_all_authors(db=db)[skip: skip + limit]
+        commons: Annotated[dict, Depends(common_parameters)]):
+    return commons
 
 
 @app.post("/authors/", response_model=schemas.AuthorCreate)
