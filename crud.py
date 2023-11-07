@@ -1,20 +1,22 @@
+from typing import List, Optional
+
 from sqlalchemy.orm import Session
 
 import schemas
 import models
 
 
-def get_all_authors(db: Session, skip: int = 0, limit: int = 10):
+def get_all_authors(db: Session, skip: int = 0, limit: int = 10) -> List[models.DBAuthor]:
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
-def get_author_by_name(db: Session, name):
+def get_author_by_name(db: Session, name) -> Optional[models.DBAuthor]:
     return (
         db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
     )
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -26,7 +28,7 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_author(db: Session, author_id: int):
+def get_author(db: Session, author_id: int) -> Optional[models.DBAuthor]:
     return (
         db.query(
             models.DBAuthor
@@ -34,11 +36,11 @@ def get_author(db: Session, author_id: int):
     )
 
 
-def get_all_books(db: Session, skip: int = 0, limit: int = 10):
+def get_all_books(db: Session, skip: int = 0, limit: int = 10) -> List[models.DBBook]:
     return db.query(models.DBBook).offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -52,10 +54,11 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def get_books_by_author_id(db: Session, author_id):
+def get_books_by_author_id(db: Session, author_id) -> Optional[models.DBBook]:
     return (
         db.query(
             models.DBBook
         ).filter(models.DBBook.author_id == author_id).first()
     )
+
 
