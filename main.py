@@ -9,6 +9,7 @@ import models
 import schemas
 from database import SessionLocal
 
+
 app = FastAPI()
 
 

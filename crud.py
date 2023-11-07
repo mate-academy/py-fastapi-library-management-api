@@ -23,7 +23,7 @@ def create_author(db: Session, author: AuthorCreate):
 def get_author(db: Session, author_id: int):
     author = db.query(Author).filter(Author.id == author_id).first()
     if author is None:
-        raise HTTPException(status_code=404, detail="Author not found")
+        raise HTTPException(status_code=404, detail="author not found")
     return author
 
 
