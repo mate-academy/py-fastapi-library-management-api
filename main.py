@@ -17,11 +17,6 @@ def get_db() -> Session:
         db.close()
 
 
-@app.get("/")
-def root() -> dict:
-    return {"message": "Hello world"}
-
-
 @app.get("/authors/", response_model=list[schemas.Author])
 def authors_list(
     skip: int = 0, limit: int = 10, db: Session = Depends(get_db)
