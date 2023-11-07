@@ -11,17 +11,23 @@ def get_authors(db: Session, offset: int = 0, limit: int = 10):
 
 def get_author(author_id: int, db: Session):
     return (
-        db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+        db.query(models.DBAuthor)
+        .filter(models.DBAuthor.id == author_id)
+        .first()
     )
 
 
 def get_author_by_name(name: str, db: Session):
-    return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
+    return (
+        db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
+    )
 
 
 def get_author_by_id(author_id: int, db: Session):
     return (
-        db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+        db.query(models.DBAuthor)
+        .filter(models.DBAuthor.id == author_id)
+        .first()
     )
 
 
