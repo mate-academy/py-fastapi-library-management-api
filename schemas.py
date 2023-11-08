@@ -35,4 +35,4 @@ class Book(BookBase):
     author: Author
 
     class Config:
-        from_attributes  = True
+        from_attributes = True
