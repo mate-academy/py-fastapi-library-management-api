@@ -16,11 +16,6 @@ def get_db() -> Session:
         db.close()
 
 
-@app.get("/")
-def root() -> dict:
-    return {"message": "Hello World"}
-
-
 @app.get("/authors", response_model=list[schemas.Author])
 def read_authors(
     skip: int = 0, limit: int = 5, db: Session = Depends(get_db)
@@ -60,7 +55,7 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
 
 
-@app.get("/books/{author_id}", response_model=schemas.Book)
+@app.get("/books/{author_id}/", response_model=schemas.Book)
 def read_single_book(author_id: int, db: Session = Depends(get_db)):
     db_book = crud.get_book_by_id(db=db, author_id=author_id)
     if db_book is None:
