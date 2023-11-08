@@ -38,13 +38,11 @@ def get_book_list(
     db: Session,
     author_id: int | None = None,
 ):
-    return (
-        db.query(models.Book).all()
-        if not author_id
-        else db.query(models.Book).filter(
-            models.Author.id == author_id
-        ).all()
-    )
+    queryset = db.query(models.Book)
+
+    if author_id is not None:
+        queryset = queryset.filter(models.Author.id == author_id)
+    return queryset.all()
 
 
 def get_book(db: Session, book_id: int):
