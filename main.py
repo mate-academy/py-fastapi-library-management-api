@@ -24,7 +24,7 @@ def authors_list(
     return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def author_retrieve(author_id: int, db: Session = Depends(get_db)):
     author = crud.get_author(db, author_id)
     if author is None:
@@ -49,7 +49,7 @@ def books_list(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return crud.get_all_books(db, skip, limit)
 
 
-@app.get("/books/author/{author_id}", response_model=list[schemas.Book])
+@app.get("/books/author/{author_id}/", response_model=list[schemas.Book])
 def books_list_by_author(
     author_id: int,
     skip: int = 0,
