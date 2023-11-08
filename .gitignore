@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 .idea/
 /py-fastapi-library-management-api.db
+/alembic/README
+/alembic/script.py.mako
