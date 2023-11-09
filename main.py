@@ -17,11 +17,6 @@ def get_db() -> Session:
         db.close()
 
 
-@app.get("/")
-def read_root() -> dict:
-    return {"Hello": "World"}
-
-
 @app.post("/books/", response_model=schemas.BookRetrieve)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db, book)
