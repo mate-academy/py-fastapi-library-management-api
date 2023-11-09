@@ -8,11 +8,6 @@ from database import SessionLocal
 app = FastAPI()
 
 
-@app.get("/")
-def root() -> dict:
-    return {"info": "Test Page"}
-
-
 def get_db() -> Session:
     db = SessionLocal()
 
