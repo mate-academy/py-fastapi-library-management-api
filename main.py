@@ -37,7 +37,7 @@ def read_authors(
     return get_authors(db, skip=skip, limit=limit)
 
 
-@app.get("/authors/{author_id}", response_model=Author)
+@app.get("/authors/{author_id}/", response_model=Author)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     db_author = get_author_by_id(db, author_id=author_id)
     if db_author is None:
@@ -55,6 +55,6 @@ def read_books(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return get_books(db, skip=skip, limit=limit)
 
 
-@app.get("/books/by_author/{author_id}", response_model=list[Book])
+@app.get("/books/by_author/{author_id}/", response_model=list[Book])
 def read_books_by_author(author_id: int, db: Session = Depends(get_db)):
     return get_books_by_author(db, author_id=author_id)
