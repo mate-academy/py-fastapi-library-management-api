@@ -26,7 +26,7 @@ def read_authors(
     return crud.get_author_list(db=db, skip=skip, limit=limit)
 
 
-@library.get("/authors/{author_id}", response_model=schemas.AuthorList)
+@library.get("/authors/{author_id}/", response_model=schemas.AuthorList)
 def read_single_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author(db=db, author_id=author_id)
 
