@@ -32,11 +32,12 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def create_author_book(db: Session, book: schemas.BookCreate, author_id: int):
-    db_book = models.DBBook(**book.model_dump(), author_id=author_id)
+def create_book(db: Session, book: schemas.BookCreate):
+    db_book = models.DBBook(**book.model_dump())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
+
     return db_book
 
 

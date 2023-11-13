@@ -30,28 +30,29 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=400, detail="Author already registered"
         )
+
     return crud.create_author(db=db, author=author)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
-def read_user(author_id: int, db: Session = Depends(get_db)):
+def read_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_id(db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
+
     return db_author
 
 
-@app.post("/authors/{author_id}/books/", response_model=schemas.Book)
-def create_book(
-    author_id: int, book: schemas.BookCreate, db: Session = Depends(get_db)
-):
-    db_author = crud.get_author_by_id(db, author_id=author_id)
+@app.post("/books/", response_model=schemas.Book)
+def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+    db_author = crud.get_author_by_id(db, author_id=book.author_id)
     if db_author is None:
         raise HTTPException(
             status_code=404,
             detail="You should create book with existing author",
         )
-    return crud.create_author_book(db=db, book=book, author_id=author_id)
+
+    return crud.create_book(db=db, book=book)
 
 
 @app.get("/books/", response_model=list[schemas.Book])
