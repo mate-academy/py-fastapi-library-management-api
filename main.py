@@ -28,7 +28,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return db_author
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     author = crud.get_author(db, author_id)
     return author
@@ -40,7 +40,7 @@ def read_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     return authors
 
 
-@app.delete("/authors/{author_id}", response_model=schemas.Author)
+@app.delete("/authors/{author_id}/", response_model=schemas.Author)
 def delete_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.delete_author(db, author_id)
     return db_author
@@ -52,7 +52,7 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return db_book
 
 
-@app.get("/books/{book_id}", response_model=schemas.Book)
+@app.get("/books/{book_id}/", response_model=schemas.Book)
 def read_book(book_id: int, db: Session = Depends(get_db)):
     book = crud.get_book(db, book_id)
     return book
