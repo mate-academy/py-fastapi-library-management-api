@@ -16,14 +16,14 @@ def get_db() -> Session:
         db.close()
 
 
-@app.get("/authors", response_model=list[schemas.Author])
+@app.get("/authors/", response_model=list[schemas.Author])
 def read_authors(
     skip: int = 0, limit: int = 5, db: Session = Depends(get_db)
 ):
     return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
-@app.post("/authors", response_model=schemas.AuthorCreate)
+@app.post("/authors/", response_model=schemas.AuthorCreate)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return crud.create_author(db=db, author=author)
 
