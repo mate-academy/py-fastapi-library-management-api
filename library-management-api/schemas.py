@@ -1,6 +1,7 @@
 from typing import List, Optional
-from pydantic import BaseModel
 from datetime import date
+
+from pydantic import BaseModel
 
 
 class BookBase(BaseModel):
