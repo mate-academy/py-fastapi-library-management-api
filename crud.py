@@ -51,7 +51,10 @@ def create_book(db: Session, book: BookCreate):
 
 
 def get_book(db: Session, book_id: int):
-    return db.query(Book).filter(Book.id == book_id).first()
+    book = db.query(Book).filter(Book.id == book_id).first()
+    if book is None:
+        raise HTTPException(status_code=404, detail="book not found")
+    return book
 
 
 def delete_book(db: Session, book_id: int):
