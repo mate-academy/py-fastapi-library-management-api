@@ -1,7 +1,8 @@
 from datetime import date
+from typing import List
 
 from pydantic import BaseModel
-from typing import List
+
 
 
 class AuthorBase(BaseModel):
