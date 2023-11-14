@@ -16,7 +16,7 @@ class AuthorList(AuthorBase):
     id: int
 
     class Config:
-        orm_model = True
+        from_attributes = True
 
 
 class BookBase(BaseModel):
@@ -34,4 +34,4 @@ class BookList(BookBase):
     author: AuthorList
 
     class Config:
-        orm_model = True
+        from_attributes = True
