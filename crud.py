@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from db import models, schemas
 
 
-def get_author_by_name(db: Session, name: str,):
+def get_author_by_name(
+    db: Session,
+    name: str,
+):
     return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
 
 
@@ -26,11 +29,17 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_all_books(db: Session, author_id: int = None, page: int = 0, page_size: int = 20):
+def get_all_books(
+    db: Session, author_id: int = None, page: int = 0, page_size: int = 20
+):
     if author_id:
-        queryset = db.query(models.DBBook).filter(
-            models.DBBook.author_id == author_id
-        ).offset(page).limit(page_size).all()
+        queryset = (
+            db.query(models.DBBook)
+            .filter(models.DBBook.author_id == author_id)
+            .offset(page)
+            .limit(page_size)
+            .all()
+        )
         return queryset
 
     return db.query(models.DBBook).offset(page).limit(page_size).all()
