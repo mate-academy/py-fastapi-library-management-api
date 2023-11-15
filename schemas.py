@@ -16,9 +16,8 @@ class BookCreate(BookBase):
 class Book(BookBase):
     id: int
 
-    @classmethod
-    def from_attributes(cls, obj):
-        return cls(**obj.__dict__)
+    class Config:
+        from_attributes = True
 
 
 class AuthorBase(BaseModel):
@@ -34,10 +33,5 @@ class Author(AuthorBase):
     id: int
     books: list[Book] = []
 
-    @classmethod
-    def from_attributes(cls, obj):
-        author_dict = obj.__dict__
-        author_dict["books"] = [
-            Book.from_attributes(book) for book in author_dict.get("books", [])
-        ]
-        return cls(**author_dict)
+    class Config:
+        from_attributes = True
