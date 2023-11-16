@@ -23,7 +23,7 @@ def create_author(db: Session, author: schemas.AuthorCreate):
         db.query(models.Author)
         .filter(models.Author.name == author.name)
         .first()
-    ) is None:
+    ) is not None:
         raise HTTPException(status_code=400, detail="This name already exist")
 
     db_author = models.Author(
