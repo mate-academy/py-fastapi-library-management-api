@@ -29,7 +29,7 @@ def create_author(
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def get_author(author_id: int, db: Session = Depends(get_db)):
     return crud.get_author_by_id(db, author_id)
 
