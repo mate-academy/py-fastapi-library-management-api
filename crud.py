@@ -47,7 +47,10 @@ def get_author_by_id(db: Session, author_id: int):
 
 
 def create_book(db: Session, book: schemas.BookCreate):
-    if db.query(models.Book).filter(models.Book.title == book.title).first():
+    if (
+        db.query(models.Book).filter(models.Book.title == book.title).first()
+        is not None
+    ):
         raise HTTPException(status_code=400, detail="This title already exist")
 
     if (
