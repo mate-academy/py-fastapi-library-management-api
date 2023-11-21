@@ -30,4 +30,4 @@ class BookRead(BookBase):
 class AuthorRead(AuthorBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
-    books: BookRead
+    books: list[BookRead]
