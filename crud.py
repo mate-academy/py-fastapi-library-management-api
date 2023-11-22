@@ -1,18 +1,20 @@
-from sqlalchemy.orm import Session
+from typing import Any
+
+from sqlalchemy.orm import Session, Query
 
 from db import models
 import schemas
 
 
-def get_all_authors(db: Session):
+def get_all_authors(db: Session) -> Query[Any]:
     return db.query(models.DBAuthor).all()
 
 
-def get_author_by_id(db: Session, author_id: int):
+def get_author_by_id(db: Session, author_id: int) -> Query[Any]:
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     db_author = models.DBAuthor(name=author.name, bio=author.bio)
     db.add(db_author)
     db.commit()
@@ -20,15 +22,15 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_all_books(db: Session):
+def get_all_books(db: Session) -> Query[Any]:
     return db.query(models.DBBook).all()
 
 
-def get_books_by_author_id(db: Session, author_id: int):
+def get_books_by_author_id(db: Session, author_id: int) -> Query[Any]:
     return db.query(models.DBBook).filter(models.DBBook.author_id == author_id)
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
