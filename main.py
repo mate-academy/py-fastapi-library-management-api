@@ -31,7 +31,7 @@ def get_all_authors(db: Session = Depends(get_db)):
     return paginate(crud.get_all_authors(db=db))
 
 
-@app.get("/authors/{author_id}")
+@app.get("/authors/{author_id}/")
 def get_author_by_id(author_id: int, db: Session = Depends(get_db)):
     author = crud.get_author_by_id(author_id=author_id, db=db)
     if author is None:
