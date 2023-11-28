@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
 from db import models, schemas
@@ -6,21 +8,21 @@ from db.models import DBAuthor, DBBook
 
 def get_author_by_name(
     db: Session,
-    name: str,
+    name: str
 ) -> DBAuthor | None:
-    return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
+    return db.query(DBAuthor).filter(DBAuthor.name == name).first()
 
 
 def get_all_authors(db: Session, page: int = 0, page_size: int = 20) -> list[DBAuthor]:
-    return db.query(models.DBAuthor).offset(page).limit(page_size).all()
+    return db.query(DBAuthor).offset(page).limit(page_size).all()
 
 
 def get_detailed_author(db: Session, author_id: int = None) -> DBAuthor | None:
-    return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+    return db.query(DBAuthor).filter(DBAuthor.id == author_id).first()
 
 
 def create_author(db: Session, author: schemas.AuthorCreate) -> DBAuthor:
-    db_author = models.DBAuthor(
+    db_author = DBAuthor(
         name=author.name,
     )
     db.add(db_author)
@@ -31,20 +33,20 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> DBAuthor:
 
 
 def get_all_books(
-    db: Session, author_id: int = None, page: int = 0, page_size: int = 20
+    db: Session, author_id: Optional[int] = None, page: int = 0, page_size: int = 20
 ) -> list[DBBook]:
-    queryset = db.query(models.DBBook)
+    queryset = db.query(DBBook)
     if author_id:
         queryset = (
-            db.query(models.DBBook)
-            .filter(models.DBBook.author_id == author_id)
+            queryset
+            .filter(DBBook.author_id == author_id)
         )
     queryset = queryset.offset(page).limit(page_size).all()
     return queryset
 
 
 def create_book(db: Session, book_data: schemas.BookCreate) -> DBBook:
-    db_book = models.DBBook(
+    db_book = DBBook(
         **book_data.model_dump(),
     )
     db.add(db_book)
