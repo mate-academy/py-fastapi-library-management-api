@@ -4,11 +4,11 @@ import schemas
 from db import models
 
 
-def get_all_authors(db: Session, skip: int = 0, limit: int = 100):
+def get_all_authors(db: Session, skip: int = 0, limit: int = 100) -> list[models.Author]:
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
-def create_authors(db: Session, author: schemas.AuthorCreate):
+def create_authors(db: Session, author: schemas.AuthorCreate) -> models.Author:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -20,7 +20,7 @@ def create_authors(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_author_by_id(db: Session, author_id: int):
+def get_author_by_id(db: Session, author_id: int) -> models.Author:
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
 
 
@@ -29,7 +29,7 @@ def get_all_books(
     skip: int = 0,
     limit: int = 100,
     author_id: int = None
-):
+) -> list[models.Book]:
     queryset = db.query(models.DBBook)
 
     if author_id is not None:
@@ -38,7 +38,7 @@ def get_all_books(
     return queryset.offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -51,5 +51,5 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def get_book_by_id(db: Session, author_id: int):
+def get_book_by_id(db: Session, author_id: int) -> models.Book:
     return db.query(models.DBBook).filter(models.DBBook.author_id == author_id).first()
