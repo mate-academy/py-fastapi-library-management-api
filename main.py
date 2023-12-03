@@ -22,9 +22,7 @@ def read_root():
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(
-    db: Session = Depends(get_db), skip: int = 0, limit: int = 100
-):
+def read_authors(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
     return crud.get_author_list(db)[skip : skip + limit]
 
 

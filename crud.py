@@ -9,9 +9,7 @@ def get_author_list(db: Session):
 
 
 def get_author(db: Session, author_id: int) -> models.Author:
-    return (
-        db.query(models.Author).filter(models.Author.id == author_id).first()
-    )
+    return db.query(models.Author).filter(models.Author.id == author_id).first()
 
 
 def get_author_by_name(db: Session, name: str) -> models.Author:
@@ -47,7 +45,7 @@ def get_book(db: Session, book_id: int) -> models.Book:
     return db.query(models.Book).filter(models.Book.id == book_id).first()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
     db_book = models.Book(
         title=book.title,
         summary=book.summary,
