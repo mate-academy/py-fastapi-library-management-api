@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
@@ -39,7 +39,10 @@ def read_books(db: Session = Depends(get_db)):
 
 @app.get("/books/{book_id}/", response_model=schemas.Book)
 def read_book_by_id(book_id: int, db: Session = Depends(get_db)):
-    return crud.get_book_by_id(db, book_id)
+    book = crud.get_book_by_id(db, book_id)
+    if not book:
+        raise HTTPException(status_code=404, detail="Book does not exist")
+    return book
 
 
 @app.get("/books/by_author_id/{author_id}/", response_model=list[schemas.Book])

@@ -10,13 +10,13 @@ def get_all_authors(db: Session) -> list:
     return db.query(models.DBAuthor).all()
 
 
-def get_author_by_name(db: Session, name: str) -> str:
+def get_author_by_name(db: Session, name: str) -> models.DBAuthor:
     return (
         db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
     )
 
 
-def create_author(db: Session, author: schemas.AuthorCreate) -> Session:
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -39,7 +39,7 @@ def get_book_list(
     return queryset.all()
 
 
-def get_book(db: Session, book_id: int) -> str:
+def get_book(db: Session, book_id: int) -> models.DBBook:
     return db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
 
 
