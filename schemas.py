@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 
 from pydantic import BaseModel
@@ -16,7 +18,7 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-    books: list[models.Book] = []
+    books: list[Book] = []
 
     class Config:
         orm_mode = True
@@ -34,7 +36,7 @@ class BookCreate(BookBase):
 
 
 class Book(BookBase):
-    author: models.Author
+    author: Author
     
     class Config:
         orm_mode = True

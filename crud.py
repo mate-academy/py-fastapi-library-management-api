@@ -7,6 +7,10 @@ def get_author(db: Session, author_id: int):
     return db.query(models.Author).filter(models.Author.id == author_id).first()
 
 
+def get_author_by_name(db: Session, name: str):
+    return db.query(models.Author).filter(models.Author.name == name).first()
+
+
 def get_authors(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Author).offset(skip).limit(100).all()
 
