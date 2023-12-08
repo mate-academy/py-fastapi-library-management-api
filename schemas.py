@@ -38,4 +38,3 @@ class Book(BookBase):
     
     class Config:
         orm_mode = True
-g
