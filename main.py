@@ -67,6 +67,10 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_all_books(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    books = crud.get_all_books_with_pagination(db=db, skip=skip, limit=limit)
+def read_all_books(
+    author_id: int = None, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)
+):
+    books = crud.get_all_books_with_pagination(
+        db=db, skip=skip, limit=limit, author_id=author_id
+    )
     return books

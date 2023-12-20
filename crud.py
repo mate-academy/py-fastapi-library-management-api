@@ -47,6 +47,18 @@ def get_book_by_title(db: Session, title: str):
     return db.query(DBBook).filter(DBBook.title == title).first()
 
 
-def get_all_books_with_pagination(db: Session, skip: int = 0, limit: int = 10):
+def get_all_books_with_pagination(
+    db: Session, author_id: int = None, skip: int = 0, limit: int = 10
+):
     books = db.query(DBBook).offset(skip).limit(limit).all()
+
+    if author_id is not None:
+        books = (
+            db.query(DBBook)
+            .filter(DBBook.author_id == author_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
     return books
