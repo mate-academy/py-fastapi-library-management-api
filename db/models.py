@@ -6,6 +6,7 @@ from db.database import Base
 
 class DBAuthor(Base):
     """Database model for authors."""
+
     __tablename__ = "authors"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -17,6 +18,7 @@ class DBAuthor(Base):
 
 class DBBook(Base):
     """Database model for books."""
+
     __tablename__ = "books"
 
     id = Column(Integer, primary_key=True, index=True)
