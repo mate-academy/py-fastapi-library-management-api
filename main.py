@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 import crud
 import schemas
 from db.database import SessionLocal
+from db.models import Author, Book
 
 app = FastAPI()
 
@@ -18,7 +19,7 @@ def get_db() -> Session:
 
 
 @app.get("/")
-def root():
+def root() -> dict:
     return {"Hello": "World"}
 
 
@@ -27,7 +28,7 @@ def read_authors(
         db: Session = Depends(get_db),
         skip: int = 0,
         limit: int = 10
-):
+) -> list[Author]:
     return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
@@ -35,7 +36,7 @@ def read_authors(
 def create_author(
         author: schemas.AuthorCreate,
         db: Session = Depends(get_db),
-):
+) -> Author:
     db_author = crud.get_author_name(db=db, name=author.name)
 
     if db_author:
@@ -50,7 +51,7 @@ def create_author(
 def read_single_author(
         author_id: int,
         db: Session = Depends(get_db),
-):
+) -> Author | None:
     db_author = crud.get_single_author(db=db, author_id=author_id)
 
     if db_author is None:
@@ -68,7 +69,7 @@ def read_books(
         db: Session = Depends(get_db),
         skip: int = 0,
         limit: int = 10
-):
+) -> list[Book]:
     return crud.get_all_books(
         db=db,
         author_id=author_id,
@@ -81,5 +82,5 @@ def read_books(
 def create_book(
         book: schemas.BookCreate,
         db: Session = Depends(get_db),
-):
+) -> Book:
     return crud.create_book(db=db, book=book)
