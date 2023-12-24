@@ -9,7 +9,7 @@ def get_all_authors(
         db: Session,
         skip: int = 0,
         limit: int = 10
-) -> list[Author] | None:
+) -> list[Author]:
     return db.query(models.Author).offset(skip).limit(limit).all()
 
 
@@ -44,7 +44,7 @@ def get_all_books(
         author_id: int | None = None,
         skip: int = 0,
         limit: int = 100
-) -> list[Book] | None:
+) -> list[Book]:
     queryset = db.query(models.Book)
 
     if author_id is not None:
