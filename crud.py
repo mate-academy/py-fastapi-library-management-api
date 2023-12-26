@@ -14,7 +14,7 @@ def get_all_authors(
     return db.query(models.Author).limit(limit).offset(offset).all()
 
 
-def get_author_name(db: Session, name: str) -> models.Author:
+def get_author_name(db: Session, name: str) -> models.Author | None:
     return (
         db.query(models.Author).filter(models.Author.name == name).first()
     )
