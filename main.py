@@ -51,6 +51,8 @@ def delete_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
     if db_author:
         return crud.delete_author(db=db, author_id=author_id)
+    else:
+        raise HTTPException(status_code=404, detail="Author not found")
 
 
 @app.get("/books/", response_model=list[schemas.Book])
