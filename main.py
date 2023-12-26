@@ -18,12 +18,15 @@ def get_db() -> Session:
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_authors(skip: int = 0,
+                 limit: int = 100,
+                 db: Session = Depends(get_db)) -> list[schemas.Author]:
     return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
-def read_author(author_id: int, db: Session = Depends(get_db)):
+def read_author(author_id: int,
+                db: Session = Depends(get_db)) -> schemas.Author:
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
 
     if db_author is None:
@@ -33,7 +36,8 @@ def read_author(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/authors/", response_model=schemas.Author)
-def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+def create_author(author: schemas.AuthorCreate,
+                  db: Session = Depends(get_db)) -> schemas.Author:
     db_author = crud.get_author_by_name(db=db, name=author.name)
 
     if db_author:
@@ -46,11 +50,9 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.post("/authors/{author_id}/books/", response_model=schemas.Book)
-def create_book_for_author(
-    author_id: int,
-    book: schemas.BookCreate,
-    db: Session = Depends(get_db),
-):
+def create_book_for_author(author_id: int,
+                           book: schemas.BookCreate,
+                           db: Session = Depends(get_db)) -> schemas.Book:
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
 
     if db_author is None:
@@ -60,12 +62,15 @@ def create_book_for_author(
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def read_books(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_books(skip: int = 0,
+               limit: int = 100,
+               db: Session = Depends(get_db)) -> list[schemas.Book]:
     return crud.get_all_books(db=db, skip=skip, limit=limit)
 
 
 @app.get("/books/{author_id}/", response_model=schemas.Book)
-def read_book_by_author(author_id: int, db: Session = Depends(get_db)):
+def read_book_by_author(author_id: int,
+                        db: Session = Depends(get_db)) -> schemas.Book:
     db_book = crud.get_book_by_id(db=db, book_id=author_id)
 
     if db_book is None:
