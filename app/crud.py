@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime
-
 from sqlalchemy.orm import Session
 
 from app import schemas, models
 
 
 def get_book(db: Session, book_id: int):
-    return db.query(models.Book).filter(models.Book.id==book_id).first()
+    return db.query(models.Book).filter(models.Book.id == book_id).first()
 
 
 def get_all_books(
@@ -42,7 +40,9 @@ def create_book(db: Session, book: schemas.BookCreate):
 
 
 def get_author(db: Session, author_id: int):
-    return db.query(models.Author).filter(models.Author.id == author_id).first()
+    return db.query(models.Author).filter(
+        models.Author.id == author_id
+    ).first()
 
 
 def get_all_authors(db: Session, skip: int = 0, limit: int = 100):

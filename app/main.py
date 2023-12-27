@@ -44,13 +44,17 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_authors(
+        skip: int = 0,
+        limit: int = 100,
+        db: Session = Depends(get_db)
+):
     authors = crud.get_all_authors(db, skip=skip, limit=limit)
     return authors
 
 
 @app.get("/authors/{author_id}", response_model=schemas.Author)
-def read_book(author_id: int, db: Session = Depends(get_db)):
+def read_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author(db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
