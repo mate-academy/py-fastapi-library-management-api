@@ -26,6 +26,12 @@ def get_db():
 
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+    if crud.check_author_exists(db=db, author=author):
+        raise HTTPException(
+            status_code=400,
+            detail="Author with such name or bio already exists!"
+        )
+
     return crud.create_author(db=db, author=author)
 
 

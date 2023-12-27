@@ -1,3 +1,7 @@
+from sqlalchemy import exists
+
+import models
+import schemas
 from models import Author
 from models import Book
 from schemas import BookCreate
@@ -18,6 +22,14 @@ def get_authors(db: Session, skip: int = 0, limit: int = 10):
 
 def get_author(db: Session, author_id: int):
     return db.query(Author).filter(Author.id == author_id).first()
+
+
+def check_author_exists(db: Session, author: schemas.AuthorCreate):
+    db_author_exists = db.query(exists().where(
+        (models.Author.name == author.name) | (models.Author.bio == author.bio)
+    )).scalar()
+
+    return db_author_exists
 
 
 def create_book(db: Session, book: BookCreate, author_id: int):
