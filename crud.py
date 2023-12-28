@@ -28,8 +28,7 @@ def get_book_list(db: Session, skip: int = 0, limit: int = 5):
     return db.query(models.Book).offset(skip).limit(limit).all()
 
 
-def filter_book_by_author_id(db: Session,
-                             author_id: int):
+def filter_book_by_author_id(db: Session, author_id: int):
     return db.query(models.Book).filter(models.Book.author_id == author_id)
 
 

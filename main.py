@@ -13,7 +13,6 @@ app = FastAPI()
 
 def get_db() -> Session:
     db = SessionLocal()
-
     try:
         yield db
     finally:
