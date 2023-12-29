@@ -41,7 +41,7 @@ def create_author(
         author: schemas.AuthorCreate,
         db: Session = Depends(get_db)
 ):
-    db_author = crud.get_author_by_title(db=db, name=author.name)
+    db_author = crud.get_author(db=db, author_id=author.id)
 
     if db_author:
         raise HTTPException(
