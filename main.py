@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List, Optional
 
 import schemas
 import crud
@@ -22,12 +23,12 @@ def read_authors(
         skip: int = 0,
         limit: int = 2,
         db: Session = Depends(get_db)
-):
+) -> List[schemas.Author]:
     return crud.get_all_authors(db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
-def read_single_author(author_id: int, db: Session = Depends(get_db)):
+def read_single_author(author_id: int, db: Session = Depends(get_db)) -> schemas.Author:
     db_author = crud.get_author(db=db, author_id=author_id)
 
     if db_author is None:
@@ -40,7 +41,7 @@ def read_single_author(author_id: int, db: Session = Depends(get_db)):
 def create_author(
         author: schemas.AuthorCreate,
         db: Session = Depends(get_db)
-):
+) -> schemas.Author:
     db_author = crud.get_author(db=db, author_id=author.id)
 
     if db_author:
@@ -57,14 +58,14 @@ def read_books(
         limit: int = 2,
         author_id: int | None = None,
         db: Session = Depends(get_db)
-               ):
+               ) -> List[schemas.Book]:
     return (
         crud.get_all_books(db=db, author_id=author_id, skip=skip, limit=limit)
     )
 
 
 @app.get("/books/{book_id}/", response_model=schemas.Book)
-def read_single_book(book_id: int, db: Session = Depends(get_db)):
+def read_single_book(book_id: int, db: Session = Depends(get_db)) -> schemas.Book:
     db_book = crud.get_book(db=db, book_id=book_id)
 
     if db_book is None:
@@ -74,5 +75,5 @@ def read_single_book(book_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/books/", response_model=schemas.Book)
-def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)) -> schemas.Book:
     return crud.create_book(db=db, book=book)
