@@ -11,6 +11,11 @@ from validators import unique_constraint_handler
 app = FastAPI()
 
 
+@app.get("/")
+def index():
+    return {"detail": "library management api"}
+
+
 def get_db() -> Session:
     db = SessionLocal()
     try:
