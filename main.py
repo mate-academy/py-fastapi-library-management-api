@@ -20,7 +20,7 @@ def get_db() -> Session:
 
 
 @app.exception_handler(ValueError)
-def handle_unique_constraint_error(request: Request, exc: ValueError):
+def handle_validation_error(request: Request, exc: ValueError):
     error = exc.errors()[-1]
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
