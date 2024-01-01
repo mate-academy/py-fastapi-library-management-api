@@ -130,3 +130,4 @@ dmypy.json
 .idea/
 
 data_generator.py
+book_catalog.db

@@ -15,7 +15,8 @@ def load_data():
                 book_data = item.get("book")
 
                 book_data["publication_date"] = datetime.strptime(
-                    book_data["publication_date"], "%Y-%m-%d").date()
+                    book_data["publication_date"], "%Y-%m-%d"
+                ).date()
 
                 author = Author(**author_data)
                 book = Book(**book_data, author=author)

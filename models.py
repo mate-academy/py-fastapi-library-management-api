@@ -19,7 +19,7 @@ class Book(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False, unique=True, index=True)
-    summary = Column(String, nullable=False)
+    summary = Column(String)
     publication_date = Column(Date, nullable=False)
     author_id = Column(Integer, ForeignKey("author.id"))
 

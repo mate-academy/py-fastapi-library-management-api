@@ -1,7 +1,6 @@
 from datetime import date
-from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AuthorBase(BaseModel):
@@ -14,10 +13,9 @@ class AuthorCreate(AuthorBase):
 
 
 class Author(AuthorBase):
-    id: int
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        orm_mode = True
+    id: int
 
 
 class ValidationErrorResponse(BaseModel):
@@ -36,8 +34,7 @@ class BookCreate(BookBase):
 
 
 class Book(BookBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     author: Author
-
-    class Config:
-        orm_model = True
