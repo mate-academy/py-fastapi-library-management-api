@@ -9,6 +9,7 @@ from dependencies import (fetch_books_with_optional_filter,
                           validate_author_uniqueness,
                           validate_book_uniqueness)
 
+
 app = FastAPI()
 
 
