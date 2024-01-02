@@ -19,7 +19,6 @@ class Author(AuthorBase):
 
 
 class ValidationErrorResponse(BaseModel):
-    field: str = Field(example="Field_name")
     message: str = Field(example="Detail of validation error")
 
 
