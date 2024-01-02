@@ -15,7 +15,7 @@ class AuthorCreate(AuthorBase):
 class Author(AuthorBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -33,5 +33,5 @@ class Book(BookBase):
     id: int
     author: Author
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

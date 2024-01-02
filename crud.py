@@ -1,20 +1,22 @@
 from sqlalchemy.orm import Session
 from db import models
 from schemas import AuthorCreate, BookCreate
+from sqlalchemy import select
 
 
 def get_all_authors(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(models.Author).offset(skip).limit(limit)
+    query = select(models.Author).offset(skip).limit(limit)
+    return db.execute(query).scalars().all()
 
 
 def get_authors_by_name(db: Session, name: str):
-    return (
-        db.query(models.Author).filter(models.Author.name == name).first()
-    )
+    query = select(models.Author).filter(models.Author.name == name)
+    return db.execute(query).scalars().first()
 
 
 def get_author(db: Session, author_id: int):
-    return db.query(models.Author).filter(models.Author.id == author_id).first()
+    query = select(models.Author).filter(models.Author.id == author_id)
+    return db.execute(query).scalars().first()
 
 
 def create_author(db: Session, author: AuthorCreate):
@@ -32,12 +34,14 @@ def get_all_books(db: Session,
                   author_id: int | None = None,
                   skip: int = 0,
                   limit: int = 10):
-    queryset = db.query(models.Book)
-    
-    if author_id:
-        queryset = queryset.filter(models.Book.author_id == author_id)
+    queryset = select(models.Book)
 
-    return queryset.offset(skip).limit(limit)
+    if author_id:
+        queryset = queryset.where(models.Book.author_id == author_id)
+
+    queryset = queryset.offset(skip).limit(limit)
+
+    return db.execute(queryset).scalars().all()
 
 
 def create_book(db: Session, book: BookCreate):
