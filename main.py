@@ -48,7 +48,7 @@ def create_author(
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/books/", response_model=list[schemas.BookBase])
+@app.get("/books/", response_model=list[schemas.Book])
 def read_book_list(
     book_list: Session = Depends(fetch_books_with_optional_filter)
 ):
@@ -57,7 +57,7 @@ def read_book_list(
 
 @app.post(
     "/books/",
-    response_model=schemas.BookCreate,
+    response_model=schemas.Book,
     status_code=status.HTTP_201_CREATED,
     responses={
         422: {
