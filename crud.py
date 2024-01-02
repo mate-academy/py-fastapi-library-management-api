@@ -1,6 +1,8 @@
 from typing import List
 
+from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 import schemas
@@ -15,21 +17,19 @@ def get_author_by_id(db: Session, author_id: int) -> Author:
     return db.execute(select(Author).where(Author.id == author_id)).scalar()
 
 
-def get_author_by_name(db: Session, author_name: str) -> Author:
-    return db.execute(
-        select(Author).where(Author.name == author_name)
-    ).scalar()
-
-
 def create_author(
         db: Session, author: schemas.AuthorCreate | None = None
 ) -> Author:
     author = Author(name=author.name, bio=author.bio)
-
-    db.add(author)
-    db.commit()
-    db.refresh(author)
-
+    try:
+        db.add(author)
+        db.commit()
+        db.refresh(author)
+    except IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Author with the name: '{author.name}' already exists.",
+        )
     return author
 
 
@@ -45,10 +45,6 @@ def filter_book_by_author_id(
     ).scalars().all()
 
 
-def get_book_by_title(db: Session, book_title: str) -> Book:
-    return db.execute(select(Book).where(Book.title == book_title)).scalar()
-
-
 def create_book(db: Session, book: schemas.BookCreate) -> Book:
     book = Book(
         title=book.title,
@@ -56,9 +52,13 @@ def create_book(db: Session, book: schemas.BookCreate) -> Book:
         publication_date=book.publication_date,
         author_id=book.author_id,
     )
-
-    db.add(book)
-    db.commit()
-    db.refresh(book)
-
+    try:
+        db.add(book)
+        db.commit()
+        db.refresh(book)
+    except IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Book with the title: '{book.title}' already exists.",
+        )
     return book

@@ -4,7 +4,6 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 import crud
-import schemas
 from database import SessionLocal
 from models import Author, Book
 
@@ -17,30 +16,6 @@ def get_db() -> Session:
         db.close()
 
 
-def validate_author_uniqueness(
-    author: schemas.AuthorCreate, db: Session = Depends(get_db)
-) -> None:
-    existing_author = crud.get_author_by_name(db=db, author_name=author.name)
-
-    if existing_author:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Author with the name: '{author.name}' already exists.",
-        )
-
-
-def validate_book_uniqueness(
-    book: schemas.BookCreate, db: Session = Depends(get_db)
-) -> None:
-    existing_book = crud.get_book_by_title(db=db, book_title=book.title)
-
-    if existing_book:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Book with the title: '{book.title}' already exists.",
-        )
-
-
 def validate_author_id(
     author_id: int, db: Session = Depends(get_db)
 ) -> Union[Author, None]:
@@ -51,7 +26,6 @@ def validate_author_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Author with id {author_id} not found",
         )
-
     return author
 
 

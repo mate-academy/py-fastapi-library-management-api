@@ -5,9 +5,7 @@ import crud
 import schemas
 from dependencies import (fetch_books_with_optional_filter,
                           get_db,
-                          validate_author_id,
-                          validate_author_uniqueness,
-                          validate_book_uniqueness)
+                          validate_author_id)
 
 
 app = FastAPI()
@@ -46,7 +44,6 @@ def read_author(author=Depends(validate_author_id)):
 def create_author(
     author: schemas.AuthorCreate,
     db: Session = Depends(get_db),
-    validate_author_uniqueness: None = Depends(validate_author_uniqueness),
 ):
     return crud.create_author(db=db, author=author)
 
@@ -72,6 +69,5 @@ def read_book_list(
 def create_book(
     book: schemas.BookCreate,
     db: Session = Depends(get_db),
-    validate_book_uniqueness: None = Depends(validate_book_uniqueness),
 ):
     return crud.create_book(db=db, book=book)
