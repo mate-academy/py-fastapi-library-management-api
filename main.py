@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from dependencies import (fetch_books_with_optional_filter, get_db,
-                          validate_author_id, validate_author_uniqueness,
+from dependencies import (fetch_books_with_optional_filter,
+                          get_db,
+                          validate_author_id,
+                          validate_author_uniqueness,
                           validate_book_uniqueness)
 
 app = FastAPI()
