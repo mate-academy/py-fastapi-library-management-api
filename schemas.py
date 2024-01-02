@@ -13,7 +13,7 @@ class AuthorCreate(AuthorBase):
 
 
 class Author(AuthorBase):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict()
 
     id: int
 
@@ -33,7 +33,7 @@ class BookCreate(BookBase):
 
 
 class Book(BookBase):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict()
 
     id: int
     author: Author
