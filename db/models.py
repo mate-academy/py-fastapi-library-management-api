@@ -5,7 +5,7 @@ from .engine import Base
 
 
 class DBAuthor(Base):
-    __tablename__ = "author"
+    __tablename__ = "authors"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(63), nullable=False, unique=True)
@@ -14,11 +14,11 @@ class DBAuthor(Base):
 
 
 class DBBook(Base):
-    __tablename__ = "book"
+    __tablename__ = "books"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(63), nullable=False)
-    summary = Column(String(255), nullable=False)
+    summary = Column(String(255))
     publication_date = Column(Date, nullable=False)
-    author_id = Column(Integer, ForeignKey("author.id"))
+    author_id = Column(Integer, ForeignKey("authors.id"))
     author = relationship("DBAuthor", back_populates="books")

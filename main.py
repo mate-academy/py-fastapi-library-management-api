@@ -1,12 +1,18 @@
-from fastapi import FastAPI
-from db.engine import session
-from fastapi import Depends
+from fastapi import FastAPI, Depends
 from fastapi.responses import RedirectResponse
-from fastapi import HTTPException
-from starlette.status import HTTP_404_NOT_FOUND
 
-import schemas
-import crud
+from sqlalchemy.orm import Session
+
+from db.engine import session
+from crud import (get_all_authors,
+                  create_author,
+                  get_author_by_id,
+                  get_all_books,
+                  create_book,
+                  get_books_by_author_id)
+from schemas import Author, AuthorCreate, Book, BookCreate
+
+
 app = FastAPI()
 
 
@@ -23,37 +29,31 @@ def get_docs():
     return RedirectResponse(url="/docs")
 
 
-@app.get("/authors/", response_model=list[schemas.Author])
-def get_authors(db=Depends(get_db)):
-    return crud.get_all_authors(db=db)
+@app.get("/authors/", response_model=list[Author])
+def get_authors(db: Session = Depends(get_db)):
+    return get_all_authors(db=db)
 
 
-@app.post("/authors/", response_model=schemas.Author)
-def create_author(author: schemas.AuthorCreate, db=Depends(get_db)):
-    return crud.create_author(db=db, author=author)
+@app.post("/authors/", response_model=Author)
+def author_create(author: AuthorCreate, db: Session = Depends(get_db)):
+    return create_author(db=db, author=author)
 
 
-@app.get("/authors/{author_id}/", response_model=schemas.Author)
-def get_author_by_id(author_id, db=Depends(get_db)):
-    author = crud.get_author_by_id(db=db, author_id=author_id)
-    if not author:
-        raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail="Author with this id does not exist",
-        )
-    return author
+@app.get("/authors/{author_id}/", response_model=Author)
+def get_by_id_author(author_id, db: Session = Depends(get_db)):
+    return get_author_by_id(db=db, author_id=author_id)
 
 
-@app.get("/books/", response_model=list[schemas.Book])
-def get_books(db=Depends(get_db)):
-    return crud.get_all_books(db=db)
+@app.get("/books/", response_model=list[Book])
+def get_books(db: Session = Depends(get_db)):
+    return get_all_books(db=db)
 
 
-@app.post("/books/", response_model=schemas.BookCreate)
-def create_book(book: schemas.BookCreate, db=Depends(get_db)):
-    return crud.create_book(db=db, book=book)
+@app.post("/books/", response_model=BookCreate)
+def book_create(book: BookCreate, db: Session = Depends(get_db)):
+    return create_book(db=db, book=book)
 
 
-@app.get("/books/{author_id}/", response_model=schemas.Book)
-def get_books_by_author_id(author_id, db=Depends(get_db)):
-    return crud.get_books_by_author_id(db=db, author_id=author_id)
+@app.get("/books/{author_id}/", response_model=Book)
+def books_get_by_author_id(author_id, db: Session = Depends(get_db)):
+    return get_books_by_author_id(db=db, author_id=author_id)

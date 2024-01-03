@@ -1,17 +1,21 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from db import models
-import schemas
+from schemas import AuthorCreate, BookCreate
 
 
 def get_author_by_id(db: Session, author_id):
-    return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+    author = db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return author
 
 
 def get_all_authors(db: Session, skip=0, limit=100):
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: AuthorCreate):
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio
@@ -30,7 +34,7 @@ def get_books_by_author_id(db: Session, author_id: int):
     return db.query(models.DBBook).filter(models.DBBook.author_id == author_id).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: BookCreate):
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,

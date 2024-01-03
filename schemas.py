@@ -14,7 +14,7 @@ class AuthorCreate(AuthorBase):
 class Author(AuthorBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
 
 
@@ -32,5 +32,5 @@ class Book(BookBase):
     id: int
     author: Author
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
