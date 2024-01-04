@@ -47,12 +47,7 @@ def get_book_by_id(db: Session,
 
 def create_book(db: Session,
                 book: schemas.BookCreate) -> "db.query":
-    db_book = models.Book(
-        title=book.title,
-        summary=book.summary,
-        publication_date=book.publication_date,
-        author_id=book.author_id,
-    )
+    db_book = models.Book(**book.model_dump())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
@@ -79,12 +74,8 @@ def get_author_by_name(db: Session,
 def create_book_for_author(db: Session,
                            book: schemas.BookCreate,
                            author_id: int) -> "db.query":
-    db_book = models.Book(
-        title=book.title,
-        summary=book.summary,
-        publication_date=book.publication_date,
-        author_id=author_id,
-    )
+    db_book = models.Book(**book.model_dump())
+    db_book.author_id = author_id
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
