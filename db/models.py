@@ -20,5 +20,3 @@ class DBBook(Base):
     publication_date = Column(Date, nullable=False)
     author_id = Column(Integer, ForeignKey("author.id"))
     author = relationship("DBAuthor", back_populates="books")
-
-

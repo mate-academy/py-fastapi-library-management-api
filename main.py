@@ -28,30 +28,23 @@ def read_authors(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
     book: str | None = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     return crud.get_all_authors(db=db, book=book, skip=skip, limit=limit)
 
 
 @app.post("/authors/", response_model=schemas.Author)
-def create_author(
-        author: schemas.AuthorCreate,
-        db: Session = Depends(get_db)
-):
+def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_name(db=db, name=author.name)
     if db_author:
         raise HTTPException(
-            status_code=400,
-            detail="Author with this name already exists"
+            status_code=400, detail="Author with this name already exists"
         )
     return crud.create_author(db=db, author=author)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
-def get_single_author(
-        author_id: int,
-        db: Session = Depends(get_db)
-):
+def get_single_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
     if not db_author:
         raise HTTPException(status_code=404, detail="No author with this id")
@@ -64,14 +57,14 @@ def read_book(
     limit: int = Query(10, le=100),
     publication_date: date | None = None,
     author: str | None = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     return crud.get_book_list(
         db=db,
         publication_date=publication_date,
         author=author,
         skip=skip,
-        limit=limit
+        limit=limit,
     )
 
 

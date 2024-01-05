@@ -35,4 +35,3 @@ class Author(AuthorBase):
 
     class Config:
         orm_mode = True
-

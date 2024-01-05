@@ -7,10 +7,7 @@ import schemas
 
 
 def get_all_authors(
-        db: Session,
-        limit: int = 10,
-        skip: int = 0,
-        book: str | None = None
+    db: Session, limit: int = 10, skip: int = 0, book: str | None = None
 ):
     queryset = db.query(models.DBAuthor)
 
@@ -29,14 +26,15 @@ def get_author_by_name(db: Session, name: str):
 
 
 def get_author_by_id(db: Session, author_id: int):
-    return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+    return (
+        db.query(models.DBAuthor)
+        .filter(models.DBAuthor.id == author_id)
+        .first()
+    )
 
 
 def create_author(db: Session, author: schemas.AuthorCreate):
-    db_author = models.DBAuthor(
-        name=author.name,
-        bio=author.bio
-    )
+    db_author = models.DBAuthor(name=author.name, bio=author.bio)
     db.add(db_author)
     db.commit()
     db.refresh(db_author)
@@ -48,15 +46,12 @@ def get_book_list(
     skip: int = 0,
     limit: int = 10,
     publication_date: date | None = None,
-    author: str | None = None
+    author: str | None = None,
 ):
-
     queryset = db.query(models.DBBook)
 
     if author:
-        queryset = queryset.filter(
-            models.DBBook.author.has(name=author)
-        )
+        queryset = queryset.filter(models.DBBook.author.has(name=author))
 
     if publication_date:
         queryset = queryset.filter(
@@ -77,10 +72,9 @@ def create_book(db: Session, book: schemas.BookCreate):
         title=book.title,
         summary=book.summary,
         publication_date=book.publication_date,
-        author_id=book.author_id
+        author_id=book.author_id,
     )
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
     return db_book
-
