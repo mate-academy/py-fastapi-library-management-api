@@ -39,10 +39,7 @@ def get_all_books(
 
 def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.Book(
-        title=book.title,
-        summary=book.summary,
-        publication_date=book.publication_date,
-        author_id=book.author_id,
+        **book.model_dump()
     )
     db.add(db_book)
     db.commit()

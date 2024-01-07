@@ -20,7 +20,7 @@ def get_db() -> Session:
 
 @app.get("/")
 def root() -> dict:
-    return {"message": "Hello World! There is Library API using FastAPI"}
+    return {"message": "Hello World! Here is Library API using FastAPI"}
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
