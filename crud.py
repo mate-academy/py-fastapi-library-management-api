@@ -4,23 +4,27 @@ from db import models
 import schemas
 
 
-def get_book_by_title(db: Session, title: str):
+def get_book_by_title(db: Session, title: str) -> schemas.Book:
     return (
         db.query(models.DBBook).filter(models.DBBook.title == title).first()
     )
 
 
-def get_author_by_name(db: Session, name: str):
+def get_author_by_name(db: Session, name: str) -> schemas.Author:
     return (
         db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
     )
 
 
-def get_all_book(db: Session, skip: int = 0, limit: int = 100):
+def get_all_book(
+        db: Session,
+        skip: int = 0,
+        limit: int = 100
+) -> list[schemas.Book]:
     return db.query(models.DBBook).offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> schemas.Book:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -34,16 +38,20 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def get_all_authors(db: Session, skip: int = 0, limit: int = 100):
+def get_all_authors(
+        db: Session,
+        skip: int = 0,
+        limit: int = 100
+) -> list[schemas.Author]:
     return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
 
-def get_author(db: Session, author_id: int):
+def get_author(db: Session, author_id: int) -> schemas.Author:
     return (db.query(models.DBAuthor)
             .filter(models.DBAuthor.id == author_id).first())
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> schemas.Book:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio
