@@ -40,3 +40,26 @@ def read_author_by_id(author_id: int, db: Session = Depends(get_db)):
     if db_author is None:
         raise HTTPException(status_code=404, detail=f"Author with id {author_id} not found")
     return db_author
+
+
+@app.get("/books/", response_model=list[schemas.BookRetrieve])
+def read_all_books(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.get_all_books(db, skip=skip, limit=limit)
+
+
+@app.get("/books/{id}", response_model=schemas.BookRetrieve)
+def read_book_by_id(book_id: int, db: Session = Depends(get_db)):
+    db_book = crud.get_book_by_id(db, book_id=book_id)
+    if db_book is None:
+        raise HTTPException(status_code=404, detail=f"book with id {book_id} not found")
+    return db_book
+
+
+@app.get("/books/authors/{author_id}", response_model=list[schemas.BookRetrieve])
+def read_books_by_author(author_id: int, db: Session = Depends(get_db)):
+    return crud.filter_books_by_author(db=db, author_id=author_id)
+
+
+@app.post("authors/{author_id}/books/", response_model=list[schemas.BookRetrieve])
+def create_book_for_author(author_id: int, book: schemas.BookCreate, db: Session = Depends(get_db)):
+    return crud.create_author_book(db=db, author_id=author_id, book=book)
