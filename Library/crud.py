@@ -19,7 +19,11 @@ def get_author_by_id(db: Session, author_id: int):
     return db.query(models.Author).filter(models.Author.id == author_id).first()
 
 
-def create_book(db: Session, book: schemas.BookCreate, author_id: int):
+def get_author_by_name(db: Session, author_name: str):
+    return db.query(models.Author).filter(models.Author.name == author_name).first()
+
+
+def create_author_book(db: Session, book: schemas.BookCreate, author_id: int):
     db_book = models.Book(**book.model_dump(), author_id=author_id)
     db.add(db_book)
     db.commit()

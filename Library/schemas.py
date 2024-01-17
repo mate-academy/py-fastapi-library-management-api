@@ -5,16 +5,16 @@ from pydantic import BaseModel
 from Library.models import Book
 
 
-class UserBase(BaseModel):
+class AuthorBase(BaseModel):
     name: str
     bio: str
 
 
-class UserCreate(UserBase):
+class AuthorCreate(AuthorBase):
     pass
 
 
-class UserRetrieve(UserBase):
+class AuthorRetrieve(AuthorBase):
     id: int
     book: list[Book] = []
 
