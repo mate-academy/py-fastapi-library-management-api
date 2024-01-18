@@ -1,18 +1,20 @@
+from typing import Type
+
 from sqlalchemy.orm import Session
 
 import schemas
 from db import models
 
 
-def get_author_list(db: Session):
+def get_author_list(db: Session) -> list[Type[models.DBAuthor]]:
     return db.query(models.DBAuthor).all()
 
 
-def get_author(db: Session, author_id: int):
+def get_author(db: Session, author_id: int) -> Type[models.DBAuthor] | None:
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -24,7 +26,9 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_book_list(db: Session, author_id: int | None = None):
+def get_book_list(
+    db: Session, author_id: int | None = None
+) -> list[Type[models.DBBook]]:
     queryset = db.query(models.DBBook)
 
     if author_id:
@@ -35,7 +39,7 @@ def get_book_list(db: Session, author_id: int | None = None):
 
 def create_book_for_a_specific_author(
     db: Session, author_id: int, book: schemas.BookCreate
-):
+) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
