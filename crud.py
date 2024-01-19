@@ -1,21 +1,23 @@
-from typing import Type
+import json
+from typing import Type, List, Dict
 
+from fastapi import Query
 from sqlalchemy.orm import Session
 
 import schemas
-from db import models
+from db.models import DBAuthor, DBBook
 
 
-def get_author_list(db: Session) -> list[Type[models.DBAuthor]]:
-    return db.query(models.DBAuthor).all()
+def get_author_list(db: Session) -> Query:
+    return db.query(DBAuthor).all()
 
 
-def get_author(db: Session, author_id: int) -> Type[models.DBAuthor] | None:
-    return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_id).first()
+def get_author(db: Session, author_id: int) -> Query:
+    return db.query(DBAuthor).filter(DBAuthor.id == author_id).first()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
-    db_author = models.DBAuthor(
+def create_author(db: Session, author: schemas.AuthorCreate) -> DBAuthor:
+    db_author = DBAuthor(
         name=author.name,
         bio=author.bio,
     )
@@ -26,21 +28,19 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.DBAuthor:
     return db_author
 
 
-def get_book_list(
-    db: Session, author_id: int | None = None
-) -> list[Type[models.DBBook]]:
-    queryset = db.query(models.DBBook)
+def get_book_list(db: Session, author_id: int | None = None) -> Query:
+    queryset = db.query(DBBook)
 
     if author_id:
-        queryset = queryset.filter(models.DBBook.author_id == author_id)
+        queryset = queryset.filter(DBBook.author_id == author_id)
 
     return queryset.all()
 
 
 def create_book_for_a_specific_author(
     db: Session, author_id: int, book: schemas.BookCreate
-) -> models.DBBook:
-    db_book = models.DBBook(
+) -> DBBook:
+    db_book = DBBook(
         title=book.title,
         summary=book.summary,
         publication_date=book.publication_date,
