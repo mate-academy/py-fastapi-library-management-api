@@ -1,6 +1,3 @@
-import json
-from typing import Type, List, Dict
-
 from fastapi import Query
 from sqlalchemy.orm import Session
 
