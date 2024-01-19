@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+alembic
+alembic.ini
+
+requirements.txt
+
+
+
 # Distribution / packaging
 .Python
 build/
