@@ -1,15 +1,14 @@
-from fastapi import Query
 from sqlalchemy.orm import Session
 
 import schemas
 from db.models import DBAuthor, DBBook
 
 
-def get_author_list(db: Session) -> Query:
+def get_author_list(db: Session) -> list[DBAuthor]:
     return db.query(DBAuthor).all()
 
 
-def get_author(db: Session, author_id: int) -> Query:
+def get_author(db: Session, author_id: int) -> DBAuthor | None:
     return db.query(DBAuthor).filter(DBAuthor.id == author_id).first()
 
 
@@ -25,7 +24,7 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> DBAuthor:
     return db_author
 
 
-def get_book_list(db: Session, author_id: int | None = None) -> Query:
+def get_book_list(db: Session, author_id: int | None = None) -> list[DBBook]:
     queryset = db.query(DBBook)
 
     if author_id:
