@@ -24,7 +24,7 @@ class BookCreate(BookBase):
 
 class Author(AuthorBase):
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: int
     books: List[BookBase]
 
