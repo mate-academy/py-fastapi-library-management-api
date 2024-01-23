@@ -1,5 +1,5 @@
 import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List
 
 
@@ -23,16 +23,14 @@ class BookCreate(BookBase):
 
 
 class Author(AuthorBase):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: int
     books: List[BookBase]
 
-    class Config:
-        orm_mode = True
-
 
 class Book(BookBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     authors: List[Author]
-
-    class Config:
-        orm_mode = True

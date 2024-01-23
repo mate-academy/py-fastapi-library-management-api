@@ -37,8 +37,7 @@ def get_book(db: Session, book_id: int):
 
 def create_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.DBAuthor(
-        name=author.name,
-        bio=author.bio,
+        **author.model_dump()
     )
     db.add(db_author)
     db.commit()
@@ -49,10 +48,7 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 
 def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.DBBook(
-        title=book.title,
-        summary=book.summary,
-        publication_date=book.publication_date,
-        authors=book.authors
+        **book.model_dump()
     )
     db.add(db_book)
     db.commit()
