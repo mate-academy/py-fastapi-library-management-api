@@ -1,12 +1,14 @@
 from __future__ import annotations
-
-import models
-import schemas
+from typing import Optional
 
 from sqlalchemy.orm import Session
 
+import models
+import schemas
+from models import Book, Author
 
-def get_book(db: Session, book_id: int):
+
+def get_book(db: Session, book_id: int) -> Optional[Book]:
     return (
         db.query(models.Book).filter(models.Book.id == book_id).first()
     )
@@ -17,7 +19,7 @@ def get_all_books(
         author_id: int | None = None,
         skip: int = 0,
         limit: int = 100
-):
+) -> list[Book]:
     queryset = db.query(models.Book)
 
     if author_id:
@@ -26,7 +28,7 @@ def get_all_books(
     return queryset.offset(skip).limit(limit).all()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> Book:
 
     db_book = models.Book(
         title=book.title,
@@ -42,7 +44,7 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def get_author(db: Session, author_id: int):
+def get_author(db: Session, author_id: int) -> Optional[Author]:
     return (
         db.query(models.Author).filter(models.Author.id == author_id).first()
     )
@@ -52,11 +54,11 @@ def get_all_authors(
         db: Session,
         skip: int = 0,
         limit: int = 100
-):
+) -> list[Author]:
     return db.query(models.Author).offset(skip).limit(limit).all()
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(db: Session, author: schemas.AuthorCreate) -> Author:
     db_author = models.Author(
         name=author.name,
         bio=author.bio,
