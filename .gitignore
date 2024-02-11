@@ -128,3 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea/
+alembic.ini
+alembic
+library_catalog.db
+.flake8
+pyproject.toml
