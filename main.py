@@ -33,7 +33,7 @@ def read_author(
     return crud.get_all_author(db=db, skip=skip, limit=limit)
 
 
-@app.get("/authors/{author_id}", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_single_author(
         author_id: int, db: Session = Depends(get_db)
 ) -> schemas.Author:
