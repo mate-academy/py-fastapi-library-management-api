@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -19,9 +20,9 @@ def get_db() -> Session:
 
 @app.post("/author/", response_model=schemas.Author)
 def create_author(
-        author: schemas.AuthorCreate,
-        db: Session = Depends(get_db)
-):
+    author: schemas.AuthorCreate,
+    db: Session = Depends(get_db)
+) -> schemas.Author:
     db_author = crud.get_author_by_name(db=db, name=author.name)
 
     if db_author:
@@ -32,28 +33,30 @@ def create_author(
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/author/{skip}/{limit}/", response_model=list[schemas.Author])
-def read_authors_with_pagination(skip: int, limit: int, db: Session = Depends(get_db)):
+@app.get("/author/{skip}/{limit}/", response_model=List[schemas.Author])
+def read_authors_with_pagination(skip: int, limit: int, db: Session = Depends(get_db)) -> List[schemas.Author]:
     db_author = crud.get_authors_with_pagination(db=db, skip=skip, limit=limit)
     return db_author
 
 
 @app.get("/author/{pk}/", response_model=schemas.Author)
-def read_authors_by_id(pk: int, db: Session = Depends(get_db)):
+def read_authors_by_id(pk: int, db: Session = Depends(get_db)) -> schemas.Author:
     db_author = crud.get_author_by_id(db=db, pk=pk)
     return db_author
 
-@app.get("/author/", response_model=list[schemas.Author])
-def read_authors_list(db: Session = Depends(get_db)):
+
+@app.get("/author/", response_model=List[schemas.Author])
+def read_authors_list(db: Session = Depends(get_db)) -> List[schemas.Author]:
     db_author = crud.get_authors_with_pagination(db=db)
     return db_author
 
+
 @app.post("/book/{name}/", response_model=schemas.Book)
 def create_book(
-        name: str,
-        book: schemas.BookCreate,
-        db: Session = Depends(get_db)
-):
+    name: str,
+    book: schemas.BookCreate,
+    db: Session = Depends(get_db)
+) -> schemas.Book:
     db_book = crud.get_book_by_title(db=db, title=book.title)
 
     if db_book:
@@ -70,14 +73,14 @@ def create_book(
     return crud.create_book_for_specific_author(db=db, book=book, name=name)
 
 
-@app.get("/book/{skip}/{limit}/", response_model=list[schemas.Book])
-def read_books_with_pagination(skip: int, limit: int, db: Session = Depends(get_db)) -> dict:
+@app.get("/book/{skip}/{limit}/", response_model=List[schemas.Book])
+def read_books_with_pagination(skip: int, limit: int, db: Session = Depends(get_db)) -> List[schemas.Book]:
     db_author = crud.get_books_with_pagination(db=db, skip=skip, limit=limit)
     return db_author
 
 
-@app.get("/book/", response_model=list[schemas.Book])
-def filter_books_by_author_id(pk: int | None = None, db: Session = Depends(get_db)):
+@app.get("/book/", response_model=List[schemas.Book])
+def filter_books_by_author_id(pk: int | None = None, db: Session = Depends(get_db)) -> List[schemas.Book]:
     db_author = crud.get_author_by_id(pk=pk, db=db)
     if not db_author:
         raise HTTPException(
@@ -90,3 +93,4 @@ def filter_books_by_author_id(pk: int | None = None, db: Session = Depends(get_d
             status_code=200,
             detail=f"Books list dont have any book related to Author with id {pk}"
         )
+    return db_books
