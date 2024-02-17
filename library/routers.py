@@ -17,7 +17,7 @@ def get_db() -> Session:
         db.close()
 
 
-@router.get("/authors/{author_id}", response_model=schemas.Author)
+@router.get("/authors/{author_id}/", response_model=schemas.Author)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author(db, author_id=author_id)
     if db_author is None:
