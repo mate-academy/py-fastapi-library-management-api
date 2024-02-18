@@ -4,26 +4,13 @@ from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 import crud
-import schemas
-from db.database import SessionLocal
+from schemas import Author, AuthorCreate, Book, BookCreate
+from db.utils import get_db
 
 app = FastAPI()
 
 
-def get_db() -> Session:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-@app.get("/")
-def root() -> dict:
-    return {"message": "Hello World!"}
-
-
-@app.get("/authors/", response_model=list[schemas.Author])
+@app.get("/authors/", response_model=list[Author])
 def read_authors(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
@@ -33,8 +20,8 @@ def read_authors(
     return crud.get_all_authors(db=db, book=book, skip=skip, limit=limit)
 
 
-@app.post("/authors/", response_model=schemas.Author)
-def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+@app.post("/authors/", response_model=Author)
+def create_author(author: AuthorCreate, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_name(db=db, name=author.name)
     if db_author:
         raise HTTPException(
@@ -43,7 +30,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/authors/{author_id}/", response_model=schemas.Author)
+@app.get("/authors/{author_id}/", response_model=Author)
 def get_single_author(author_id: int, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
     if not db_author:
@@ -51,7 +38,7 @@ def get_single_author(author_id: int, db: Session = Depends(get_db)):
     return db_author
 
 
-@app.get("/books/", response_model=list[schemas.Book])
+@app.get("/books/", response_model=list[Book])
 def read_book(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, le=100),
@@ -68,7 +55,7 @@ def read_book(
     )
 
 
-@app.get("/books/{book_id}/", response_model=schemas.Book)
+@app.get("/books/{book_id}/", response_model=Book)
 def read_single_book(book_id: int, db: Session = Depends(get_db)):
     db_book = crud.get_book(db=db, book_id=book_id)
     if not db_book:
@@ -76,6 +63,6 @@ def read_single_book(book_id: int, db: Session = Depends(get_db)):
     return db_book
 
 
-@app.post("/books/", response_model=schemas.Book)
-def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+@app.post("/books/", response_model=Book)
+def create_book(book: BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
