@@ -21,3 +21,24 @@ def create_author(db: Session, new_author: schemas.AuthorCreate):
     db.commit()
     db.refresh(db_author)
     return db_author
+
+
+def get_book_by_title(db: Session, book_title: str):
+    return db.query(models.DBBook).filter(models.DBBook.title == book_title).first()
+
+
+def get_all_books(db: Session):
+    return db.query(models.DBBook).all()
+
+
+def create_book(db: Session, new_book: schemas.BookCreate):
+    db_book = models.DBBook(
+        title=new_book.title,
+        summary=new_book.summary,
+        publication_date=new_book.publication_date,
+        author_id=new_book.author_id
+    )
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+    return db_book
