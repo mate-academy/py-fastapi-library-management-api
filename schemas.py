@@ -11,6 +11,7 @@ class BookBase(BaseModel):
 
 class BookCreate(BookBase):
     author_id: int
+    book_id: int
 
 
 class Book(BookBase):
@@ -27,7 +28,7 @@ class AuthorBase(BaseModel):
 
 
 class AuthorCreate(AuthorBase):
-    pass
+    author_id: int
 
 
 class Author(AuthorBase):

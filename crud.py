@@ -19,8 +19,9 @@ def get_author(db: Session, author_id: int):
     return db.query(models.Author).filter(models.Author.id == author_id).first()
 
 
-def create_author_book(db: Session, book: schemas.BookCreate, author_id: int):
-    db_book = models.Book(**book.dict())
+def create_book(db: Session, book: schemas.BookCreate):
+    db_book = models.Book(title=book.title, summary=book.summary,
+                          publication_date=book.publication_date, author_id=book.author_id)
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
