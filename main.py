@@ -18,7 +18,7 @@ def get_db():
         db.close()
 
 
-@app.post("/authors/", response_model=schemas.Author)
+@app.post("/author/", response_model=schemas.Author)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return crud.create_author(db=db, author=author)
 
@@ -37,7 +37,7 @@ def read_authors(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return authors
 
 
-@app.post("/books/", response_model=schemas.Book)
+@app.post("/book/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
 
@@ -48,7 +48,7 @@ def read_books(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return books
 
 
-@app.get("/books/{author_id}", response_model=List[schemas.Book])
+@app.get("/books/author/{author_id}", response_model=List[schemas.Book])
 def read_books_by_author(author_id: int, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     books = crud.get_books_by_author(db, author_id=author_id, skip=skip, limit=limit)
     return books
