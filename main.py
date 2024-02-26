@@ -1,5 +1,3 @@
-from typing import Union
-
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -26,6 +24,16 @@ def read_root() -> dict:
 @app.get("/authors/", response_model=list[schemas.Author])
 def get_all_authors(db: Session = Depends(get_db)):
     return crud.get_all_authors(db)
+
+
+@app.get("/skip_authors/", response_model=list[schemas.Author])
+def get_skip_authors(skip_value: int, db: Session = Depends(get_db)):
+    return crud.get_skip_authors(db, skip_value)
+
+
+@app.get("/limit_authors/", response_model=list[schemas.Author])
+def get_limit_authors(limit_value: int, db: Session = Depends(get_db)):
+    return crud.get_limit_authors(db, limit_value)
 
 
 @app.get("/author/", response_model=schemas.Author)
@@ -59,6 +67,16 @@ def create_author(new_author: schemas.AuthorCreate, db: Session = Depends(get_db
 @app.get("/books/", response_model=list[schemas.Book])
 def get_all_books(db: Session = Depends(get_db)):
     return crud.get_all_books(db)
+
+
+@app.get("/skip_books/", response_model=list[schemas.Book])
+def get_skip_books(skip_value: int, db: Session = Depends(get_db)):
+    return crud.get_skip_books(skip_value, db)
+
+
+@app.get("/limit_books/", response_model=list[schemas.Book])
+def get_limit_books(limit_value: int, db: Session = Depends(get_db)):
+    return crud.get_limit_books(limit_value, db)
 
 
 @app.get("/book/", response_model=schemas.Book)

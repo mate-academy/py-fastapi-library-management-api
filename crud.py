@@ -12,6 +12,15 @@ def get_all_authors(db: Session):
     return db.query(models.DBAuthor).all()
 
 
+def get_skip_authors(db: Session, skip_value: int):
+    output_list = db.query(models.DBAuthor).all()
+    return output_list[skip_value:]
+
+
+def get_limit_authors(db: Session, limit_value: int):
+    return db.query(models.DBAuthor).limit(limit_value)
+
+
 def create_author(db: Session, new_author: schemas.AuthorCreate):
     db_author = models.DBAuthor(
         name=new_author.name,
@@ -29,6 +38,15 @@ def get_book_by_title(db: Session, book_title: str):
 
 def get_all_books(db: Session):
     return db.query(models.DBBook).all()
+
+
+def get_skip_books(skip_value: int, db: Session):
+    output_list = db.query(models.DBBook).all()
+    return output_list[skip_value:]
+
+
+def get_limit_books(limit_value: int, db: Session):
+    return db.query(models.DBBook).limit(limit_value)
 
 
 def create_book(db: Session, new_book: schemas.BookCreate):
