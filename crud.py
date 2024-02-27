@@ -9,7 +9,7 @@ def get_author_by_id(db: Session, author_id: int):
 
 
 def get_author_by_name(db: Session, author_name: str):
-    return db.query(models.DBAuthor).filter(models.DBAuthor.id == author_name).first()
+    return db.query(models.DBAuthor).filter(models.DBAuthor.name == author_name).first()
 
 
 def get_all_authors(db: Session):
