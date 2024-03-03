@@ -17,11 +17,6 @@ def get_db():
         db.close()
 
 
-@app.get('/')
-def root():
-    return {"messages": "Hello World!"}
-
-
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return crud.create_author(db=db, author=author)

@@ -10,7 +10,6 @@ class Author(Base):
     name = Column(String, unique=True, index=True)
     bio = Column(String)
 
-    # Связь с книгами, один ко многим
     books = relationship("Book", back_populates="author")
 
 
