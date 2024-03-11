@@ -18,6 +18,7 @@ def get_db() -> Session:
         db.close()
 
 
+# The response_model indicates the return type annotations for endpoint
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(
         author: schemas.AuthorCreate, db: Session = Depends(get_db)

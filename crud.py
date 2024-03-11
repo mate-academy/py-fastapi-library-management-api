@@ -1,11 +1,13 @@
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 
 import models
 import schemas
 
 
-def create_author(db: Session, author: schemas.AuthorCreate):
+def create_author(
+        db: Session, author: schemas.AuthorCreate
+) -> models.DBAuthor:
     author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -17,17 +19,17 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return author
 
 
-def authors(db: Session):
+def authors(db: Session) -> List[models.DBAuthor]:
     return db.query(models.DBAuthor).all()
 
 
-def author(db: Session, author_id: int):
+def author(db: Session, author_id: int) -> models.DBAuthor:
     return db.query(models.DBAuthor).filter(
         models.DBAuthor.id == author_id
     ).first()
 
 
-def create_book(db: Session, book: schemas.BookCreate):
+def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -41,7 +43,7 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def books(db: Session, author_id: Optional[int] = None):
+def books(db: Session, author_id: Optional[int] = None) -> List[models.DBBook]:
     queryset = db.query(models.DBBook)
 
     if author_id:
