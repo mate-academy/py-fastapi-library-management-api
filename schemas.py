@@ -46,6 +46,7 @@ class BookList(BookBase):
     class Config:
         from_attributes = True
 
+
 class BookRetrive(BookBase):
     id: int
     author: AuthorBase

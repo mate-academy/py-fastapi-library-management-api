@@ -4,7 +4,6 @@ import models
 from schemas import AuthorCreate, BookCreate
 
 
-
 def get_all_authors(db: Session):
     authors = db.query(models.Authors).all()
     return db.query(models.Authors).all()
@@ -51,4 +50,3 @@ def create_book(db: Session, book_create: BookCreate):
     db.commit()
     db.refresh(db_book)
     return db_book
-
