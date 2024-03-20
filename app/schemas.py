@@ -13,7 +13,7 @@ class AuthorCreate(AuthorBase):
 
 
 class Author(AuthorBase):
-    id: int
+    id: int  # noqa:VNE003
 
     class Config:
         from_attributes = True
@@ -31,7 +31,7 @@ class BookCreate(BookBase):
 
 
 class Book(BookBase):
-    id: int
+    id: int  # noqa:VNE003
 
     class Config:
         from_attributes = True
