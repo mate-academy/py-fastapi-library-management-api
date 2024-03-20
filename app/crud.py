@@ -6,7 +6,7 @@ from app import schemas
 
 def get_author(db: Session, author_id: int) -> Optional[models.Author]:
     return (db.query(models.Author).
-            filter(models.Author.id_ == author_id).first())
+            filter(models.Author.id == author_id).first())
 
 
 def get_authors(db: Session,
