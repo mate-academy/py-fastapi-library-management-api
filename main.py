@@ -1,7 +1,10 @@
+from typing import Optional
+
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
+import models
 import schemas
 from database import SessionLocal
 
@@ -27,12 +30,15 @@ def read_all_authors(
         skip: int = 0,
         limit: int = 10,
         db: Session = Depends(get_db)
-):
+) -> Optional[models.DBAuthor]:
     return crud.get_all_authors(db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.AuthorList)
-def read_single_author(author_id: int, db: Session = Depends(get_db)):
+def read_single_author(
+        author_id: int,
+        db: Session = Depends(get_db)
+) -> Optional[models.DBAuthor]:
     db_author = crud.get_author(db=db, author_id=author_id)
 
     if db_author is None:
@@ -48,7 +54,7 @@ def read_single_author(author_id: int, db: Session = Depends(get_db)):
 def create_author(
         author: schemas.AuthorCreate,
         db: Session = Depends(get_db)
-):
+) -> Optional[models.DBAuthor]:
     author_name = crud.get_author_by_name(db=db, name=author.name)
     if author_name:
         raise HTTPException(
@@ -64,11 +70,11 @@ def read_all_books(
         db: Session = Depends(get_db),
         skip: int = 0,
         limit: int = 10,
-):
+) -> Optional[models.DBBook]:
     db_book = crud.get_all_books(db, author_id=author_id, skip=skip, limit=limit)
 
     if db_book is None:
-        return HTTPException(
+        raise HTTPException(
             status_code=404,
             detail="Book not found"
         )
@@ -79,7 +85,7 @@ def read_all_books(
 def create_book(
         book: schemas.BookCreate,
         db: Session = Depends(get_db)
-):
+) -> Optional[models.DBBook]:
     book_title = crud.get_book_by_title(db=db, title=book.title)
     if book_title:
         raise HTTPException(
