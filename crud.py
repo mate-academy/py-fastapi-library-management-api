@@ -2,22 +2,28 @@ from abc import abstractmethod, ABC
 from typing import List
 from fastapi import HTTPException
 from sqlalchemy.exc import NoResultFound
-from sqlalchemy.orm import Session
 from sqlalchemy import select
+from database import SessionLocal
 from models import Author, Book
 
 
 class AbstractDBManager(ABC):
-    def __init__(self, session: Session) -> None:
-        self.session = session
+    model = None
 
-    @abstractmethod
-    def get_all_items(self, *args, **kwargs):
-        pass
+    def __init__(self, session=None) -> None:
+        if not session:
+            self.session = SessionLocal()
+        else:
+            self.session = session
 
-    @abstractmethod
+    def get_all_items(self, skip: int, limit: int):
+        return self.session.scalars(select(self.model).offset(skip).limit(limit))
+
     def get_single_item_by_id(self, item_id: int):
-        pass
+        try:
+            return self.session.execute(select(self.model).where(self.model.id == item_id)).scalar_one()
+        except NoResultFound:
+            raise HTTPException(status_code=404, detail="Object with such id does not exist")
 
     @abstractmethod
     def create_new_item(self, item):
@@ -29,19 +35,11 @@ class AbstractDBManager(ABC):
 
 
 class AuthorDBManager(AbstractDBManager):
-
-    def get_all_items(self, skip: int, limit: int) -> List[Author]:
-        return self.session.scalars(select(Author).offset(skip).limit(limit))
-
-    def get_single_item_by_id(self, item_id: int) -> Author:
-        try:
-            return self.session.execute(select(Author).where(Author.id == item_id)).scalar_one()
-        except NoResultFound:
-            raise HTTPException(status_code=404, detail="Author with such id does not exist")
+    model = Author
 
     def get_item_by_name(self, name: str):
         try:
-            return self.session.execute(select(Author).where(Author.name == name)).scalar_one()
+            return self.session.execute(select(self.model).where(self.model.name == name)).scalar_one()
         except NoResultFound:
             return None
 
@@ -49,7 +47,7 @@ class AuthorDBManager(AbstractDBManager):
         self.validate_item(item)
         try:
             with self.session as session:
-                new_author = Author(name=item.name, bio=item.bio)
+                new_author = self.model(name=item.name, bio=item.bio)
                 session.add(new_author)
                 session.commit()
                 session.refresh(new_author)
@@ -66,8 +64,10 @@ class AuthorDBManager(AbstractDBManager):
 
 
 class BookDBManager(AbstractDBManager):
+    model = Book
+
     def get_all_items(self, author_id: int | None, skip: int, limit: int) -> List[Book]:
-        query = select(Book).offset(skip).limit(limit)
+        query = select(self.model).offset(skip).limit(limit)
         if author_id:
             query = query.where(author_id == author_id)
         return self.session.scalars(query)
@@ -76,7 +76,7 @@ class BookDBManager(AbstractDBManager):
         self.validate_item(item)
         try:
             with self.session as session:
-                new_book = Book(title=item.title, summary=item.summary, publication_date=item.publication_date,
+                new_book = self.model(title=item.title, summary=item.summary, publication_date=item.publication_date,
                                 author_id=item.author_id)
                 session.add(new_book)
                 session.commit()
@@ -96,13 +96,10 @@ class BookDBManager(AbstractDBManager):
     def get_item_by_author_and_title(self, author_id: int, title: str):
         try:
             return (self.session
-                    .execute(select(Book).where(Book.title == title, Book.author_id == author_id)).scalar_one())
+                    .execute(select(self.model).where(self.model.title == title, self.model.author_id == author_id)).scalar_one())
         except NoResultFound:
             return None
 
     def validate_author(self, author_id: int):
-        manager = AuthorDBManager(self.session)
+        manager = AuthorDBManager()
         manager.get_single_item_by_id(author_id)
-
-    def get_single_item_by_id(self, item_id: int):
-        pass
