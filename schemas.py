@@ -1,4 +1,3 @@
-import datetime
 from typing import List
 
 from pydantic import BaseModel
@@ -16,7 +15,7 @@ class AuthorCreate(AuthorBase):
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: datetime.date
+    publication_date: str
 
 
 class BookCreate(BookBase):
@@ -33,7 +32,7 @@ class Book(BookBase):
 
 class Author(AuthorBase):
     id: int
-    books = List[Book]
+    books: List[Book]
 
     class Config:
         from_attributes = True
