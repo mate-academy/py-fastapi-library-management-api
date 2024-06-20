@@ -1,0 +1,6 @@
+fastapi
+sqlalchemy
+alembic
+pydantic
+uvicorn
+mako
