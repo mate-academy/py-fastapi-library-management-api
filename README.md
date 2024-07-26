@@ -51,5 +51,6 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
      - Create a new book for a specific author.
      - Retrieve a list of books with pagination (skip, limit).
      - Filter books by author ID.
+     - Retrieve a single book by ID.
      
 Upon completion, you should have a functional library management API that allows the user to manage authors and their books.
