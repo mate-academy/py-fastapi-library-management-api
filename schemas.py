@@ -2,24 +2,22 @@ from datetime import date
 
 from pydantic import BaseModel
 
-from models import Book
 
-
-class Author(BaseModel):
+class AuthorBase(BaseModel):
     name: str
     bio: str
 
 
-class AuthorCreate(Author):
+class AuthorCreate(AuthorBase):
     pass
 
 
-class Author(Author):
+class Author(AuthorBase):
     id: int
-    books: Book
+    books: list["Book"] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class BookBase(BaseModel):
@@ -36,4 +34,4 @@ class Book(BookBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
