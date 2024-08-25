@@ -23,7 +23,18 @@ def get_author_retrieve(db: Session, author_id: int):
     ).first()
 
 
-def get_book_list(db: Session, author_id: int | None = None, skip: int = 0, limit: int = 10):
+def get_author_by_name(db: Session, name: str):
+    return db.query(models.DBAuthor).filter(
+        models.DBAuthor.name == name
+    ).first()
+
+
+def get_book_list(
+        db: Session,
+        author_id: int | None = None,
+        skip: int = 0,
+        limit: int = 10
+):
     queryset = db.query(models.DBBook)
 
     if author_id is not None:
@@ -33,7 +44,7 @@ def get_book_list(db: Session, author_id: int | None = None, skip: int = 0, limi
 
 
 def get_book_retrieve(db: Session, book_id: int):
-    return db.query(models.DBBook).filter(models.DBBook.id == book_id)
+    return db.query(models.DBBook).filter(models.DBBook.id == book_id).first()
 
 
 def create_book(db: Session, book: schemas.BookCreate):
