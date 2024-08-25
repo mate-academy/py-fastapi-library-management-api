@@ -20,4 +20,4 @@ class DBBook(Base):
     title = Column(String)
     summary = Column(String)
     publication_date = Column(Date)
-    author_id = Column(Integer, ForeignKey(Author.id))
+    author_id = Column(Integer, ForeignKey(DBAuthor.id))
