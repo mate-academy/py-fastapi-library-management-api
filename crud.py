@@ -1,7 +1,10 @@
+from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from database import models, schemas
+import schemas
+import models
 
 
 def get_all_authors(
@@ -21,9 +24,21 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
         name=author.name,
         bio=author.bio
     )
-    db.add(db_author)
-    db.commit()
-    db.refresh(db_author)
+    try:
+        db.add(db_author)
+        db.commit()
+        db.refresh(db_author)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail='Error creating author: Integrity constraint violated'
+        )
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400, detail=str(e)
+        )
     return db_author
 
 
@@ -49,7 +64,19 @@ def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
         publication_date=book.publication_date,
         author_id=book.author_id,
     )
-    db.add(db_book)
-    db.commit()
-    db.refresh(db_book)
+    try:
+        db.add(db_book)
+        db.commit()
+        db.refresh(db_book)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail='Error creating book: Integrity constraint violated'
+        )
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400, detail=str(e)
+        )
     return db_book

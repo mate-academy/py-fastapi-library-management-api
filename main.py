@@ -1,9 +1,15 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import (
+    FastAPI,
+    Depends,
+    HTTPException
+)
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from database import schemas, crud
+import schemas
+import crud
 from database.engine import SessionLocal
+
 
 app = FastAPI()
 
@@ -30,7 +36,7 @@ def get_authors(
     return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
-@app.get('/authors/{author_id}', response_model=schemas.Author)
+@app.get('/authors/{author_id}/', response_model=schemas.Author)
 def get_author(
         author_id: int,
         db: Session = Depends(get_db)
@@ -76,10 +82,10 @@ def create_book(
         db: Session = Depends(get_db)
 ) -> schemas.Book:
     author = crud.get_author(db=db, author_id=book.author_id)
-
     if author is None:
         raise HTTPException(
             status_code=400,
             detail='Author does not exist'
         )
+
     return crud.create_book(db=db, book=book)

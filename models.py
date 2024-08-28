@@ -1,4 +1,10 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Date
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    Date
+)
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
