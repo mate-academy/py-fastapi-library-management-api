@@ -4,18 +4,18 @@ from typing import List, Optional
 import models
 import schema
 
-def get_all_authors(db: Session) -> List[models.DBAuthor]:
-    return db.query(models.DBAuthor).all()
+def get_all_authors(db: Session) -> List[models.Author]:
+    return db.query(models.Author).all()
 
 
-def get_author_by_id(db: Session, author_id: int) -> Optional[models.DBAuthor]:
-    return db.query(models.DBAuthor).filter(
-        models.DBAuthor.id == author_id
+def get_author_by_id(db: Session, author_id: int) -> Optional[models.Author]:
+    return db.query(models.Author).filter(
+        models.Author.id == author_id
     ).first()
 
 
-def create_new_author(db: Session, author: schema.AuthorCreate) -> models.DBAuthor:
-    db_author = models.DBAuthor(
+def create_new_author(db: Session, author: schema.AuthorCreate) -> models.Author:
+    db_author = models.Author(
         name=author.name,
         bio=author.bio
     )
@@ -25,19 +25,19 @@ def create_new_author(db: Session, author: schema.AuthorCreate) -> models.DBAuth
     return db_author
 
 
-def get_all_books(db: Session, skip: int = 0, limit: int = 10) -> List[models.DBBook]:
-    query = db.query(models.DBBook)
+def get_all_books(db: Session, skip: int = 0, limit: int = 10) -> List[models.Book]:
+    query = db.query(models.Book)
     return query.offset(skip).limit(limit).all()
 
 
-def get_book_by_id(db: Session, book_id: int) -> Optional[models.DBBook]:
-    return db.query(models.DBBook).filter(
-        models.DBBook.id == book_id
+def get_book_by_id(db: Session, book_id: int) -> Optional[models.Book]:
+    return db.query(models.Book).filter(
+        models.Book.id == book_id
     ).first()
 
 
-def create_new_book(db: Session, book: schema.BookCreate) -> models.DBBook:
-    db_book = models.DBBook(
+def create_new_book(db: Session, book: schema.BookCreate) -> models.Book:
+    db_book = models.Book(
         title=book.title,
         description=book.description,
         publication_date=book.publication_date,
