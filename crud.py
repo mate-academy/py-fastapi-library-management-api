@@ -1,11 +1,16 @@
+from select import select
+from sqlite3 import IntegrityError
+
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
 import models
 import schema
 
-def get_all_authors(db: Session) -> List[models.Author]:
-    return db.query(models.Author).all()
+def get_all_authors(db: Session, skip: int = 0, limit: int = 10) -> List[models.Author]:
+    stmt = select(models.Author).offset(skip).limit(limit)
+    result = db.execute(stmt)
+    return result.scalars().all()
 
 
 def get_author_by_id(db: Session, author_id: int) -> Optional[models.Author]:
@@ -36,14 +41,18 @@ def get_book_by_id(db: Session, book_id: int) -> Optional[models.Book]:
     ).first()
 
 
-def create_new_book(db: Session, book: schema.BookCreate) -> models.Book:
-    db_book = models.Book(
-        title=book.title,
-        description=book.description,
-        publication_date=book.publication_date,
-        author_id=book.author_id,
-    )
-    db.add(db_book)
-    db.commit()
-    db.refresh(db_book)
-    return db_book
+def create_new_book(db: Session, book: schema.BookCreate) -> Book:
+    try:
+        db_book = models.Book(
+            title=book.title,
+            description=book.description,
+            publication_date=book.publication_date,
+            author_id=book.author_id,
+        )
+        db.add(db_book)
+        db.commit()
+        db.refresh(db_book)
+        return db_book
+    except IntegrityError:
+        db.rollback()
+        raise
