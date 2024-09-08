@@ -1,23 +1,21 @@
-from select import select
-from sqlite3 import IntegrityError
-
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
 import models
 import schema
 
+
 def get_all_authors(db: Session, skip: int = 0, limit: int = 10) -> List[models.Author]:
     stmt = select(models.Author).offset(skip).limit(limit)
     result = db.execute(stmt)
     return result.scalars().all()
 
-
 def get_author_by_id(db: Session, author_id: int) -> Optional[models.Author]:
-    return db.query(models.Author).filter(
-        models.Author.id == author_id
-    ).first()
-
+    stmt = select(models.Author).filter_by(id=author_id)
+    result = db.execute(stmt)
+    return result.scalar_one_or_none()
 
 def create_new_author(db: Session, author: schema.AuthorCreate) -> models.Author:
     db_author = models.Author(
@@ -29,19 +27,18 @@ def create_new_author(db: Session, author: schema.AuthorCreate) -> models.Author
     db.refresh(db_author)
     return db_author
 
-
 def get_all_books(db: Session, skip: int = 0, limit: int = 10) -> List[models.Book]:
-    query = db.query(models.Book)
-    return query.offset(skip).limit(limit).all()
+    stmt = select(models.Book).offset(skip).limit(limit)
+    result = db.execute(stmt)
+    return result.scalars().all()
 
 
 def get_book_by_id(db: Session, book_id: int) -> Optional[models.Book]:
-    return db.query(models.Book).filter(
-        models.Book.id == book_id
-    ).first()
+    stmt = select(models.Book).filter_by(id=book_id)
+    result = db.execute(stmt)
+    return result.scalar_one_or_none()
 
-
-def create_new_book(db: Session, book: schema.BookCreate) -> Book:
+def create_new_book(db: Session, book: schema.BookCreate) -> models.Book:
     try:
         db_book = models.Book(
             title=book.title,
