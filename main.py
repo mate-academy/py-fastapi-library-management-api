@@ -79,8 +79,14 @@ def create_book(
     try:
         new_book = crud.create_new_book(db, book=book)
         return new_book
-    except IntegrityError:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred while creating the book."
-        )
+    except IntegrityError as e:
+        if "UNIQUE constraint failed" in str(e.orig):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="A book with this title already exists."
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid data. Please check your input."
+            )
