@@ -128,3 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea/
+
+# Migrations
+alembic/versions
+
+# database
+library.db
