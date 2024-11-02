@@ -77,7 +77,7 @@ def read_single_book(book_id: int, db: Session = Depends(get_db)):
 
     if db_book is None:
         raise HTTPException(
-            status_code=404, detail="Book not found"
+            status_code=404, detail="Book not found!"
         )
     return db_book
 
