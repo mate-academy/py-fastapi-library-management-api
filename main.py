@@ -63,6 +63,6 @@ def read_authors(
     return crud.list_books(db=db, skip=skip, limit=limit)
 
 
-@app.get("/books/{author_id}", response_model=List[schemas.Book])
+@app.get("/books/{author_id}/", response_model=List[schemas.Book])
 def read_books_by_author(author_id: int, db: Session = Depends(get_db)):
     return crud.get_books_by_author_id(db=db, author_id=author_id)
