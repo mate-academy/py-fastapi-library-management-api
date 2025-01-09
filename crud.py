@@ -8,9 +8,7 @@ import schemas
 
 
 def list_pagination(
-    db: Session, model: Type[Author] | Type[Book],
-        skip: int,
-        limit: int
+    db: Session, model: Type[Author] | Type[Book], skip: int, limit: int
 ):
     return db.query(model).offset(skip).limit(limit).all()
 
@@ -52,6 +50,7 @@ def create_book(db: Session, book=schemas.BookCreate):
 def list_books(db: Session, skip: int, limit: int):
     """Retrieve a list of books with pagination (skip, limit)."""
     return list_pagination(db, Book, skip, limit)
+
 
 def get_books_by_author_id(db: Session, author_id: int):
     db_books = db.query(Book).filter(Book.author_id == author_id).all()

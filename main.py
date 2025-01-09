@@ -47,6 +47,7 @@ def read_authors(
 def get_author(author_id: int, db: Session = Depends(get_db)):
     return crud.single_author(db=db, author_id=author_id)
 
+
 @app.post("/book/create/", response_model=schemas.BookCreate)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
@@ -60,6 +61,7 @@ def read_authors(
 ):
 
     return crud.list_books(db=db, skip=skip, limit=limit)
+
 
 @app.get("/books/{author_id}", response_model=List[schemas.Book])
 def read_books_by_author(author_id: int, db: Session = Depends(get_db)):
