@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "py-fastapi-library-management-api"
+version = "0.1.0"
+description = ""
+authors = ["Vladyslav Timofieiev <vladislav.tmf@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["all"], version = "^0.115.6"}
+sqlalchemy = "^2.0.37"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
