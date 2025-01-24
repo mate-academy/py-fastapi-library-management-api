@@ -26,7 +26,7 @@ def read_authors(db: Session = Depends(get_db)):
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_name(db, author.name)
 
-    if db_author is None:
+    if db_author:
         raise HTTPException(status_code=400, detail="Such author already exists")
     return crud.create_author(db, author)
 
