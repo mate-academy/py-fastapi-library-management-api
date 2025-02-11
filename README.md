@@ -53,3 +53,11 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
      - Filter books by author ID.
      
 Upon completion, you should have a functional library management API that allows the user to manage authors and their books.
+
+
+# Task Completed ✅
+
+Below is a confirmation with a screenshot:
+
+![Task Completed](screenshots/endpoints.png "Screenshot of Completed Task")
+![Task Completed](screenshots/objects.png "Screenshot of Completed Task")
