@@ -50,7 +50,6 @@ def create_author(
 ):
 
     author_by_name = crud.get_author_by_name(db=db, name=author.name)
-    print(author_by_name)
     if author_by_name:
         raise HTTPException(
             status_code=409,
