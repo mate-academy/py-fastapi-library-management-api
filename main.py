@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 
 import crud
 from database import SessionLocal
-from schemas import Author, Book, AuthorCreate, BookCreate
+from schemas import (Author, Book,
+                     AuthorCreate, BookCreate)
 
 app = FastAPI()
 
@@ -49,6 +50,3 @@ def create_book(
     db: Session = Depends(get_db)
 ):
     return crud.create_book(db=db, book=book)
-
-
-
