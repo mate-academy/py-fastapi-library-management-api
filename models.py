@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
 
 
 class Author(Base):
-    __tablename__ = 'authors'
+    __tablename__ = "authors"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
@@ -25,7 +25,7 @@ class Author(Base):
 
 
 class Book(Base):
-    __tablename__ = 'books'
+    __tablename__ = "books"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String, nullable=False, unique=True)
@@ -33,6 +33,6 @@ class Book(Base):
     publication_date: Mapped[Date] = mapped_column(Date, nullable=False)
 
     author_id: Mapped[int] = mapped_column(
-        ForeignKey('authors.id', ondelete="CASCADE"), nullable=False
+        ForeignKey("authors.id", ondelete="CASCADE"), nullable=False
     )
     author: Mapped["Author"] = relationship(back_populates="books")
