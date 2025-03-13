@@ -1,0 +1,5 @@
+fastapi~=0.115.11
+uvicorn~=0.34.0
+sqlalchemy~=2.0.38
+alembic~=1.15.1
+aiosqlite~=0.21.0
