@@ -1,0 +1,21 @@
+[project]
+name = "library-api"
+version = "1"
+description = "FastAPI Library API"
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard] (>=0.115.11,<0.116.0)",
+    "uvicorn (>=0.34.0,<0.35.0)",
+    "sqlalchemy (>=2.0.39,<3.0.0)",
+    "alembic (>=1.15.1,<2.0.0)",
+    "flake8 (>=7.1.2,<8.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
