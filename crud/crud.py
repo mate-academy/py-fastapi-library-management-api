@@ -9,7 +9,9 @@ def get_author_list(db: Session):
 
 
 def get_autor_detail(db: Session, author_id: int):
-    return db.query(models.Author).filter(models.Author.id == author_id).first()
+    return db.query(models.Author).filter(
+        models.Author.id == author_id
+    ).first()
 
 
 def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
@@ -25,10 +27,10 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     return db_author
 
 
-def get_book_list(author: int, db: Session):
+def get_book_list(author: int | None, db: Session):
     queryset = db.query(models.Book)
 
-    if author:
+    if author is not None:
         queryset = queryset.filter(models.Book.author_id == author)
 
     return queryset.all()
