@@ -20,13 +20,20 @@ def get_db():
 
 
 @app.post("/authors/", response_model=schemas.Author)
-def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+def create_author(
+        author: schemas.AuthorCreate,
+        db: Session = Depends(get_db)
+):
     db_author = crud.create_author(db, author)
     return db_author
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def read_authors(
+        skip: int = 0,
+        limit: int = 10,
+        db: Session = Depends(get_db)
+):
     return crud.get_authors(db, skip=skip, limit=limit)
 
 

@@ -9,7 +9,9 @@ def get_authors(db: Session, skip: int = 0, limit: int = 100):
 
 
 def get_author(db: Session, author_id: int):
-    return db.query(models.Author).filter(models.Author.id == author_id).first()
+    return (
+        db.query(models.Author).filter(models.Author.id == author_id).first()
+    )
 
 
 def create_author(db: Session, author: schemas.AuthorCreate):
@@ -20,7 +22,12 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_books(db: Session, skip: int = 0, limit: int = 100, author_id: int = None):
+def get_books(
+        db: Session,
+        skip: int = 0,
+        limit: int = 100,
+        author_id: int = None
+):
     query = db.query(models.Book)
     if author_id is not None:
         query = query.filter(models.Book.author_id == author_id)
