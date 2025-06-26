@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 
 import crud
 from database import SessionLocal
-from shemas import Author, AuthorCreate, BookCreate, Book
+from schemas import Author, AuthorCreate, BookCreate, Book
 from sqlalchemy.orm import Session
 app = FastAPI()
 

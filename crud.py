@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 import models
-from shemas import AuthorCreate, BookCreate
+from schemas import AuthorCreate, BookCreate
 
 
 def create_author(db: Session, author: AuthorCreate):
