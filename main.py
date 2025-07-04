@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 import crud
@@ -19,8 +19,10 @@ def get_db():
 
 
 @app.get("/books/", response_model=List[BookResponse])
-def get_books(db: Session = Depends(get_db)):
-    return crud.get_all_books(db=db)
+def get_books(
+        author_id: int | None = None,
+        db: Session = Depends(get_db)):
+    return crud.get_all_books(db=db, author_id=author_id)
 
 
 @app.get("/books/{id}", response_model=BookResponse)

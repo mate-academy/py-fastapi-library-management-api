@@ -4,8 +4,13 @@ from models import Book, Author
 from schemas import BookBase, AuthorBase
 
 
-def get_all_books(db: Session):
-    return db.query(Book).all()
+def get_all_books(db: Session, author_id: int | None = None):
+    query = db.query(Book)
+
+    if author_id:
+        query = query.filter(Book.author_id == author_id)
+
+    return query.all()
 
 
 def get_book_by_id(db: Session, id: int):
