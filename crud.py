@@ -4,13 +4,19 @@ from models import Book, Author
 from schemas import BookBase, AuthorBase
 
 
-def get_all_books(db: Session, author_id: int | None = None):
+def get_total_books(db: Session):
+    return db.query(Book).count()
+
+
+def get_all_books(
+    db: Session, author_id: int | None = None, offset: int = 0, limit: int = 10
+):
     query = db.query(Book)
 
     if author_id:
         query = query.filter(Book.author_id == author_id)
 
-    return query.all()
+    return query.offset(offset).limit(limit).all()
 
 
 def get_book_by_id(db: Session, id: int):
@@ -25,8 +31,14 @@ def create_book(db: Session, data: BookBase):
     return db_book
 
 
-def get_authors(db: Session):
-    return db.query(Author).all()
+def get_total_authors(db: Session):
+    return db.query(Author).count()
+
+
+def get_authors(db: Session, offset: int = 0, limit: int = 10):
+    query = db.query(Author)
+
+    return query.offset(offset).limit(limit).all()
 
 
 def get_author_by_id(db: Session, id: int):

@@ -5,7 +5,14 @@ from sqlalchemy.orm import Session
 
 import crud
 from database import SessionLocal
-from schemas import BookResponse, BookBase, AuthorBase, AuthorResponse
+from schemas import (
+    BookResponse,
+    BookBase,
+    AuthorBase,
+    AuthorResponse,
+    PaginatedBooks,
+    PaginatedAuthors,
+)
 
 app = FastAPI()
 
@@ -18,11 +25,21 @@ def get_db():
         db.close()
 
 
-@app.get("/books/", response_model=List[BookResponse])
+@app.get("/books/", response_model=PaginatedBooks)
 def get_books(
-        author_id: int | None = None,
-        db: Session = Depends(get_db)):
-    return crud.get_all_books(db=db, author_id=author_id)
+    author_id: int | None = None,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1),
+    db: Session = Depends(get_db),
+):
+    data = crud.get_all_books(db=db, author_id=author_id, offset=skip, limit=limit)
+    total = crud.get_total_books(db)
+    return {
+        "skip": skip,
+        "limit": limit,
+        "total": total,
+        "data": data,
+    }
 
 
 @app.get("/books/{id}", response_model=BookResponse)
@@ -42,9 +59,20 @@ def create_book(book: BookBase, db: Session = Depends(get_db)):
     )
 
 
-@app.get("/authors/", response_model=List[AuthorResponse])
-def get_authors(db: Session = Depends(get_db)):
-    return crud.get_authors(db=db)
+@app.get("/authors/", response_model=PaginatedAuthors)
+def get_authors(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1),
+    db: Session = Depends(get_db),
+):
+    data = crud.get_authors(db=db, offset=skip, limit=limit)
+    total = crud.get_total_authors(db)
+    return {
+        "skip": skip,
+        "limit": limit,
+        "total": total,
+        "data": data,
+    }
 
 
 @app.get("/authors/{id}", response_model=AuthorResponse)

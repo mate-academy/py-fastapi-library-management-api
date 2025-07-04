@@ -25,3 +25,17 @@ class AuthorBase(BaseModel):
 
 class AuthorResponse(AuthorBase):
     id: int
+
+
+class PaginatedBooks(BaseModel):
+    skip: int
+    limit: int
+    total: int
+    data: list[BookResponse]
+
+
+class PaginatedAuthors(BaseModel):
+    skip: int
+    limit: int
+    total: int
+    data: list[AuthorResponse]
