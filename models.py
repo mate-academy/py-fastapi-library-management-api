@@ -21,4 +21,4 @@ class Author(Base):
     name = Column(String(255), unique=True, nullable=False)
     bio = Column(String(511), nullable=False)
 
-    books = relationship(Book)
+    books = relationship(Book, back_populates="author")
