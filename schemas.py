@@ -20,6 +20,8 @@ class AuthorBase(BaseModel):
     name: str
     bio: str
 
+    model_config = {"from_attributes": True}
+
 
 class AuthorResponse(AuthorBase):
     id: int
