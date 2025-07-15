@@ -1,12 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
-from enum import StrEnum, auto
 
 from database import Base
-
-class PackadingType(StrEnum):
-    IN_PACKAGE = auto()
-    WEIGHT = auto()
 
 
 class Author(Base):
