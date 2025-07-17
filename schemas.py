@@ -22,8 +22,7 @@ class AuthorCreate(AuthorBase):
 
 
 class BookCreate(BookBase):
-    id: int
-    author_id: Optional[int] = None
+    author_id: int = None
 
 
 class AuthorList(AuthorBase):
