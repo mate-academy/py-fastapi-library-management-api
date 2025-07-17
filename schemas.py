@@ -3,48 +3,49 @@ from typing import List
 from typing import Optional
 from datetime import date
 
-class Book(BaseModel):
-    id: int
-    title: str
-    summary: str
-    publication_date: date
-
-    class Config:
-        orm_mode = True
-
-class BookCreate(BaseModel):
-    title: str
-    summary: str
-    publication_date: date
-    author_id: int
-
-
-class BookUpdate(BaseModel):
-    title: Optional[str] = None
-    summary: Optional[str] = None
-    publication_date: Optional[date] = None
-    author_id: Optional[int] = None
-
 
 class AuthorBase(BaseModel):
     name: str
     bio: str
 
-    class Config:
-        orm_mode = True
 
-class Author(AuthorBase):
-    id: int
-    books: List[Book] = []
-
-    class Config:
-        orm_mode = True
-
+class BookBase(BaseModel):
+    title: str
+    summary: str
+    publication_date: date
 
 
 class AuthorCreate(AuthorBase):
     pass
 
 
+class BookCreate(BookBase):
+    id: int
+    author_id: Optional[int] = None
+
+
+class AuthorList(AuthorBase):
+    id: int
+    books: List[BookBase]
+
+    class Config:
+        orm_mode = True
+
+
+class BookList(BookBase):
+    id: int
+    author: AuthorBase
+
+    class Config:
+        orm_mode = True
+
+
 class AuthorUpdate(AuthorBase):
     pass
+
+
+class BookUpdate(BookBase):
+    title: Optional[str] = None
+    summary: Optional[str] = None
+    publication_date: Optional[date] = None
+    author_id: Optional[int] = None
