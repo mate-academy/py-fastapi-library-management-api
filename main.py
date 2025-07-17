@@ -36,8 +36,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     if existing_author:
         raise HTTPException(status_code=400, detail="This Author already exist")
 
-    author = crud.create_author(author=author, db=db)
-    return author
+    return crud.create_author(author=author, db=db)
 
 @app.post("/books/", response_model=schemas.BookCreate)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):

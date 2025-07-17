@@ -1,9 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from typing import Optional
 from datetime import date
-
-import schemas
 
 
 class AuthorBase(BaseModel):
@@ -22,7 +19,7 @@ class AuthorCreate(AuthorBase):
 
 
 class BookCreate(BookBase):
-    author_id: int = None
+    author_id: int
 
 
 class AuthorList(AuthorBase):
@@ -44,14 +41,3 @@ class BookList(BookBase):
 
     class Config:
         orm_mode = True
-
-
-class AuthorUpdate(AuthorBase):
-    pass
-
-
-class BookUpdate(BookBase):
-    title: Optional[str] = None
-    summary: Optional[str] = None
-    publication_date: Optional[date] = None
-    author_id: Optional[int] = None
