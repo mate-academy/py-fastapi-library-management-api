@@ -3,6 +3,8 @@ from typing import List
 from typing import Optional
 from datetime import date
 
+import schemas
+
 
 class AuthorBase(BaseModel):
     name: str
@@ -30,6 +32,11 @@ class AuthorList(AuthorBase):
 
     class Config:
         orm_mode = True
+
+
+class Author(AuthorBase):
+    id: int
+    books: List[BookBase]
 
 
 class BookList(BookBase):

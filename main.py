@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Depends, Query
+from fastapi import FastAPI, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
 
 import schemas
 import crud
+import models
 app = FastAPI()
 
 
@@ -26,6 +27,23 @@ def get_list_authors(
         db: Session = Depends(get_db)
 ):
     return crud.get_all_authors(skip=skip, limit=limit, db=db)
+
+@app.post("/authors/", response_model=schemas.AuthorCreate)
+def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+    existing_author = db.query(models.Author).filter(models.Author.name == author.name).first()
+
+    if existing_author:
+        raise HTTPException(status_code=400, detail="This Author already exist")
+
+    author = crud.create_author(author=author, db=db)
+    return author
+
+@app.get("/authors/{author_id}", response_model=schemas.Author)
+def get_author(author_id: int, db: Session = Depends(get_db)):
+    author = crud.get_author(db, author_id)
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return author
 
 @app.get("/books/", response_model=list[schemas.BookList])
 def get_list_books(
