@@ -42,7 +42,7 @@ def get_author_by_id(
 
 
 @app.post("/authors", response_model=schemas.Author)
-def create_cheese_type(
+def create_author(
         author: schemas.AuthorCreate,
         db: Session = Depends(get_db)
 ) -> schemas.Author:
@@ -54,9 +54,9 @@ def create_cheese_type(
     return crud.create_author(db=db, author=author)
 
 
-@app.get("/books", response_model=List[schemas.Book])
+@app.get("/authors/{author_id}/books", response_model=List[schemas.Book])
 def get_all_books_by_author_id(
-        author_id: int = Query(),
+        author_id: int = Path(),
         db: Session = Depends(get_db)
 ) -> List[schemas.Book]:
     author = crud.get_author_by_id(db=db, author_id=author_id)
