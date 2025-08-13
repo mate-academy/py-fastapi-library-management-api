@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
 from database.models import Author, Book
@@ -45,19 +47,14 @@ def get_all_books(
     db: Session,
     skip: int = 0,
     limit: int = 10,
-    author_id: int | None = None
+    author_id: Optional[int] = None
 ):
     query = db.query(Book)
 
     if author_id is not None:
         query = query.filter(Book.author_id == author_id)
 
-    return (
-        query
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    return query.offset(skip).limit(limit).all()
 
 
 def create_book(
@@ -66,7 +63,7 @@ def create_book(
 ):
     db_book = Book(
         title=book.title,
-        summary = book.summary,
+        summary=book.summary,
         publication_date=book.publication_date,
         author_id=book.author_id,
     )

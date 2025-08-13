@@ -1,13 +1,19 @@
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy.orm import Session
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Query
 
 import crud
 import schemas
-from database.engine import SessionLocal
+from database.engine import SessionLocal, engine, Base
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+
 
 def get_db() -> Session:
     db = SessionLocal()
@@ -45,10 +51,11 @@ def create_author(
 @app.get("/books", response_model=List[schemas.Book])
 def read_books(
         db: Session = Depends(get_db),
-        offset: int = 0,
+        skip: int = 0,
         limit: int = 10,
+        author_id: Optional[int] = Query(None, description="Filter books by author ID")
 ):
-    return crud.get_all_books(db=db, skip=offset, limit=limit)
+    return crud.get_all_books(db=db, skip=skip, limit=limit, author_id=author_id)
 
 
 @app.get("/books/{book_id}", response_model=schemas.Book)
