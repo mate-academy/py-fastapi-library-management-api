@@ -12,7 +12,9 @@ class AuthorModel(Base):
     name: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     bio: Mapped[str] = mapped_column(String)
 
-    books: Mapped[list["BookModel"]] = relationship("BookModel", back_populates="author")
+    books: Mapped[list["BookModel"]] = relationship(
+        "BookModel", back_populates="author"
+    )
 
 
 class BookModel(Base):
@@ -23,10 +25,7 @@ class BookModel(Base):
     summary = mapped_column(String)
     publication_date = mapped_column(Date)
     author_id: Mapped[int] = mapped_column(
-        ForeignKey("authors.id", ondelete="CASCADE"), nullable=False, unique=True
+        ForeignKey("authors.id", ondelete="CASCADE"), nullable=False
     )
 
-    author: Mapped["AuthorModel"] = relationship(
-        "AuthorModel", back_populates="books"
-    )
-
+    author: Mapped["AuthorModel"] = relationship("AuthorModel", back_populates="books")
