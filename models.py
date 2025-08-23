@@ -1,0 +1,23 @@
+from sqlalchemy import Integer, String, Date, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column
+from database import Base
+
+
+class BookModel(Base):
+    __tablename__ = "book"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255))
+    summary = Column(String(511))
+    publication_date = Column(Date)
+    author_id = Column(Integer, ForeignKey("author.id"))
+
+
+class AuthorModel(Base):
+    __tablename__ = "author"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), unique=True)
+    bio = Column(String(511))
+    books = relationship(BookModel)
