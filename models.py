@@ -13,7 +13,7 @@ class DBAuthor(Base):
                   unique=True)
     bio = Column(String(511))
     books = relationship("DBBook",
-                         back_populates="authors")
+                         back_populates="author")
 
 
 class DBBook(Base):

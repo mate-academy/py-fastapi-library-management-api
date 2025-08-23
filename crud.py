@@ -51,7 +51,7 @@ def get_book_list(db: Session,
     queryset = db.query(models.DBBook)
     if author_id is not None:
         queryset = queryset.filter(
-            models.DBAuthor.id == author_id
+            models.DBBook.author_id == author_id
         )
     return queryset.all()
 
