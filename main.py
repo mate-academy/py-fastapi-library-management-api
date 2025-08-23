@@ -64,11 +64,16 @@ def read_single_author(author_id: int,
 
 @app.get("/books/", response_model=list[schemas.BookBase])
 def read_all_books(
+        author_id: int | None = None,
         skip: int = 0,
         limit: int = 10,
         db: Session = Depends(get_db),
 ):
-    return crud.get_all_books(skip=skip, limit=limit, db=db)
+    return crud.get_book_list(
+        author_id=author_id,
+        skip=skip,
+        limit=limit,
+        db=db)
 
 
 @app.post("/authors/{author_id}/books/",
@@ -93,7 +98,7 @@ def create_book_for_author(
 
 @app.get("/authors/{author_id}/books/",
          response_model=list[schemas.BookBase])
-def reed_books_by_author_id(
+def read_books_by_author_id(
         author_id: int,
         skip: int = 0,
         limit: int = 10,

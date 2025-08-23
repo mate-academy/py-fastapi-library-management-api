@@ -1,5 +1,3 @@
-from sqlite3 import Date
-
 from sqlalchemy import (Column, Integer,
                         String, Date, ForeignKey)
 from sqlalchemy.orm import relationship
@@ -24,9 +22,9 @@ class DBBook(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255))
     summary = Column(String(255))
-    publication = Column(Date)
+    publication_date = Column(Date)
     author_id = Column(Integer, ForeignKey("authors.id"),
                        nullable=False)
 
-    authors = relationship("DBAuthor",
-                           back_populates="books")
+    author = relationship("DBAuthor",
+                          back_populates="books")

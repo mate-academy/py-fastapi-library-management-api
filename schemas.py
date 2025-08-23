@@ -5,7 +5,7 @@ from datetime import date
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication: date
+    publication_date: date
 
 
 class BookCreate(BookBase):
