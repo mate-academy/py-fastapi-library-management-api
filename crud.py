@@ -43,7 +43,7 @@ def get_all_books(
 ) -> list[models.BookModel]:
     queryset = db.query(models.BookModel).offset(skip).limit(limit)
     if author_id:
-        queryset = queryset.filter(queryset.filter(models.BookModel.author_id == author_id))
+        queryset = queryset.filter(models.BookModel.author_id == author_id)
     return queryset.all()
 
 
