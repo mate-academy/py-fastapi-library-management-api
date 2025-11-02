@@ -9,10 +9,13 @@ from crud import (
     get_book,
     create_book,
 )
-from database import SessionLocal
+from database import SessionLocal, engine
+from models import Base
 from schemas import AuthorSchema, AuthorCreate, BookSchema, BookCreate
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 
 def get_db():

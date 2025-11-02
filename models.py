@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import DeclarativeBase, relationship
 
 
@@ -21,7 +21,7 @@ class Book(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(100), nullable=False)
     summary = Column(String(256))
-    publication_date = Column(DateTime)
+    publication_date = Column(Date)
     author_id = Column(Integer, ForeignKey("authors.id"), nullable=False)
 
     author = relationship(Author, back_populates="books")
