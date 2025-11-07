@@ -76,17 +76,7 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)) -> Any:
 def get_books(
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
-) -> Any:
-    books = crud.get_books(db, skip=skip, limit=limit)
-    return books
-
-
-@app.get("/books/author/{author_id}", response_model=list[schemas.Book])
-def get_books_by_author(
-    author_id: int,
-    skip: int = 0,
-    limit: int = 10,
+    author_id: int | None = None,
     db: Session = Depends(get_db)
 ) -> Any:
     books = crud.get_books(db, skip=skip, limit=limit, author_id=author_id)

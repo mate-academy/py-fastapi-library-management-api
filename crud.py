@@ -16,7 +16,7 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> Any:
     return db_author
 
 
-def get_author_list(db: Session, skip: int = 0, limit = 10) -> Any:
+def get_author_list(db: Session, skip: int = 0, limit: int = 10) -> Any:
     return (
         db.query(models.DBAuthor)
         .offset(skip)
