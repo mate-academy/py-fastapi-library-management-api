@@ -8,18 +8,10 @@ from crud import crud_books
 
 from fastapi import Depends, HTTPException, APIRouter
 
-from db.database import SessionLocal
+from session_db import db_session
 
 
 router = APIRouter()
-
-
-def db_session():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.get("/books/", response_model=list[schemas_books.GetBooks])
@@ -32,12 +24,12 @@ def get_books_id(book_id: int, db: Session = Depends(db_session)):
     return crud_books.get_books_id(db, book_id)
 
 
-@router.post("/books/", response_model=schemas_books.BaseBooks)
-def create_author(create_books: schemas_books.CreateBooks, db: Session = Depends(db_session)):
-    db_book_title = crud_books.books_title(db, create_books.title)
+@router.post("/books/", response_model=schemas_books.GetBooks)
+def create_books(create_b: schemas_books.CreateBooks, db: Session = Depends(db_session)):
+    db_book_title = crud_books.books_title(db, create_b.title)
     if db_book_title:
         raise HTTPException(
             status_code=400,
             detail="Books title exists"
         )
-    return crud_books.create_book(db=db, create_books=create_books)
+    return crud_books.create_book(db=db, create_books=create_b)
