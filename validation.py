@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-import crud
+from crud import get_author_by_name
 
 
 def validate_author_with_name_exists(
@@ -9,7 +9,7 @@ def validate_author_with_name_exists(
         author_name: str,
         author_id: int | None = None,
 ):
-    db_author = crud.get_author_by_name(db=db, name=author_name)
+    db_author = get_author_by_name(db=db, name=author_name)
     if db_author and db_author.id != author_id:
         raise HTTPException(
             status_code=400,

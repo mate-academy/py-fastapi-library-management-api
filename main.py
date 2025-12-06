@@ -1,5 +1,6 @@
 from typing import List
 from datetime import date
+from database import Base, engine
 
 from fastapi import FastAPI, Depends, Query
 from sqlalchemy.orm import Session
@@ -14,6 +15,8 @@ from schemas import (
     BookUpdate,
 )
 import crud
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -72,7 +75,7 @@ def delete_author(author_id: int, db: Session = Depends(get_db)):
 def read_books(
         title: str | None = None,
         publication_date: date | None = None,
-        author: str | None = None,
+        author: int | None = None,
         skip: int = Query(0, ge=0),
         limit: int = Query(10, gt=0),
         db: Session = Depends(get_db)
@@ -88,7 +91,7 @@ def read_books(
 
 
 @app.get("/books/{book_id}", response_model=Book)
-def read_books(book_id: int, db: Session = Depends(get_db)):
+def read_book(book_id: int, db: Session = Depends(get_db)):
     return crud.get_book(db=db, book_id=book_id)
 
 

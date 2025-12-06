@@ -41,7 +41,7 @@ def update_author(
         db: Session,
         author_id: int,
         data: AuthorUpdate
-) -> type[Author]:
+) -> Author:
 
     validate_author_with_name_exists(
         db=db, author_name=data.name, author_id=author_id
@@ -60,7 +60,7 @@ def update_author(
     return author
 
 
-def delete_author(db: Session, author_id: int) -> type[Author]:
+def delete_author(db: Session, author_id: int) -> Author:
     author = db.get(Author, author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
@@ -100,6 +100,8 @@ def get_book(db: Session, book_id: int) -> Book:
 
 def create_book(db: Session, book: BookCreate) -> Book:
     db_book = Book(**book.model_dump())
+    if not db.get(Author, db_book.author_id):
+        raise HTTPException(status_code=404, detail="Author not found")
 
     db.add(db_book)
     db.commit()
@@ -108,7 +110,7 @@ def create_book(db: Session, book: BookCreate) -> Book:
     return db_book
 
 
-def update_book(db: Session, book_id: int, data: BookUpdate) -> type[Book]:
+def update_book(db: Session, book_id: int, data: BookUpdate) -> Book:
     book = db.get(Book, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -120,7 +122,7 @@ def update_book(db: Session, book_id: int, data: BookUpdate) -> type[Book]:
     return book
 
 
-def delete_book(db: Session, book_id: int) -> type[Book]:
+def delete_book(db: Session, book_id: int) -> Book:
     book = db.get(Book, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
