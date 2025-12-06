@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class AuthorBase(BaseModel):
@@ -12,16 +12,14 @@ class AuthorCreate(AuthorBase):
     pass
 
 
-class AuthorUpdate(AuthorBase):
+class AuthorUpdate(BaseModel):
     name: str | None = None
     bio: str | None = None
 
 
 class Author(AuthorBase):
     id: int
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)\
 
 
 class BookBase(BaseModel):
@@ -34,7 +32,7 @@ class BookCreate(BookBase):
     author_id: int
 
 
-class BookUpdate(BookBase):
+class BookUpdate(BaseModel):
     title: str | None = None
     summary: str | None = None
     publication_date: date | None = None
@@ -44,6 +42,4 @@ class BookUpdate(BookBase):
 class Book(BookBase):
     id: int
     author: Author
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

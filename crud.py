@@ -7,7 +7,20 @@ from sqlalchemy.orm import Session
 
 from models import Author, Book
 from schemas import AuthorCreate, AuthorUpdate, BookCreate, BookUpdate
-from validation import validate_author_with_name_exists
+
+
+def validate_author_with_name_exists(
+        db: Session,
+        author_name: str | None,
+        author_id: int | None = None,
+):
+    if author_name:
+        db_author = get_author_by_name(db=db, name=author_name)
+        if db_author and db_author.id != author_id:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Author with name {author_name} already exists"
+            )
 
 
 def get_all_authors(
@@ -18,11 +31,11 @@ def get_all_authors(
     return db.scalars(select(Author).offset(skip).limit(limit)).all()
 
 
-def get_author_by_name(db: Session, name: str) -> Author:
+def get_author_by_name(db: Session, name: str) -> Author | None:
     return db.scalar(select(Author).where(Author.name == name))
 
 
-def get_author_by_id(db: Session, author_id: int) -> Author:
+def get_author_by_id(db: Session, author_id: int) -> Author | None:
     return db.scalar(select(Author).where(Author.id == author_id))
 
 
@@ -78,7 +91,7 @@ def get_books_list(
         limit: int = 10
 ) -> Sequence[Book]:
 
-    queryset = db.query(Book)
+    queryset = select(Book)
 
     if title:
         queryset = queryset.where(Book.title == title)
@@ -94,7 +107,7 @@ def get_books_list(
     return db.scalars(queryset.offset(skip).limit(limit)).all()
 
 
-def get_book(db: Session, book_id: int) -> Book:
+def get_book(db: Session, book_id: int) -> Book | None:
     return db.scalar(select(Book).where(Book.id == book_id))
 
 
