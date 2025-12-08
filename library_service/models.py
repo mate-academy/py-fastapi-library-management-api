@@ -1,5 +1,4 @@
 import datetime
-from tkinter.constants import CASCADE
 
 from sqlalchemy import String, Text, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base

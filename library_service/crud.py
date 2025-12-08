@@ -48,14 +48,12 @@ async def get_author_list(
         db: AsyncSession,
 ):
 
-    offset = (skip - 1) * limit
-
     count_stmt = select(func.count(AuthorModel.id))
     result_count = await db.execute(count_stmt)
     total_items = result_count.scalar() or 0
 
     if not total_items:
-        raise HTTPException(status_code=404, detail="No authors found.")
+        return []
 
     order_by = AuthorModel.default_order_by()
     stmt = select(AuthorModel)
@@ -63,23 +61,18 @@ async def get_author_list(
     if order_by:
         stmt = stmt.order_by(*order_by)
 
-    stmt = stmt.offset(offset).limit(limit)
+    stmt = stmt.offset(skip).limit(limit)
 
     result_authors = await db.execute(stmt)
     authors = result_authors.scalars().all()
 
     if not authors:
-        raise HTTPException(status_code=404, detail="No authors found.")
+        return []
 
     author_list = [AuthorListItemSchema.model_validate(author) for author in authors]
 
-    total_pages = (total_items + limit - 1) // limit
-
     response = AuthorListResponseSchema(
         authors=author_list,
-        prev_page=f"/library_service/authors/?page={skip - 1}&per_page={limit}" if skip > 1 else None,
-        next_page=f"/library_service/authors/?page={skip + 1}&per_page={limit}" if skip < total_pages else None,
-        total_pages=total_pages,
         total_items=total_items,
     )
     return response
@@ -154,19 +147,18 @@ async def create_book(
 
 
 async def get_book_list(
-        page: int,
-        per_page: int,
+        skip: int,
+        limit: int,
         params: BookQueryParamsSchema,
         db: AsyncSession,
 ):
-    offset = (page - 1) * per_page
 
     count_stmt = select(func.count(BookModel.id))
     result_count = await db.execute(count_stmt)
     total_items = result_count.scalar() or 0
 
     if not total_items:
-        raise HTTPException(status_code=404, detail="No books found.")
+        return []
 
     order_by = BookModel.default_order_by()
     stmt = select(BookModel)
@@ -177,23 +169,18 @@ async def get_book_list(
     if params.author_id is not None:
         stmt = stmt.where(BookModel.author_id == params.author_id)
 
-    stmt = stmt.offset(offset).limit(per_page)
+    stmt = stmt.offset(skip).limit(limit)
 
     result_books = await db.execute(stmt)
     books = result_books.scalars().all()
 
     if not books:
-        raise HTTPException(status_code=404, detail="No books found.")
+        return []
 
     book_list = [BookListItemSchema.model_validate(book) for book in books]
 
-    total_pages = (total_items + per_page - 1) // per_page
-
     response = BookListResponseSchema(
         books=book_list,
-        prev_page=f"/library_service/books/?page={page - 1}&per_page={per_page}" if page > 1 else None,
-        next_page=f"/library_service/books/?page={page + 1}&per_page={per_page}" if page < total_pages else None,
-        total_pages=total_pages,
         total_items=total_items,
     )
     return response

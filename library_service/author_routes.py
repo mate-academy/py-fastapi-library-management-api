@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from library_service.crud import create_author, get_author_list
+from library_service.crud import create_author, get_author_list, get_author_by_id
 from library_service.database import get_db
 from library_service.schemas import AuthorCreateSchema, AuthorDetailSchema
 
@@ -19,8 +19,8 @@ async def add_author(
 
 @router.get("/")
 async def read_authors(
-        skip: int = Query(1, ge=1, description="Page number (1-based index)"),
-        limit: int = Query(10, ge=1, le=20, description="Number of items per page"),
+        skip: int,
+        limit: int,
         db: AsyncSession = Depends(get_db),
 ):
 
@@ -28,11 +28,11 @@ async def read_authors(
     return result
 
 
-@router.get("/{author_id}/")
+@router.get("/{author_id}")
 async def get_author_detail(
         author_id: int,
         db: AsyncSession = Depends(get_db),
 ) -> AuthorDetailSchema:
 
-    result = await get_author_detail(author_id, db)
+    result = await get_author_by_id(author_id, db)
     return result
