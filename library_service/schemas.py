@@ -43,9 +43,6 @@ class AuthorListItemSchema(BaseModel):
 
 class AuthorListResponseSchema(BaseModel):
     authors: List[AuthorListItemSchema]
-    prev_page: Optional[str]
-    next_page: Optional[str]
-    total_pages: int
     total_items: int
 
     model_config = {
@@ -77,9 +74,6 @@ class BookListItemSchema(BaseModel):
 
 class BookListResponseSchema(BaseModel):
     books: List[BookListItemSchema]
-    prev_page: Optional[str]
-    next_page: Optional[str]
-    total_pages: int
     total_items: int
 
     model_config = {
