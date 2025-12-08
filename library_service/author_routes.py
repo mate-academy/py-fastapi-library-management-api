@@ -19,12 +19,12 @@ async def add_author(
 
 @router.get("/")
 async def read_authors(
-        page: int = Query(1, ge=1, description="Page number (1-based index)"),
-        per_page: int = Query(10, ge=1, le=20, description="Number of items per page"),
+        skip: int = Query(1, ge=1, description="Page number (1-based index)"),
+        limit: int = Query(10, ge=1, le=20, description="Number of items per page"),
         db: AsyncSession = Depends(get_db),
 ):
 
-    result = await get_author_list(page, per_page, db)
+    result = await get_author_list(skip, limit, db)
     return result
 
 

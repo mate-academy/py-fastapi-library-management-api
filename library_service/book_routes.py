@@ -19,12 +19,12 @@ async def add_book(
 
 @router.get("/")
 async def read_books(
-        page: int = Query(1, ge=1, description="Page number (1-based index)"),
-        per_page: int = Query(10, ge=1, le=20, description="Number of items per page"),
+        skip: int = Query(1, ge=1, description="Page number (1-based index)"),
+        limit: int = Query(10, ge=1, le=20, description="Number of items per page"),
         params: BookQueryParamsSchema = Depends(),
         db: AsyncSession = Depends(get_db),
 ):
-    result = await get_book_list(page, per_page, params, db)
+    result = await get_book_list(skip, limit, params, db)
     return result
 
 
