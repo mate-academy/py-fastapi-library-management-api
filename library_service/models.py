@@ -12,12 +12,16 @@ class AuthorModel(Base):
     __tablename__ = "authors"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(50), nullable=False)
+    name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     bio: Mapped[str] = mapped_column(Text, nullable=False)
     books: Mapped[list["BookModel"]] = relationship(
         "BookModel",
         back_populates="author"
     )
+
+    @classmethod
+    def default_order_by(cls):
+        return [cls.id.desc()]
 
 
 class BookModel(Base):
@@ -33,3 +37,7 @@ class BookModel(Base):
         nullable=False
     )
     author: Mapped["AuthorModel"] = relationship("AuthorModel", back_populates="books")
+
+    @classmethod
+    def default_order_by(cls):
+        return [cls.id.desc()]
