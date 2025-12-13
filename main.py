@@ -24,7 +24,7 @@ def read_authors(
         skip: int = 0,
         limit: int = 10,
 ):
-    return crud.get_all_authors(db=db,)
+    return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}", response_model=schemas.AuthorListSchema)
@@ -54,7 +54,7 @@ def read_books(
         skip: int = 0,
         limit: int = 10,
 ):
-    return crud.get_all_books(db=db, author_id=author_id)
+    return crud.get_all_books(db=db, author_id=author_id, skip=skip, limit=limit)
 
 
 @app.get("/books/{book_id}", response_model=schemas.BookListSchema)
