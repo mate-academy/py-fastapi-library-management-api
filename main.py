@@ -1,8 +1,7 @@
-from http.client import HTTPException
-from typing import Annotated
+from fastapi import HTTPException
 
 from fastapi import Depends, FastAPI
-from sqlalchemy.orm import Session, Query
+from sqlalchemy.orm import Session
 
 import crud
 import schemas

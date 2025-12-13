@@ -5,8 +5,8 @@ import schemas
 from db import models
 
 
-def get_all_authors(db: Session) -> list[models.Author]:
-    return db.scalars(select(models.Author)).all()
+def get_all_authors(db: Session, skip: int, limit: int) -> list[models.Author]:
+    return db.scalars(select(models.Author)).offset(skip).limit(limit).all()
 
 
 def get_author_by_id(db: Session,
@@ -37,13 +37,15 @@ def create_author(db: Session, author: schemas.AuthorCreateSchema) -> models.Aut
 
 def get_all_books(
         db: Session,
+        skip: int,
+        limit: int,
         author_id: int | None = None,
 ) -> list[models.Book]:
     stmt = select(models.Book)
     if author_id:
         stmt = stmt.where(models.Book.author_id == author_id)
 
-    return db.scalars(stmt).all()
+    return db.scalars(stmt).offset(skip).limit(limit).all()
 
 
 def get_book_by_id(db: Session, book_id: int) -> models.Book | None:
