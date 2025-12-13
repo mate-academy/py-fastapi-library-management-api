@@ -13,10 +13,10 @@ class Author(Base):
     books = relationship("Book", back_populates="author")
 
 
- class Book(Base):
+class Book(Base):
      __tablename__ = "books"
 
-     id = Column(Integer, index=True)
+     id = Column(Integer, primary_key=True, index=True)
      title = Column(String)
      summary = Column(String)
      publication_date = Column(Date)
