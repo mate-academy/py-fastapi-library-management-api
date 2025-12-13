@@ -23,8 +23,10 @@ class BookBase(BaseModel):
     summary: Optional[str] = None
     publication_date: date
 
+
 class BookCreate(BookBase):
-    pass
+    author_id: int
+
 
 class Book(BookBase):
     id: int
