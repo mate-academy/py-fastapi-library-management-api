@@ -2,12 +2,15 @@ from typing import List
 
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-
+from db.database import Base, engine
 import crud
 import schemas
 from db.database import SessionLocal
 
 app = FastAPI()
+
+
+Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Session:
@@ -69,6 +72,10 @@ def get_author(
     db: Session = Depends(get_db)
 ):
     db_author = crud.get_one_author(db=db, author_id=author_id)
+
+    if db_author is None:
+        raise HTTPException(status_code=404, detail="Author not found")
+
     return db_author
 
 

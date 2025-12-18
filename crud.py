@@ -53,9 +53,10 @@ def get_all_authors(
 
 
 def get_author_by_name(db: Session, name: str):
-    return db.scalars(
-        select(models.DBAuthor).where(models.DBAuthor.name == name)
-    )
+    result = db.execute(
+        select(models.DBAuthor).where(models.DBAuthor.name == name))
+    return result.scalar_one_or_none()
+
 
 
 def get_one_author(

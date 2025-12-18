@@ -11,7 +11,7 @@ class AuthorBase(BaseModel):
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: datetime.datetime
+    publication_date: datetime.date
 
 
 class AuthorCreate(AuthorBase):
