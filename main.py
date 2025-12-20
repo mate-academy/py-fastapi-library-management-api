@@ -52,7 +52,7 @@ def get_author_by_id(author_id: int, db: Session = Depends(get_db)):
 def get_all_books(
         db: Session = Depends(get_db),
         skip: int = Query(0, ge=0),
-        limit: int = Query(0, ge=10),
+        limit: int = Query(10, ge=10),
         author_id: int | None = Query(
             None,
         description="Filter books by author id"),
