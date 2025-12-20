@@ -1,11 +1,16 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Query
 from sqlalchemy.orm import Session
 
 import crud
-from database import Author
-from engine import SessionLocal, Base, engine
-from schemas import AuthorListSchema, AuthorDetailSchema, AuthorResponseSchema, BookResponseSchema, BookCreateSchema, \
-    AuthorCreateSchema
+from database import SessionLocal, Base, engine
+from schemas import (
+    AuthorListSchema,
+    AuthorDetailSchema,
+    AuthorResponseSchema,
+    BookResponseSchema,
+    BookCreateSchema,
+    AuthorCreateSchema)
+
 
 app = FastAPI()
 
@@ -44,10 +49,12 @@ def get_author_by_id(author_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/books/", response_model=list[BookResponseSchema])
-def get_all_books(db: Session = Depends(get_db), skip: int = 0, limit: int = 10):
-    return crud.get_all_books_with_pagination(db, skip, limit)
-
-
-@app.get("/books/{author_id}/", response_model=list[BookResponseSchema])
-def get_book_by_author(author_id: int, db: Session = Depends(get_db)):
-    return crud.get_book_by_author_id(db, author_id)
+def get_all_books(
+        db: Session = Depends(get_db),
+        skip: int = Query(0, ge=0),
+        limit: int = Query(0, ge=10),
+        author_id: int | None = Query(
+            None,
+        description="Filter books by author id"),
+):
+    return crud.get_all_books_with_pagination(db, skip, limit, author_id)
