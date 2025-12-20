@@ -12,7 +12,7 @@ class Book(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     summary: Mapped[str] = mapped_column(String(255))
-    publication_date: date = mapped_column(Date)
+    publication_date: Mapped[date] = mapped_column(Date)
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"), nullable=False)
 
     author: Mapped["Author"] = relationship(back_populates="books")

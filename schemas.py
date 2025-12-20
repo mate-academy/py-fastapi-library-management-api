@@ -33,11 +33,17 @@ class AuthorListSchema(BaseModel):
     name: str
     books: Optional[list["BookResponseSchema"]]
 
+    class Config:
+        from_attributes = True
+
 
 class BookCreateSchema(BaseModel):
     title: str
     summary: Optional[str] = None
     publication_date: date
+
+    class Config:
+        from_attributes = True
 
 
 class BookResponseSchema(BaseModel):

@@ -23,9 +23,19 @@ def on_startup():
     Base.metadata.create_all(bind=engine)
 
 
+@app.post("/authors/", response_model=AuthorResponseSchema)
+def add_author(author: AuthorCreateSchema, db: Session = Depends(get_db)):
+    return crud.create_new_author(db, author)
+
+
+@app.post("/books/{author_id}/", response_model=BookResponseSchema)
+def add_book(author_id: int, book: BookCreateSchema, db: Session = Depends(get_db)):
+    return crud.add_book_by_author_id(db, author_id, book)
+
+
 @app.get("/authors/", response_model=list[AuthorListSchema])
-def get_authors_list(db: Session = Depends(get_db)):
-    return crud.get_all_authors_with_pagination(db)
+def get_authors_list(db: Session = Depends(get_db), skip: int = 0, limit: int = 10):
+    return crud.get_all_authors_with_pagination(db, skip, limit)
 
 
 @app.get("/authors/{author_id}/", response_model=AuthorDetailSchema)
@@ -33,22 +43,11 @@ def get_author_by_id(author_id: int, db: Session = Depends(get_db)):
     return crud.get_author_by_id(db, author_id)
 
 
-@app.post("/authors/", response_model=AuthorResponseSchema)
-def add_author(author: AuthorCreateSchema, db: Session = Depends(get_db)):
-    return crud.create_new_author(db, author)
-
-
 @app.get("/books/", response_model=list[BookResponseSchema])
-def get_all_books(db: Session = Depends(get_db)):
-    return crud.get_all_books_with_pagination(db)
+def get_all_books(db: Session = Depends(get_db), skip: int = 0, limit: int = 10):
+    return crud.get_all_books_with_pagination(db, skip, limit)
 
 
 @app.get("/books/{author_id}/", response_model=list[BookResponseSchema])
 def get_book_by_author(author_id: int, db: Session = Depends(get_db)):
     return crud.get_book_by_author_id(db, author_id)
-
-
-@app.post("/books/{author_id}/", response_model=BookResponseSchema)
-def add_book(author_id: int, book: BookCreateSchema, db: Session = Depends(get_db)):
-    return crud.add_book_by_author_id(db, author_id, book)
-

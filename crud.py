@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 import database
@@ -35,14 +36,20 @@ def get_all_books_with_pagination(db: Session, skip: int = 0, limit: int = 10):
 
 
 def get_author_by_id(db: Session, author_id: int):
-    return db.query(database.Author).filter(database.Author.id == author_id).first()
+    author = db.query(database.Author).filter(database.Author.id == author_id).first()
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return author
 
 
-def add_book_by_author_id(db:Session, author: database.Author, book: database.Book):
+def add_book_by_author_id(db: Session, author_id: int, book: database.Book):
+    author = db.get(database.Author, author_id)
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
     book = database.Book(title=book.title,
                          summary=book.summary,
                          publication_date=book.publication_date,
-                         author_id=author.id)
+                         author_id=author_id)
     db.add(book)
     db.commit()
     db.refresh(book)
@@ -50,4 +57,7 @@ def add_book_by_author_id(db:Session, author: database.Author, book: database.Bo
 
 
 def get_book_by_author_id(db: Session, author_id: int):
-    return db.query(database.Book).filter(database.Book.author_id == author_id).all()
+    author = db.query(database.Author).filter(database.Author.id == author_id).first()
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return db.query(database.Book).filter(database.Book.author_id == author.id).all()
