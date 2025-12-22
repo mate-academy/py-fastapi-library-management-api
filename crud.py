@@ -13,10 +13,13 @@ def get_all_books(
         limit: int = 10,
         author_id: int | None = None
 ):
-    books = select(models.Book).options(joinedload(models.Book.author)).offset(skip).limit(limit)
+    books = select(models.Book)
 
     if author_id is not None:
         books = books.where(models.Book.author_id == author_id)
+
+    books = books.order_by(models.Book.id)
+    books = books.offset(skip).limit(limit)
 
     return db.scalars(books).all()
 

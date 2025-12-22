@@ -53,7 +53,7 @@ def read_authors(
         skip: int = 0,
         limit: int = 10,
 ):
-    return crud.get_all_authors(db, skip, limit)
+    return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.post("/authors/create", response_model=AuthorRead)
