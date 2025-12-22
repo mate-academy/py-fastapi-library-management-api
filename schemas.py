@@ -17,6 +17,7 @@ class AuthorUpdate(AuthorBase):
 class AuthorRead(BaseModel):
     id: int
     name: str
+    bio: str
 
     model_config = ConfigDict(from_attributes=True)
 

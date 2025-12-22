@@ -2,13 +2,18 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm.session import Session
 
 import crud
-import models
 from crud import get_author
 from database import SessionLocal
-from models import Book, Author
 from schemas import BookRead, AuthorRead, AuthorCreate, BookCreate
+from database import engine, Base
+
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Session:
@@ -31,7 +36,7 @@ def read_books(
         limit: int = 10,
         author_id: int | None = None
 ):
-    return crud.get_all_books(db, author_id)
+    return crud.get_all_books(db, author_id, skip, limit)
 
 
 @app.post("/books/create", response_model=BookRead)
