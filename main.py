@@ -69,6 +69,14 @@ def create_book(
         book: schemas.BookCreate,
         db: Session = Depends(get_db)
 ) -> schemas.Book:
+    db_author = crud.get_author(db=db, author_id=book.author_id)
+
+    if db_author is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Author not found"
+        )
+
     return crud.create_book(db=db, book=book)
 
 
