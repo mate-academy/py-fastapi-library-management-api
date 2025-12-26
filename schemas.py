@@ -14,7 +14,7 @@ class BookCreate(BookBase):
     pass
 
 
-class BookRead(BaseModel):
+class BookRead(BookBase):
     id: int
     author_id: int
 

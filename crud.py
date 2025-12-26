@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 import schemas
-from db import models
+import models
 
 
 # ---------- AUTHOR CRUD

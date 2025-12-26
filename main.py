@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from db import models
+import models
 from database import SessionLocal, engine
 import crud
 from schemas import AuthorRead, AuthorCreate, BookCreate, BookRead
