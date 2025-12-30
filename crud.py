@@ -101,8 +101,9 @@ def get_books_by_author(db: Session, author_id: int) -> List[models.Book]:
 
 
 # NEW: Get books with author info (eager loading)
-def get_books_with_authors(db: Session, skip: int = 0, limit: int = 100, author_id: Optional[int] = None) -> List[
-    models.Book]:
+def get_books_with_authors(
+        db: Session, skip: int = 0, limit: int = 100, author_id: Optional[int] = None
+) -> List[models.Book]:
     """Get list of books with author information"""
     query = db.query(models.Book).options(joinedload(models.Book.author))
 

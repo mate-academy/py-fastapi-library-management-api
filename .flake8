@@ -1,0 +1,3 @@
+[flake8]
+ignore = Q000, E501, VNE003
+exclude = .venv, __pycache__, migrations

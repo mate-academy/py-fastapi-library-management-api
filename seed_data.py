@@ -1,11 +1,10 @@
 from datetime import date
-from sqlalchemy.orm import Session
 from database import SessionLocal
 import models
 import crud
 import schemas
 
-# Тестові дані
+# Test data
 test_authors = [
     {
         "name": "George Orwell",
@@ -54,76 +53,76 @@ test_books = [
 
 
 def clear_database():
-    """Очистити базу даних (тільки для тестування)"""
+    """Clear db (Only for testing)"""
     db = SessionLocal()
     try:
-        # Видалити всі книги
+        # Delete all books
         db.query(models.Book).delete()
-        # Видалити всіх авторів
+        # Delete all authors
         db.query(models.Author).delete()
         db.commit()
-        print("🗑️  Базу даних очищено")
+        print("🗑️  database cleared!")
     except Exception as e:
         db.rollback()
-        print(f"❌ Помилка при очищенні бази: {e}")
+        print(f"❌ Error while clearing the database: {e}")
     finally:
         db.close()
 
 
 def seed_database():
-    """Наповнити базу даних тестовими даними"""
+    """Fill the database with test data"""
     print("=" * 60)
-    print("НАПОВНЕННЯ БАЗИ ДАНИХ ТЕСТОВИМИ ДАНИМИ")
+    print("FILL THE DATABASE WITH TEST DATA")
     print("=" * 60)
 
-    # Запитуємо користувача
-    response = input("Очистити існуючі дані? (y/n): ")
+    # User request
+    response = input("Clear existing data? (y/n): ")
     if response.lower() == 'y':
         clear_database()
 
     db = SessionLocal()
 
     try:
-        # Створюємо авторів
-        print("\n📝 СТВОРЕННЯ АВТОРІВ:")
+        # Create authors
+        print("\n📝 Creating authors:")
         created_authors = {}
 
         for author_data in test_authors:
             try:
-                # Перевіряємо чи автор вже існує
+                # Checking if the author already exists
                 existing_author = db.query(models.Author).filter(
                     models.Author.name == author_data["name"]
                 ).first()
 
                 if existing_author:
-                    print(f"   ⚠️  Автор '{author_data['name']}' вже існує")
+                    print(f"   ⚠️  Author '{author_data['name']}' is already existing.")
                     created_authors[author_data["name"]] = existing_author
                 else:
                     author_schema = schemas.AuthorCreate(**author_data)
                     db_author = crud.create_author(db, author_schema)
                     created_authors[author_data["name"]] = db_author
-                    print(f"   ✅ Створено автора: {db_author.name}")
+                    print(f"   ✅ The author has been created: {db_author.name}")
 
             except Exception as e:
-                print(f"   ❌ Помилка: {str(e)}")
+                print(f"   ❌ Error: {str(e)}")
 
         # Створюємо книги
-        print("\n📚 СТВОРЕННЯ КНИГ:")
+        print("\n📚 Creating books:")
 
         for book_data in test_books:
             try:
                 author = created_authors.get(book_data["author_name"])
                 if not author:
-                    print(f"   ❌ Автор '{book_data['author_name']}' не знайдений")
+                    print(f"   ❌ Author '{book_data['author_name']}' not found.")
                     continue
 
-                # Перевіряємо чи книга вже існує
+                # Checking if the book is already exist
                 existing_book = db.query(models.Book).filter(
                     models.Book.title == book_data["title"]
                 ).first()
 
                 if existing_book:
-                    print(f"   ⚠️  Книга '{book_data['title']}' вже існує")
+                    print(f"   ⚠️  Book '{book_data['title']}' is already existing")
                 else:
                     book_schema = schemas.BookCreate(
                         title=book_data["title"],
@@ -132,25 +131,25 @@ def seed_database():
                         author_id=author.id
                     )
                     db_book = crud.create_book(db, book_schema)
-                    print(f"   ✅ Створено книгу: '{db_book.title}'")
+                    print(f"   ✅ The book has been created: '{db_book.title}'")
 
             except Exception as e:
-                print(f"   ❌ Помилка: {str(e)}")
+                print(f"   ❌ Error: {str(e)}")
 
-        # Перевіряємо результати
+        # Checking results
         author_count = db.query(models.Author).count()
         book_count = db.query(models.Book).count()
 
         print("\n" + "=" * 60)
-        print("РЕЗУЛЬТАТ:")
-        print(f"   Авторів: {author_count}")
-        print(f"   Книг: {book_count}")
+        print("Result:")
+        print(f"   Authors: {author_count}")
+        print(f"   Books: {book_count}")
         print("=" * 60)
 
-        print("\n✨ Дані успішно додані до бази!")
+        print("\n✨ Data successfully added to the database!")
 
     except Exception as e:
-        print(f"\n❌ КРИТИЧНА ПОМИЛКА: {str(e)}")
+        print(f"\n❌ Critical Error: {str(e)}")
         db.rollback()
     finally:
         db.close()
