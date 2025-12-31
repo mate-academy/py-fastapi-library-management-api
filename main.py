@@ -63,6 +63,11 @@ def read_books(
         skip: int = Query(0, ge=0),
         limit: int = Query(10, ge=1, le=100),
 ):
+    if author_id is not None:
+        author = crud.get_author(db=db, author_id=author_id)
+        if not author:
+            raise HTTPException(status_code=404, detail="Author not found")
+
     return crud.get_book_list(db=db, author_id=author_id, skip=skip, limit=limit)
 
 

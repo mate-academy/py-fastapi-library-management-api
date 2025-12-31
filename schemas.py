@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Date
 
@@ -11,13 +13,12 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-
     model_config = ConfigDict(from_attributes=True)
 
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: Date
+    publication_date: datetime.date
 
 class BookCreate(BookBase):
     author_id: int

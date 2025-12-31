@@ -68,6 +68,7 @@ def post_book(
         title=book.title,
         summary=book.summary,
         author_id=book.author_id,
+        publication_date=book.publication_date,
     )
     db.add(db_book)
     db.commit()
