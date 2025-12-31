@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -21,7 +21,7 @@ class DBBook(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
     summary = Column(String(255))
-    publication_date = Column(DateTime, default=datetime.datetime.now)
+    publication_date = Column(Date, default=datetime.datetime.now)
 
     author_id = Column(Integer, ForeignKey("author.id"))
     author = relationship("DBAuthor", back_populates="books")
