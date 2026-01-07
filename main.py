@@ -45,12 +45,12 @@ def read_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
 @app.get("/authors/{author_id}", response_model=schemas.Author)
 def read_author(author_id: int, db: Session = Depends(get_db)):
     author = crud.get_author(db, author_id)
-    if not author:
+    if author is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Author with id '{author.id}' not found."
+            detail=f"Author with id '{author_id}' not found."
         )
-    return crud.get_author(db, author_id)
+    return author
 
 
 @app.post("/books/", response_model=schemas.Book)
@@ -78,3 +78,4 @@ def read_books_by_author(author_id: int, db: Session = Depends(get_db)):
             detail=f"Author with id '{author_id}' not found."
         )
     return crud.get_books_by_author(db, author_id)
+
