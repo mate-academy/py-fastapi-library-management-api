@@ -33,5 +33,9 @@ def create_book(db: Session, book: schemas.BookCreate):
 
     return db_book
 
-def get_books(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Book).offset(skip).limit(limit).all()
+def get_books(db: Session, skip: int = 0, limit: int = 100, author_id: int = None):
+    query = db.query(models.Book)
+
+    if author_id is not None:
+        query = query.filter(models.Book.author_id == author_id)
+    return query.offset(skip).limit(limit).all()
