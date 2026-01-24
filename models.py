@@ -1,22 +1,28 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
-from sqlalchemy.orm import relationship
-from database import Base
+from datetime import date
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, DeclarativeBase, declared_attr, Mapped, mapped_column
 
 
-class DBAuthor(Base):
-    __tablename__ = "author"
+class Base(DeclarativeBase):
+    __abstract__ = True
 
-    id = Column(type_=Integer, primary_key=True, index=True)
-    name = Column(type_=String(255), nullable=False, unique=True)
-    bio = Column(type_=String(511), nullable=False)
-    books = relationship("DBBook", backref="author")
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+
+    @classmethod
+    @declared_attr.directive
+    def __tablename__(cls) -> str:
+        return f"{cls.__name__.lower()}s"
 
 
-class DBBook(Base):
-    __tablename__ = "book"
+class Author(Base):
+    name: Mapped[str] = mapped_column(unique=True)
+    bio: Mapped[str]
+    books: Mapped[list["Book"]] = relationship(back_populates="author")
 
-    id = Column(type_=Integer, primary_key=True, index=True)
-    title = Column(type_=String(255), nullable=False)
-    summary = Column(type_=String(511), nullable=False)
-    publication_date = Column(Date, nullable=False)
-    author_id = Column(Integer, ForeignKey("author.id"))
+
+class Book(Base):
+    title: Mapped[str]
+    summary: Mapped[str]
+    publication_date: Mapped[date]
+    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"))
+    author: Mapped["Author"] = relationship(back_populates="books")
