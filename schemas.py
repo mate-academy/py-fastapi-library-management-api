@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: datetime
+    publication_date: date
     author_id: int
 
 
@@ -24,7 +24,7 @@ class BookCreate(BookBase):
 class BookUpdate(BookBase):
     title: Optional[str] = None
     summary: Optional[str] = None
-    publication_date: Optional[str] = None
+    publication_date: Optional[date] = None
     author_id: Optional[int] = None
 
 

@@ -13,8 +13,8 @@ def no_entity(code: int, name: str) -> HTTPException:
     )
 
 
-def get_list_authors(db: Session):
-    return db.scalars(select(models.DBAuthor)).all()
+def get_list_authors(db: Session, skip: int = 0, limit: int = 100):
+    return db.scalars(select(models.DBAuthor).offset(skip).limit(limit)).all()
 
 
 def get_author_by_id(db: Session, author_id: int):
@@ -78,8 +78,8 @@ def delete_author(db: Session, author_id: int):
     return db_item
 
 
-def get_list_of_books(db: Session):
-    return db.scalars(select(models.DBBook)).all()
+def get_list_of_books(db: Session, skip: int = 0, limit: int = 100):
+    return db.scalars(select(models.DBBook).offset(skip).limit(limit)).all()
 
 
 def get_book_by_id(db: Session, book_id: int):

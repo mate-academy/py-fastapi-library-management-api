@@ -22,8 +22,12 @@ def get_db() -> Session:
     response_model=list[schemas.Author],
     tags=["Author"],
 )
-def get_list_of_author(db: Session = Depends(get_db)) -> list[schemas.Author]:
-    return crud.get_list_authors(db=db)
+def get_list_of_author(
+        db: Session = Depends(get_db),
+        skip: int = 0,
+        limit: int = 100,
+) -> list[schemas.Author]:
+    return crud.get_list_authors(db=db, skip=skip, limit=limit)
 
 
 @app.get(
@@ -46,7 +50,7 @@ def get_author(
 def create_author(
         author_data: schemas.AuthorCreate,
         db: Session = Depends(get_db),
-) -> schemas.BookCreate:
+) -> schemas.Author:
     return crud.create_author(
         db=db,
         author_data=author_data,
@@ -107,9 +111,9 @@ def delete_author(
     tags=["Book"],
 )
 def get_list_of_books(
-        db: Session = Depends(get_db),
+        db: Session = Depends(get_db), skip: int = 0, limit: int = 100
 ) -> list[schemas.Book]:
-    return crud.get_list_of_books(db=db)
+    return crud.get_list_of_books(db=db, skip=skip, limit=limit)
 
 
 @app.get(
