@@ -78,8 +78,20 @@ def delete_author(db: Session, author_id: int):
     return db_item
 
 
-def get_list_of_books(db: Session, skip: int = 0, limit: int = 100):
-    return db.scalars(select(models.DBBook).offset(skip).limit(limit)).all()
+def get_list_of_books(
+        db: Session,
+        skip: int = 0,
+        limit: int = 100,
+        author_id: int = None,
+):
+    query = select(models.DBBook)
+
+    if author_id:
+        query = query.where(models.DBBook.id == author_id)
+
+    result = db.scalar(query.offset(skip).limit(limit)).all()
+    return result
+
 
 
 def get_book_by_id(db: Session, book_id: int):

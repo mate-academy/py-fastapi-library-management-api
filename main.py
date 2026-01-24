@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 import crud
 import models
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine
 
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
@@ -111,9 +112,17 @@ def delete_author(
     tags=["Book"],
 )
 def get_list_of_books(
-        db: Session = Depends(get_db), skip: int = 0, limit: int = 100
+        db: Session = Depends(get_db),
+        skip: int = 0,
+        limit: int = 100,
+        author_id: int = None,
 ) -> list[schemas.Book]:
-    return crud.get_list_of_books(db=db, skip=skip, limit=limit)
+    return crud.get_list_of_books(
+        db=db,
+        skip=skip,
+        limit=limit,
+        author_id=author_id
+    )
 
 
 @app.get(
