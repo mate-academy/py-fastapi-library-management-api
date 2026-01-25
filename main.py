@@ -3,11 +3,12 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 
 import crud
+import models
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine
 
 app = FastAPI()
-
+models.Base.metadata.create_all(bind=engine)
 
 def get_db() -> Session:
     db = SessionLocal()
@@ -15,6 +16,7 @@ def get_db() -> Session:
         yield db
     finally:
         db.close()
+
 
 @app.get("/authors/", response_model=list[schemas.Author])
 def get_all_authors(
@@ -48,10 +50,10 @@ def get_all_books(db: Session = Depends(get_db),
                   skip: int = Query(0, ge=0),
                   limit: int = Query(100, ge=1),
                   author_id: int | None = None):
-    author = crud.get_author(db=db, author_id=author_id)
-
-    if not author:
-        raise HTTPException(status_code=404, detail="Author not found")
+    if author_id:
+        author = crud.get_author(db=db, author_id=author_id)
+        if not author:
+            raise HTTPException(status_code=404, detail="Author not found")
     return crud.get_all_books(db=db,
                               author_id=author_id,
                               skip=skip,
