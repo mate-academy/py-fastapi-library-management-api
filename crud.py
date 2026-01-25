@@ -1,41 +1,39 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-
 import models
 import schemas
 
 
-def create_author(
-    db: Session, author: schemas.CreateAuthor
-) -> models.DBAuthor:
-    db_author = models.DBAuthor(name=author.name, bio=author.bio)
+def create_author(db: Session, author: schemas.CreateAuthor) -> models.Author:
+    db_author = models.Author(name=author.name, bio=author.bio)
     db.add(db_author)
     db.commit()
     db.refresh(db_author)
     return db_author
 
 
-def get_all_authors(
-    db: Session, skip: int = 0, limit: int = 10
-) -> list[models.DBAuthor]:
-    return db.query(models.DBAuthor).offset(skip).limit(limit).all()
+def get_all_authors(db: Session, skip: int = 0, limit: int = 10) -> list[models.Author]:
+    stmt = select(models.Author).offset(skip).limit(limit)
+    return db.scalars(stmt).all()
 
 
-def get_author_by_id(db: Session, author_id: int) -> models.DBAuthor:
-    return (
-        db.query(models.DBAuthor)
-        .filter(models.DBAuthor.id == author_id)
-        .first()
-    )
+# def get_author_by_id(db: Session, author_id: int) -> models.Author | None:  # alternative version
+#     return db.get(models.Author, author_id)
 
 
-def get_author_by_name(db: Session, name: str) -> models.DBAuthor | None:
-    return (
-        db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
-    )
+def get_author_by_id(db: Session, author_id: int) -> models.Author | None:
+    stmt = select(models.Author).where(models.Author.id == author_id)
+    # return db.scalar(stmt)  # the same if id is unique
+    return db.scalars(stmt).first()
 
 
-def create_book(db: Session, book: schemas.CreateBook) -> models.DBBook:
-    db_book = models.DBBook(
+def get_author_by_name(db: Session, name: str) -> models.Author | None:
+    stmt = select(models.Author).where(models.Author.name == name)
+    return db.scalars(stmt).first()
+
+
+def create_book(db: Session, book: schemas.CreateBook) -> models.Book:
+    db_book = models.Book(
         title=book.title,
         summary=book.summary,
         publication_date=book.publication_date,
@@ -47,18 +45,13 @@ def create_book(db: Session, book: schemas.CreateBook) -> models.DBBook:
     return db_book
 
 
-def get_book_list(
-    db: Session, skip: int = 0, limit: int = 7
-) -> list[models.DBBook]:
-    return db.query(models.DBBook).offset(skip).limit(limit).all()
+def get_book_list(db: Session, skip: int = 0, limit: int = 7) -> list[models.Book]:
+    stmt = select(models.Book).offset(skip).limit(limit)
+    return db.scalars(stmt).all()
 
 
-def get_filter_book_list(
-    db: Session, author_id: int | None = None
-) -> list[models.DBBook]:
-    queryset = db.query(models.DBBook)
-
+def get_filter_book_list(db: Session, author_id: int | None = None) -> list[models.Book]:
+    stmt = select(models.Book)
     if author_id is not None:
-        return queryset.filter(models.DBBook.author_id == author_id).all()
-
-    return queryset.all()
+        stmt = stmt.where(models.Book.author_id == author_id)
+    return db.scalars(stmt).all()
