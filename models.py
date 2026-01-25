@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship, DeclarativeBase, declared_attr, Mapped, mapped_column
 
 
@@ -18,6 +18,10 @@ class Author(Base):
     name: Mapped[str] = mapped_column(unique=True)
     bio: Mapped[str]
     books: Mapped[list["Book"]] = relationship(back_populates="author")
+    # profiles: Mapped["Profile"] = relationship(back_populates="author")
+
+    def __repr__(self) -> str:
+        return self.name
 
 
 class Book(Base):
@@ -26,3 +30,15 @@ class Book(Base):
     publication_date: Mapped[date]
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"))
     author: Mapped["Author"] = relationship(back_populates="books")
+
+    def __repr__(self) -> str:
+        return self.title
+
+
+# example of one to one relationship
+# class Profile(Base):
+#     name: Mapped[str] = mapped_column(unique=True)
+#     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"), unique=True)
+#     author: Mapped["Author"] = relationship(back_populates="profile")
+#
+#     __table_args__ = (UniqueConstraint("author_id"),)  # unique constraint for author_id(one to one)
