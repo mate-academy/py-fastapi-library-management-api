@@ -23,8 +23,8 @@ def get_all_authors(db: Session, skip: int = 0, limit: int = 10) -> list[models.
 
 def get_author_by_id(db: Session, author_id: int) -> models.Author | None:
     stmt = select(models.Author).where(models.Author.id == author_id)
-    # return db.scalar(stmt)  # the same if id is unique
-    return db.scalars(stmt).first()
+    return db.scalar(stmt)
+    # return db.scalars(stmt).first() # the same if id is unique
 
 
 def get_author_by_name(db: Session, name: str) -> models.Author | None:
