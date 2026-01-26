@@ -51,10 +51,6 @@ def read_books(
 ):
     return crud.get_books(db=db, skip=skip, limit=limit, author_id=author_id)
 
-@app.get("/books/{author_id}", response_model=list[schemas.Book])
-def read_books_with_current_author(author_id: int, db: Session = Depends(get_db)):
-    return crud.get_books(db=db, author_id=author_id)
-
 @app.post("/books/", response_model=schemas.Book)
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     return crud.create_book(db=db, book=book)
