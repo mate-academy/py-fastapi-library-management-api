@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from db.engine import SessionLocal
+from db.engine import SessionLocal, engine
+from db.models import Base
+
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
