@@ -33,12 +33,13 @@ def get_author_by_name(db: Session, name: str) -> models.Author | None:
 
 
 def create_book(db: Session, book: schemas.CreateBook) -> models.Book:
-    db_book = models.Book(
-        title=book.title,
-        summary=book.summary,
-        publication_date=book.publication_date,
-        author_id=book.author_id,
-    )
+    # db_book = models.Book(
+    #     title=book.title,
+    #     summary=book.summary,
+    #     publication_date=book.publication_date,
+    #     author_id=book.author_id,
+    # )
+    db_book = models.Book(**book.model_dump())  # modern approach
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
