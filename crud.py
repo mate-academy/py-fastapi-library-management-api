@@ -26,10 +26,11 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 
 def get_books(db: Session, skip: int = 0, limit: int = 10, author_id: int = None):
     query = select(models.Book)
-    query = query.offset(skip).limit(limit)
 
     if author_id:
         query = query.where(models.Book.author_id == author_id)
+
+    query = query.offset(skip).limit(limit)
 
     return db.scalars(query).all()
 
