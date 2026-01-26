@@ -3,6 +3,7 @@ from fastapi import (
     Depends,
     HTTPException
 )
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -19,7 +20,14 @@ app = FastAPI(title="Library Management API")
 
 @app.post("/authors/", response_model=schemas.Author, status_code=201)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
-    return crud.create_author(db=db, author=author)
+    try:
+        return crud.create_author(db=db, author=author)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail=f"Author with name '{author.name}' already exists"
+        )
 
 
 @app.get("/authors/", response_model=List[schemas.Author])
