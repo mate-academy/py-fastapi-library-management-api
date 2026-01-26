@@ -5,14 +5,14 @@ import models
 import schemas
 
 
-def get_authors(db: Session):
-    return db.scalars(select(models.Author)).all()
+def get_authors(db: Session, skip: int = 0, limit: int = 10):
+    stmt = select(models.Author).offset(skip).limit(limit)
+    return db.scalars(stmt).all()
 
 
 def get_author(db: Session, author_id: int):
-    return db.scalar(
-        select(models.Author).where(models.Author.id == author_id)
-    )
+    stmt = select(models.Author).where(models.Author.id == author_id)
+    return db.scalar(stmt)
 
 
 def create_author(db: Session, author: schemas.AuthorCreate):
@@ -26,14 +26,14 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_books(db: Session):
-    return db.scalars(select(models.Book)).all()
+def get_books(db: Session, skip: int = 0, limit: int = 10):
+    stmt = select(models.Book).offset(skip).limit(limit)
+    return db.scalars(stmt).all()
 
 
-def get_book(db: Session, book_id: int):
-    return db.scalar(
-        select(models.Book).where(models.Book.id == book_id)
-    )
+def get_books_by_author(db: Session, author_id: int):
+    stmt = select(models.Book).where(models.Book.author_id == author_id)
+    return db.scalars(stmt).all()
 
 
 def create_book(db: Session, book: schemas.BookCreate):
