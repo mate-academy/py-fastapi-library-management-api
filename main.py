@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import FastAPI, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
+from models import Base
 from schemas import (
     AuthorCreateSchema,
     AuthorReadSchema,
@@ -16,7 +17,9 @@ from crud import (
     create_book,
     get_author
 )
-from database import get_db
+from database import get_db, engine
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

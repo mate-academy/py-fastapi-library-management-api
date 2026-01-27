@@ -3,7 +3,7 @@ import datetime
 from pydantic import BaseModel, Field, ConfigDict
 
 
-class AutorNestedSchema(BaseModel):
+class AuthorNestedSchema(BaseModel):
     name: str
     bio: str
 
@@ -14,7 +14,7 @@ class BookReadSchema(BaseModel):
     title: str
     summary: str
     publication_date: datetime.date
-    author: AutorNestedSchema
+    author: AuthorNestedSchema
 
 
 class BookCreateSchema(BaseModel):

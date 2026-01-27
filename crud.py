@@ -34,7 +34,7 @@ def get_all_books(
     db: Session,
     to_skip: int,
     to_limit: int,
-    author_id: int
+    author_id: int | None
 ) -> list[Book]:
     queryset = select(Book).offset(to_skip).limit(to_limit)
 
