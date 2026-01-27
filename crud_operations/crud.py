@@ -101,15 +101,15 @@ def read_author(
 
 
 @router.get("/authors/{author_id}", response_model=Author)
-def read_author(
+def read_single_author(
         author_id: int,
         session: SessionDep,
 ) -> Author | HTTPException:
 
+    if session.get(Author, author_id) is None:
+        raise HTTPException(status_code=404, detail="Author not found")
+
     statement = select(Author).where(Author.id == author_id)
-    # print(statement)
-    # if  0:
-    #     return HTTPException(status_code=404, detail="Author not found")
 
     return session.exec(statement).first()
 

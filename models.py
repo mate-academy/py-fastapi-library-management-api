@@ -17,7 +17,7 @@ class Book(SQLModel, table=True):
 class Author(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True, unique=True)
-    bio: Optional[int] = None
+    bio: Optional[str] = None
 
     books: list["Book"] = Relationship(back_populates="author")
 

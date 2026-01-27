@@ -9,6 +9,12 @@ class AuthorUpdate(SQLModel):
     books: int | None
 
 
+class AuthorCreate(SQLModel):
+    name: str
+    bio: str | None
+    books: int | None
+
+
 class BookUpdate(SQLModel):
     title: str
     summary: str | None
