@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 import crud
 import models
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -28,7 +28,7 @@ def root() -> dict:
 @app.get("/authors/", response_model=list[schemas.Author])
 def list_authors(
     db: Session = Depends(get_db),
-    skip: int | None = Query(0, ge=0),
+    skip: int  = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
 ) -> list[schemas.Author]:
     return crud.get_authors(db, skip=skip, limit=limit)
@@ -51,7 +51,7 @@ def list_books(
     db: Session = Depends(get_db),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
-    author_id: int = Query(None, ge=1),
+    author_id: int | None = Query(None, ge=1),
 ) -> list[schemas.Book]:
     return crud.get_books(db, author_id=author_id, skip=skip, limit=limit)
 
