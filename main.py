@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 
-from crud_operations import book_api, author_api
+from crud_operations import crud
 
 
 app = FastAPI()
 
-app.include_router(book_api.router, tags=["books"])
-app.include_router(author_api.router, tags=["authors"])
+app.include_router(crud.router, tags=["books"])
