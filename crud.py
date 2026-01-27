@@ -6,8 +6,16 @@ from models import Author, Book
 from schemas import AuthorCreateSchema, BookCreateSchema
 
 
-async def get_all_authors(db: AsyncSession) -> List[Author]:
-    result = await db.execute(select(Author).options())
+async def get_all_authors(
+    db: AsyncSession,
+    skip: int = 0,
+    limit: int = 10
+) -> List[Author]:
+    result = await db.execute(
+        select(Author)
+        .offset(skip)
+        .limit(limit)
+    )
     return result.scalars().all()
 
 
@@ -30,8 +38,17 @@ async def create_author(
     return author
 
 
-async def get_all_books(db: AsyncSession) -> List[Book]:
-    result = await db.execute(select(Book))
+async def get_all_books(
+    db: AsyncSession,
+    skip: int = 0,
+    limit: int = 10,
+    author_id: int | None = None
+) -> List[Book]:
+    stmt = select(Book)
+    if author_id is not None:
+        stmt = stmt.where(Book.author_id == author_id)
+    stmt = stmt.offset(skip).limit(limit)
+    result = await db.execute(stmt)
     return result.scalars().all()
 
 

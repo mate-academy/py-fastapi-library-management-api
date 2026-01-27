@@ -7,10 +7,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker
 )
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import selectinload
-from sqlalchemy import select
 
-from models import Base, Author, Book
 from schemas import (
     AuthorCreateSchema,
     AuthorReadSchema,
@@ -20,9 +17,11 @@ from schemas import (
 from crud import (
     create_author,
     get_author_by_id,
+    get_all_authors,
     create_book,
+    get_all_books,
 )
-from database import DATABASE_URL
+from database import DATABASE_URL, Base
 
 
 engine = create_async_engine(DATABASE_URL, echo=True)
@@ -70,14 +69,7 @@ async def list_authors(
     limit: int = Query(10, ge=1),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(
-        select(Author)
-        .offset(skip)
-        .limit(limit)
-        .options(selectinload(Author.books))
-    )
-    authors = result.scalars().all()
-    return authors
+    return await get_all_authors(db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}", response_model=AuthorReadSchema)
@@ -113,13 +105,7 @@ async def list_books(
     ),
     db: AsyncSession = Depends(get_db),
 ):
-    stmt = select(Book)
-    if author_id is not None:
-        stmt = stmt.where(Book.author_id == author_id)
-    stmt = stmt.offset(skip).limit(limit)
-    result = await db.execute(stmt)
-    books = result.scalars().all()
-    return books
+    return await get_all_books(db, skip=skip, limit=limit, author_id=author_id)
 
 
 @app.on_event("startup")
