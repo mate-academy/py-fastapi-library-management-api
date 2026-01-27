@@ -19,7 +19,6 @@ class DBBook(Base):
     publication_date = Column(Date, nullable=False)
     author_id = Column(Integer, ForeignKey("authors.id"), index=True)
 
-    author = relationship("DBAuthor", backref="books")
 
 
 

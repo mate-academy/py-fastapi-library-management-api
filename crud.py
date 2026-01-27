@@ -44,5 +44,5 @@ def create_book(db: Session, book: schemas.BookCreate):
 def filter_book(db: Session, skip: int = 0, limit: int = 100, author_id: int = None):
     query = db.query(models.DBBook)
     if author_id:
-        return query.filter(models.DBBook.author_id == author_id)
+        return query.offset(skip).limit(limit).filter(models.DBBook.author_id == author_id)
     return query.offset(skip).limit(limit).all()
