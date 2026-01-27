@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing_extensions import Annotated
 
 import crud
 import schemas
@@ -24,12 +25,25 @@ def read_authors(db: Session = Depends(get_db)):
 
 @app.post("/authors/", response_model=schemas.AuthorBase)
 def create_author(
-        author: schemas.AuthorCreate,
+        new_author: schemas.AuthorCreate,
         db: Session = Depends(get_db)
 ):
-    db_author = crud.get_author_by_name(db=db, name=author.name)
+    db_author = crud.get_author_by_name(db=db, name=new_author.name)
 
     if db_author:
         raise HTTPException(status_code=400, detail="author name already exist")
 
-    return crud.create_author(db=db, author=author)
+    return crud.create_author(db=db, author=new_author)
+
+
+@app.get("/authors/{id}", response_model=schemas.AuthorRead)
+def read_single_author(
+    author_id: int,
+    db: Annotated[Session, Depends(get_db)]
+):
+    db_author = crud.get_author_by_id(db=db, author_id=author_id)
+
+    if not db_author:
+        raise HTTPException(status_code=404, detail="Author not found")
+
+    return db_author

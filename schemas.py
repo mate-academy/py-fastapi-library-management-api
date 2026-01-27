@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 
 class AuthorBase(BaseModel):
-    id: int
     name: str
     bio: str
     books: List["BookRead"] = []
@@ -32,7 +31,7 @@ class BookRead(BookBase):
     pass
 
 class AuthorRead(AuthorBase):
-    pass
+    id: int
 
 class AuthorCreate(AuthorBase):
     pass
