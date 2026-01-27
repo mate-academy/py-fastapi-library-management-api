@@ -4,8 +4,13 @@ from models import Author, Book
 from schemas import AuthorCreate, BookCreate
 
 
-def get_authors(db: Session) -> List[Author]:
-    return db.query(Author).all()
+def get_authors(db: Session, skip: int = 0, limit: int = 10):
+    return (
+        db.query(Author)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def get_author(db: Session, author_id: int) -> Optional[Author]:
@@ -32,8 +37,23 @@ def delete_author(db: Session, author_id: int) -> Optional[Author]:
     return author
 
 
-def get_books(db: Session) -> List[Book]:
-    return db.query(Book).all()
+def get_books(
+    db: Session,
+    skip: int = 0,
+    limit: int = 10,
+    author_id: int | None = None
+):
+    query = db.query(Book)
+
+    if author_id is not None:
+        query = query.filter(Book.author_id == author_id)
+
+    return (
+        query
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def get_book(db: Session, book_id: int) -> Optional[Book]:

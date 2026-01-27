@@ -5,7 +5,7 @@ from typing import List, Optional
 
 class BookBase(BaseModel):
     title: str
-    summary: Optional[str] = None
+    summary: str = None
     publication_date: date
     author_id: int
 
@@ -17,13 +17,12 @@ class BookCreate(BookBase):
 class Book(BookBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AuthorBase(BaseModel):
     name: str
-    bio: Optional[str] = None
+    bio: str = None
 
 
 class AuthorCreate(AuthorBase):
@@ -34,4 +33,4 @@ class Author(AuthorBase):
     id: int
     books: List[Book] = []
 
-model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
