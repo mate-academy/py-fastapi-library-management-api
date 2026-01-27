@@ -5,9 +5,12 @@ from sqlalchemy.orm import Session
 from typing_extensions import Annotated
 
 import crud
+import models
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine
 from schemas import AuthorRead, BookRead
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -43,7 +46,7 @@ def create_author(
     return crud.create_author(db=db, author=new_author)
 
 
-@app.get("/authors/{id}", response_model=schemas.AuthorRead)
+@app.get("/authors/{author_id}", response_model=schemas.AuthorRead)
 def read_single_author(
         author_id: int,
         db: Annotated[Session, Depends(get_db)]
