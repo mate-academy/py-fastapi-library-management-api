@@ -7,7 +7,7 @@ from typing_extensions import Annotated
 import crud
 import schemas
 from database import SessionLocal
-from schemas import AuthorRead
+from schemas import AuthorRead, BookRead
 
 app = FastAPI()
 
@@ -47,3 +47,7 @@ def read_single_author(
         raise HTTPException(status_code=404, detail="Author not found")
 
     return db_author
+
+@app.get("/books/", response_model=List[BookRead])
+def read_books(db: Session = Depends(get_db)):
+    return crud.get_all_books(db=db)
