@@ -22,7 +22,7 @@ class Book(BookBase):
 
 class AuthorBase(BaseModel):
     name: str = Field(min_length=1, max_length=50)
-    bio: str = Field(min_length=1, max_length=100)
+    bio: str = Field(min_length=1, max_length=50)
 
 
 class AuthorCreate(AuthorBase):

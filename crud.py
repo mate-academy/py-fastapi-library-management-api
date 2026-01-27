@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 import models, schemas
 
+
 def get_all_authors(db: Session, skip: int = 0, limit: int = 100):
     return db.scalars(select (models.Author)).offset(skip).limit(limit).all()
 
@@ -18,7 +19,7 @@ def get_author_by_name(db: Session, name: str):
     )
 
 
-def create_author(db: Session, author: schemas.Author):
+def create_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.Author(
         name=author.name,
         bio=author.bio
@@ -30,7 +31,7 @@ def create_author(db: Session, author: schemas.Author):
     return db_author
 
 
-def create_book(db: Session, book: schemas.Book):
+def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.Book(
         title=book.title,
         summary=book.summary,
@@ -56,7 +57,12 @@ def get_book_by_title(db: Session, title: str):
     )
 
 
-def get_book_by_author(db: Session, author_id: int):
+def get_book_by_author(
+        db: Session,
+        author_id: int,
+        skip: int = 0,
+        limit: int = 100
+):
     return db.scalars(
         select(models.Book).where(models.Book.author_id == author_id)
-    ).all()
+    ).offset(skip).limit(limit).all()

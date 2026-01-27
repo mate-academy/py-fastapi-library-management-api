@@ -1,10 +1,13 @@
 from fastapi import FastAPI, Depends, HTTPException
+from database import engine
 from sqlalchemy.orm import Session
 
 import crud
 import schemas, models
 from database import SessionLocal
 
+
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
@@ -78,5 +81,10 @@ def get_books(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
 
 
 @app.get("/authors/{author_id}/books/", response_model=list[schemas.Book])
-def get_author_books(author_id: int, db: Session = Depends(get_db)):
-    return crud.get_book_by_author(db, author_id=author_id)
+def get_author_books(
+        author_id: int,
+        db: Session = Depends(get_db),
+        skip: int = 0,
+        limit: int = 100
+):
+    return crud.get_book_by_author(db, author_id=author_id, skip=skip, limit=limit)
