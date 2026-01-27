@@ -28,7 +28,7 @@ def root() -> dict:
 @app.get("/authors/", response_model=list[schemas.Author])
 def list_authors(
     db: Session = Depends(get_db),
-    skip: int = Query(0, ge=0),
+    skip: int | None = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
 ) -> list[schemas.Author]:
     return crud.get_authors(db, skip=skip, limit=limit)
