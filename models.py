@@ -20,7 +20,7 @@ class Book(Base):
     __tablename__ = "books"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    title: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(50), nullable=False)
     summary: Mapped[str] = mapped_column(String(200), nullable=False)
     publication_date: Mapped[datetime] = mapped_column(
         server_default=func.now(),
