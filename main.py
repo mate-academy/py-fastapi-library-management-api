@@ -64,7 +64,7 @@ def get_books(
     return crud.get_books(db, skip=skip, limit=limit)
 
 @app.get(
-    "/author/{author_id}/books/}",
+    "/author/{author_id}/books/",
     response_model=list[schemas.BookRead],
 )
 def get_books_by_author(
