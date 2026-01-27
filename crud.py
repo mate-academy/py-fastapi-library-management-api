@@ -33,3 +33,24 @@ def get_author_by_id(db: Session, author_id: int):
 
 def get_all_books(db: Session):
     return db.scalars(select(models.Book)).all()
+
+
+def get_books_by_author_id(db: Session, author_id: int):
+    stmt = select(models.Book).where(models.Book.author_id == author_id)
+    return db.scalars(stmt).all()
+
+
+def create_book_for_author(db: Session, author_id: int, book_data: schemas.BookCreate):
+    author = db.get(models.Author, author_id)
+    if not author:
+        return None
+
+    new_book = models.Book(
+        title=book_data.title,
+        summary=book_data.summary,
+        author_id=author_id
+    )
+    db.add(new_book)
+    db.commit()
+    db.refresh(new_book)
+    return new_book

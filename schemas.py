@@ -20,6 +20,7 @@ class BookBase(BaseModel):
     title: str
     summary: str
     publication_date: datetime
+    author_id: int
 
     class Config:
         model_config = {
@@ -30,8 +31,15 @@ class BookBase(BaseModel):
 class BookRead(BookBase):
     pass
 
+
 class AuthorRead(AuthorBase):
     id: int
 
+
 class AuthorCreate(AuthorBase):
     pass
+
+
+class BookCreate(BaseModel):
+    title: str
+    summary: str
