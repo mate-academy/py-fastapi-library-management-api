@@ -48,7 +48,7 @@ def create_author(db: Session, author_data: schemas.AuthorCreate) -> models.Auth
 
 
 def get_books(
-    db: Session, author_id: int, skip: int = 0, limit: int = 100
+    db: Session, author_id: int | None, skip: int = 0, limit: int = 100
 ) -> list[models.Book]:
     query = select(models.Book)
     if author_id is not None:
