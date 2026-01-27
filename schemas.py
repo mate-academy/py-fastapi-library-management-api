@@ -5,8 +5,8 @@ from typing import List, Optional
 
 class BookBase(BaseModel):
     title: str
-    summary: Optional[str] = None
-    publication_date: Optional[date] = None
+    summary: str
+    publication_date: str
 
 
 class BookCreate(BookBase):
@@ -21,7 +21,7 @@ class Book(BookBase):
 
 class AuthorBase(BaseModel):
     name: str
-    bio: Optional[str] = None
+    bio: str
 
 
 class AuthorCreate(AuthorBase):
