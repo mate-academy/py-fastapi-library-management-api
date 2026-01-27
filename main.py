@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing_extensions import Annotated
 
@@ -21,8 +21,12 @@ def get_db() -> Session:
 
 
 @app.get("/authors/", response_model=List[AuthorRead])
-def read_authors(db: Session = Depends(get_db)):
-    return crud.get_all_authors(db=db)
+def read_authors(
+        skip: int = Query(0, ge=0),
+        limit: int = Query(10, ge=1, le=100),
+        db: Session = Depends(get_db)
+):
+    return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.post("/authors/", response_model=schemas.AuthorBase)
@@ -53,8 +57,12 @@ def read_single_author(
 
 
 @app.get("/books/", response_model=List[BookRead])
-def read_books(db: Session = Depends(get_db)):
-    return crud.get_all_books(db=db)
+def read_books(
+        skip: int = Query(0, ge=0),
+        limit: int = Query(10, ge=1, le=100),
+        db: Session = Depends(get_db)
+):
+    return crud.get_all_books(db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}/books", response_model=List[BookRead])
