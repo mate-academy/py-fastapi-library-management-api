@@ -104,8 +104,12 @@ def read_author(
 def read_author(
         author_id: int,
         session: SessionDep,
-) -> Author:
+) -> Author | HTTPException:
+
     statement = select(Author).where(Author.id == author_id)
+    # print(statement)
+    # if  0:
+    #     return HTTPException(status_code=404, detail="Author not found")
 
     return session.exec(statement).first()
 
