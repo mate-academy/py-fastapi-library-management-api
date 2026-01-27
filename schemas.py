@@ -5,7 +5,7 @@ from typing import List, Optional
 
 class BookBase(BaseModel):
     title: str
-    summary: str = None
+    summary: str
     publication_date: date
     author_id: int
 
@@ -22,7 +22,7 @@ class Book(BookBase):
 
 class AuthorBase(BaseModel):
     name: str
-    bio: str = None
+    bio: str
 
 
 class AuthorCreate(AuthorBase):
