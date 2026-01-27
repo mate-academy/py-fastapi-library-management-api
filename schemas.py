@@ -11,7 +11,9 @@ class AuthorBase(BaseModel):
     books: List["BookRead"] = []
 
     class Config:
-        orm_mode = True
+        model_config = {
+            "from_attributes": True
+        }
 
 
 class BookBase(BaseModel):
@@ -21,11 +23,16 @@ class BookBase(BaseModel):
     publication_date: datetime
 
     class Config:
-        orm_mode = True
+        model_config = {
+            "from_attributes": True
+        }
 
 
 class BookRead(BookBase):
     pass
 
 class AuthorRead(AuthorBase):
+    pass
+
+class AuthorCreate(AuthorBase):
     pass
