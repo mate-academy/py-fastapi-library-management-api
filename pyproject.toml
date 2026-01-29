@@ -1,0 +1,16 @@
+[project]
+name = "py-fastapi-library-management-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.128.0",
+    "pydantic>=2.0",
+    "sqlalchemy>=2.0",
+]
+
+[dependency-groups]
+dev = [
+    "flake8>=7.3.0",
+]
