@@ -11,12 +11,11 @@ class BookBase(BaseModel):
 
 
 class BookCreate(BookBase):
-    pass
+    author_id: int
 
 
 class BookResponse(BookBase):
     id: int
-    author_id: int
 
     class Config:
         from_attributes = True
