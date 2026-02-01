@@ -25,7 +25,7 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/authors", response_model=List[schemas.AuthorResponse])
-def get_authors(db: Session = Depends(get_db)):
+def get_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     authors = crud.get_authors(db)
     return authors
 
@@ -48,7 +48,7 @@ def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books", response_model=List[schemas.BookResponse])
-def get_books(db: Session = Depends(get_db)):
+def get_books(db: Session = Depends(get_db),skip: int = 0, limit: int = 100, author_id: int = None):
     books = crud.get_books(db)
     return books
 
