@@ -66,7 +66,7 @@ def read_book(book_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Book not found")
     return db_book
 
-@app.get("/books/", response_model=schemas.Book)
+@app.get("/books/", response_model=list[schemas.Book])
 def read_books(
         skip: int = 0,
         limit: int = 100,
