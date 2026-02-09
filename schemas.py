@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class AuthorBaseSchema(BaseModel):
@@ -14,6 +14,8 @@ class AuthorCreateUpdateSchema(AuthorBaseSchema):
 
 class AuthorListSchema(AuthorBaseSchema):
     id: int
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AuthorDetailSchema(AuthorListSchema):
@@ -33,3 +35,5 @@ class BookCreateUpdateSchema(BookBaseSchema):
 class BookListSchema(BookBaseSchema):
     id: int
     author: AuthorListSchema
+
+    model_config = ConfigDict(from_attributes=True)

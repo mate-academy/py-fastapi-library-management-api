@@ -37,8 +37,12 @@ def create_new_author(
 
 
 @app.get("/authors/", response_model=list[AuthorListSchema])
-def read_authors(db: Session = Depends(get_db)) -> list[Author]:
-    return crud.read_authors_list(db)
+def read_authors(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+) -> list[Author]:
+    return crud.read_authors_list(db, skip, limit)
 
 
 @app.get("/authors/{id}", response_model=AuthorDetailSchema)
@@ -54,9 +58,11 @@ def create_new_book(
     return crud.create_book(db, book)
 
 
-@app.post("/books/", response_model=BookListSchema)
+@app.get("/books/", response_model=BookListSchema)
 def read_books(
     author_id: int = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
 ) -> list[Book]:
-    return crud.read_books_list(db, author_id)
+    return crud.read_books_list(db, author_id, skip, limit)
