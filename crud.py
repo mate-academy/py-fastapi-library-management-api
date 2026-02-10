@@ -122,6 +122,12 @@ def update_book(
     book_init.title = book.title
     book_init.summary = book.summary
     book_init.publication_date = book.publication_date
+
+    author = db.get(Author, book.author_id)
+
+    if author is None:
+        raise HTTPException(status_code=404, detail="Author not found")
+
     book_init.author_id = book.author_id
     db.commit()
     db.refresh(book_init)

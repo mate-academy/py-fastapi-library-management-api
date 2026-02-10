@@ -58,7 +58,7 @@ def create_new_book(
     return crud.create_book(db, book)
 
 
-@app.get("/books/", response_model=BookListSchema)
+@app.get("/books/", response_model=list[BookListSchema])
 def read_books(
     author_id: int = None,
     db: Session = Depends(get_db),

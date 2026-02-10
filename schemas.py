@@ -7,6 +7,8 @@ class AuthorBaseSchema(BaseModel):
     name: str
     bio: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class AuthorCreateUpdateSchema(AuthorBaseSchema):
     pass
@@ -14,8 +16,6 @@ class AuthorCreateUpdateSchema(AuthorBaseSchema):
 
 class AuthorListSchema(AuthorBaseSchema):
     id: int
-
-    model_config = ConfigDict(from_attributes=True)
 
 
 class AuthorDetailSchema(AuthorListSchema):
@@ -27,6 +27,8 @@ class BookBaseSchema(BaseModel):
     summary: str
     publication_date: date
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class BookCreateUpdateSchema(BookBaseSchema):
     author_id: int
@@ -35,5 +37,3 @@ class BookCreateUpdateSchema(BookBaseSchema):
 class BookListSchema(BookBaseSchema):
     id: int
     author: AuthorListSchema
-
-    model_config = ConfigDict(from_attributes=True)
