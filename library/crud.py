@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from library.models import Author, Book
 from library.schemas import AuthorCreate, BookCreate
 from typing import Optional
-
+import sqlalchemy.exc
 
 def create_author(db: Session, author_create: AuthorCreate):
     data = author_create.dict()
@@ -11,10 +11,12 @@ def create_author(db: Session, author_create: AuthorCreate):
         db.add(db_author)
         db.commit()
         db.refresh(db_author)
-    except:
+    except sqlalchemy.exc.IntegrityError:
         db.rollback()
         raise
-    return db_author
+    except Exception:
+        db.rollback()
+    raise
 
 
 def get_author(db: Session, author_id: int):
