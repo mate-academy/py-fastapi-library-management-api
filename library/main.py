@@ -1,21 +1,13 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from library import models, schemas, crud
-from library.database import SessionLocal, engine
+from library.database import engine
+from library.database import get_db
 
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 
 @app.post("/authors/", response_model=schemas.AuthorRead, status_code=status.HTTP_201_CREATED)
@@ -38,10 +30,10 @@ def read_author(author_id: int, db: Session = Depends(get_db)):
 
 @app.get("/authors/{author_id}/books", response_model=list[schemas.BookRead])
 def read_books_by_author(author_id: int, db: Session = Depends(get_db)):
-    books = crud.get_books(db, author_id=author_id)
-    if not books:
-        raise HTTPException(status_code=404, detail="No books found for this author")
-    return books
+    db_author = crud.get_author(db, author_id)
+    if db_author is None:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return crud.get_books(db, author_id=author_id)
 
 
 @app.post("/books/", response_model=schemas.BookRead, status_code=status.HTTP_201_CREATED)
