@@ -15,6 +15,10 @@ def get_author_by_id(db: Session, author_id: int) -> models.Author | None:
     return db.scalar(select(models.Author).where(models.Author.id == author_id))
 
 
+def get_author_by_name(db: Session, name: str) -> models.Author | None:
+    return db.scalar(select(models.Author).where(models.Author.name == name))
+
+
 def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     db_author = models.Author(
         name=author.name,

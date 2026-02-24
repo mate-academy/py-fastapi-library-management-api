@@ -4,8 +4,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
+import models
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine
+
+
+models.Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI()
 
@@ -44,6 +49,12 @@ def read_author(author_id: int, db: Annotated[Session, Depends(get_db)]):
 def create_author(
     author: schemas.AuthorCreate, db: Annotated[Session, Depends(get_db)]
 ):
+    db_author = crud.get_author_by_name(db=db, name=author.name)
+    if db_author:
+        raise HTTPException(
+            status_code=400, detail="Author with this name already exists"
+        )
+
     return crud.create_author(db=db, author=author)
 
 
