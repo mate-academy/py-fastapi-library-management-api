@@ -8,7 +8,11 @@ from fastapi import (
 from sqlalchemy.orm import Session
 
 import crud
-from database import SessionLocal
+from database import (
+    SessionLocal,
+    Base,
+    engine
+)
 from schemas import (
     Author,
     Book,
@@ -18,6 +22,8 @@ from schemas import (
 
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Session:
