@@ -76,11 +76,11 @@ def retrieve_books_by_author(
         author_id: int,
         db: Annotated[Session, Depends(get_db)]
 ):
-    db_book = crud.get_book_by_author_id(db=db, author_id=author_id)
-    if not db_book:
-        raise HTTPException(status_code=404, detail="Books not found")
+    db_author = crud.get_author_by_id(db=db, author_id=author_id)
+    if not db_author:
+        raise HTTPException(status_code=404, detail="Author not found")
 
-    return db_book
+    return crud.get_book_by_author_id(db=db, author_id=author_id)
 
 @app.post("/books/", response_model=schemas.Book)
 def create_book(
