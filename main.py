@@ -43,9 +43,6 @@ async def get_authors(
 ):
     authors = author_list(db=db, skip=skip, limit=limit)
 
-    if not authors:
-        raise HTTPException(status_code=404, detail="No authors found")
-
     return authors
 
 
