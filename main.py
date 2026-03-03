@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -38,8 +38,8 @@ async def create_authors(authors_info: AuthorCreateSchema, db: Session = Depends
 @app.get("/authors", response_model=List[AuthorBase])
 async def get_authors(
         db: Session = Depends(get_db),
-        skip: int = 0,
-        limit: int = 10
+        skip: Optional[int] = None,
+        limit: Optional[int] = None
 ):
     authors = author_list(db=db, skip=skip, limit=limit)
 
@@ -49,14 +49,14 @@ async def get_authors(
     return authors
 
 
-@app.get("/author/{author_id", response_model=AuthorBase)
+@app.get("/author/{author_id}", response_model=AuthorBase)
 async def get_author( author_id: int, db: Session = Depends(get_db)):
     author = get_author_by_id(db=db, author_id=author_id)
 
     return author
 
 
-@app.post("/books", response_model=BookCreateSchema)
+@app.post("/books", response_model=BookReadSchema)
 async def create_books(
         books_info: BookCreateSchema,
         db: Session = Depends(get_db)
@@ -74,12 +74,11 @@ async def create_books(
 
 @app.get("/books", response_model=list[BookReadSchema])
 async def get_books(
-        skip: int = 0,
-        limit: int = 10,
+        skip: Optional[int] = None,
+        limit: Optional[int] = None,
         db: Session = Depends(get_db),
-        author_id: int = 0
+        author_id: Optional[int] = None
 ):
-    print(author_id)
     if author_id:
         return book_list(db=db, skip=skip, limit=limit, author_id=author_id)
 

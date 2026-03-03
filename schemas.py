@@ -14,6 +14,7 @@ class AuthorCreateSchema(AuthorBase):
 
 
 class BookReadSchema(BaseModel):
+    id: int
     title: str
     summary: str
     publication_date: date
