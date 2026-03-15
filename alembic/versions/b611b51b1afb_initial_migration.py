@@ -31,10 +31,10 @@ def upgrade() -> None:
     op.create_index(op.f('ix_author_id'), 'author', ['id'], unique=False)
     op.create_table('book',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('title', sa.String(length=255), nullable=True),
-    sa.Column('summary', sa.String(length=500), nullable=True),
-    sa.Column('publication_date', sa.Date(), nullable=True),
-    sa.Column('author_id', sa.Integer(), nullable=True),
+    sa.Column('title', sa.String(length=255), nullable=False),
+    sa.Column('summary', sa.String(length=500), nullable=False),
+    sa.Column('publication_date', sa.Date(), nullable=False),
+    sa.Column('author_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['author.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
