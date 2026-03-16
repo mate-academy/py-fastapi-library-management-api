@@ -3,11 +3,16 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from db.engine import SessionLocal
+from db import models
+from db.engine import SessionLocal, engine
+
 
 app = FastAPI()
 
+models.Base.metadata.create_all(bind=engine) 
+
 def get_db() -> Session:
+
     db = SessionLocal()
     try:
         yield db
@@ -43,6 +48,10 @@ def create_author(
         author : schemas.CreateAuthor,
         db: Session = Depends(get_db)
 ):
+    author_name = db.query(models.DBAuthor).filter(models.DBAuthor.name == author.name).first()
+
+    if author_name:
+        raise HTTPException(status_code=404, detail="Author with this name already exists")
     return crud.create_author(db=db, author=author)
 
 
@@ -51,12 +60,14 @@ def get_all_books(db: Session = Depends(get_db), skip: int = 0, limit: int = 10)
     return crud.get_books(db=db, skip=skip, limit=limit)
 
 
-@app.get("/book_by_author_id/{author_id}/", response_model=list[schemas.Book]) # Retrieve a single book by author ID.
+@app.get("/book_by_author_id/{author_id}/", response_model=list[schemas.Book]) # done
 def get_book_by_author_id(
     author_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 10
 ):
-    db_book = crud.get_book_by_author_id(db=db, author_id=author_id)
+    db_book = crud.get_book_by_author_id(db=db, author_id=author_id, skip=skip, limit=limit)
 
     if not db_book:
         raise HTTPException(status_code=404, detail="No books for this author")

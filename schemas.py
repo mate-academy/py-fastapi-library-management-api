@@ -26,7 +26,7 @@ class CreateBook(BookBase):
     pass
 
 class Book(BookBase):
-    author_id: int
+    id: int
 
     class Config:
         orm_mode = True
