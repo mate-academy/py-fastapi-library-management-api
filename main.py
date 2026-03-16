@@ -1,3 +1,5 @@
+from typing import Annotated, Generator
+
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -11,7 +13,7 @@ app = FastAPI()
 
 models.Base.metadata.create_all(bind=engine) 
 
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
 
     db = SessionLocal()
     try:
@@ -26,14 +28,14 @@ def root() -> dict:
 
 
 @app.get("/authors/", response_model=list[schemas.Author]) # with pagination
-def get_all_authors(db: Session = Depends(get_db), skip: int = 0, limit: int = 10):
+def get_all_authors(db: Annotated[Session, Depends(get_db)], skip: int = 0, limit: int = 10):
     return crud.get_authors(db=db, skip=skip, limit=limit)
 
 
 @app.get("/author/{author_id}/", response_model=schemas.Author) # Retrieve a single author by ID.
 def get_autor_by_id(
     author_id: int,
-    db: Session = Depends(get_db)
+    db: Annotated[Session, Depends(get_db)]
 ):
     db_author = crud.get_author_by_id(db=db, author_id=author_id)
     
@@ -46,7 +48,7 @@ def get_autor_by_id(
 @app.post("/author/", response_model=schemas.Author) # Create a new author.
 def create_author(
         author : schemas.CreateAuthor,
-        db: Session = Depends(get_db)
+        db: Annotated[Session, Depends(get_db)]
 ):
     author_name = db.query(models.DBAuthor).filter(models.DBAuthor.name == author.name).first()
 
@@ -56,14 +58,14 @@ def create_author(
 
 
 @app.get("/books/", response_model=list[schemas.Book]) # should be with pagination
-def get_all_books(db: Session = Depends(get_db), skip: int = 0, limit: int = 10):
+def get_all_books(db: Annotated[Session, Depends(get_db)], skip: int = 0, limit: int = 10):
     return crud.get_books(db=db, skip=skip, limit=limit)
 
 
 @app.get("/book_by_author_id/{author_id}/", response_model=list[schemas.Book]) # done
 def get_book_by_author_id(
     author_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     skip: int = 0,
     limit: int = 10
 ):
@@ -78,7 +80,7 @@ def get_book_by_author_id(
 @app.post("/book/", response_model=schemas.Book) # Create a new book. Func should check if such author is existing
 def create_book(
         book : schemas.CreateBook,
-        db: Session = Depends(get_db)
+        db: Annotated[Session, Depends(get_db)]
 ):
     try:
         return crud.create_book(db=db, book=book)
