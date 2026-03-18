@@ -14,7 +14,7 @@ class BookCreate(BookBase):
     pass
 
 
-class BookRead(BookBase):
+class Book(BookBase):
     id: int
     author_id: int
 
@@ -30,8 +30,8 @@ class AuthorCreate(AuthorBase):
     pass
 
 
-class AuthorRead(AuthorBase):
+class Author(AuthorBase):
     id: int
-    books: List[BookRead] = []
+    books: List[Book] = []
 
     model_config = ConfigDict(from_attributes=True)
