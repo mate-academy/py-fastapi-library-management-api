@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload, selectinload
 
 import models
 import schemas
-
+models.Base.metadata.create_all(bind=engine)
 
 def create_new_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.Author(**author.model_dump())
@@ -20,7 +20,7 @@ def get_author_list(db: Session, offset: int = 0, limit: int = 100):
 
 
 def get_author(db: Session, author_id: int):
-    return db.query(models.Author).filter(models.Author.id == author_id).first()
+    return db.query(models.Author).options(selectinload(models.Author.books)).filter(models.Author.id == author_id).first()
 
 def create_new_book(db: Session, book: schemas.BookCreate):
     db_book = models.Book(**book.model_dump())

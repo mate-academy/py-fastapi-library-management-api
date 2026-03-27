@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from typing import List
 
 import models
@@ -31,12 +32,17 @@ def author_create(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 @app.get("/authors/{author_id}", response_model=schemas.Author)
 def get_author(author_id: int, db: Session = Depends(get_db)):
-    return crud.get_author(db=db, author_id=author_id)
+    author = crud.get_author(db=db, author_id=author_id)
+    if author:
+        return author
+    raise HTTPException(status_code=404, detail="Author not found")
 
 
 @app.get("/books", response_model=List[schemas.Book])
 def books(db: Session = Depends(get_db), offset: int = 0, limit: int = 100, author_id: int = None):
-    return crud.get_book_list(db=db, offset=offset, limit=limit, author_id=author_id)
+    if crud.get_author(db=db, author_id=author_id):
+        return crud.get_book_list(db=db, offset=offset, limit=limit, author_id=author_id)
+    raise HTTPException(status_code=404, detail="Author not found")
 
 
 @app.post("/books", response_model=schemas.Book)
