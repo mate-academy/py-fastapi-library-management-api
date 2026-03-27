@@ -1,14 +1,14 @@
-from http.client import HTTPException
 from typing import List
 
 import models
 import schemas
 import crud
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from database import SessionLocal
+from database import SessionLocal, engine
 
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
@@ -40,9 +40,11 @@ def get_author(author_id: int, db: Session = Depends(get_db)):
 
 @app.get("/books", response_model=List[schemas.Book])
 def books(db: Session = Depends(get_db), offset: int = 0, limit: int = 100, author_id: int = None):
-    if crud.get_author(db=db, author_id=author_id):
-        return crud.get_book_list(db=db, offset=offset, limit=limit, author_id=author_id)
-    raise HTTPException(status_code=404, detail="Author not found")
+    if author_id:
+        if crud.get_author(db=db, author_id=author_id)
+            return crud.get_book_list(db=db, offset=offset, limit=limit, author_id=author_id)
+        raise HTTPException(status_code=404, detail="Author not found")
+    return crud.get_book_list(db=db, offset=offset, limit=limit)
 
 
 @app.post("/books", response_model=schemas.Book)

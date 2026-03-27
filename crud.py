@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload, selectinload
 
 import models
 import schemas
-models.Base.metadata.create_all(bind=engine)
+
 
 def create_new_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.Author(**author.model_dump())
