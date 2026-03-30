@@ -23,4 +23,4 @@ class DBBook(Base):
     summary: Mapped[str] = mapped_column(Text)
     publication_date: Mapped[date] = mapped_column(server_default=func.current_date())
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id", ondelete="CASCADE"))
-    author: Mapped["DBAuthor"] = relationship(back_populates="books")
+    authors: Mapped["DBAuthor"] = relationship(back_populates="books")
