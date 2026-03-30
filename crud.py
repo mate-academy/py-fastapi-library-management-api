@@ -65,4 +65,4 @@ def get_book_by_id(db: Session, book_id: int) -> models.DBBook | None:
 
 
 def get_book_by_title(db: Session, title: str) -> models.DBBook | None:
-    return db.scalar(select(models.DBBook).where(models.DBBook.title == title))
+    return db.scalar(select(models.DBBook).where(models.DBBook.title == title)).first()
