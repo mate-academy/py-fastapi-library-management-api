@@ -11,7 +11,7 @@ class DBAuthor(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(255), unique=True)
-    bio: Mapped[str | None] = mapped_column(Text, nullable=True)
+    bio: Mapped[str] = mapped_column(Text)
     books: Mapped[list["DBBook"]] = relationship(back_populates="author")
 
 
@@ -20,7 +20,7 @@ class DBBook(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(255), unique=True)
-    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    summary: Mapped[str] = mapped_column(Text)
     publication_date: Mapped[date] = mapped_column(server_default=func.current_date())
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id", ondelete="CASCADE"))
     author: Mapped["DBAuthor"] = relationship(back_populates="books")
