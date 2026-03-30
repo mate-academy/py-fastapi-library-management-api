@@ -62,3 +62,7 @@ def create_book(db: Session, book: schemas.BookCreate) -> models.DBBook:
 
 def get_book_by_id(db: Session, book_id: int) -> models.DBBook | None:
     return db.scalar(select(models.DBBook).where(models.DBBook.id == book_id))
+
+
+def get_book_by_title(db: Session, title: str) -> models.DBBook | None:
+    return db.scalar(select(models.DBBook).where(models.DBBook.title == title))
