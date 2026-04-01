@@ -1,12 +1,12 @@
-from fastapi.openapi.models import Schema
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import crud
 
 import schemas
 from db import models
-from db.models import Author
+from db.database import Base, engine
 
+
+Base.metadata.create_all(bind=engine)
 
 def get_all_authors(db: Session, skip: int = 0, limit: int = 3):
     return db.scalars(select(models.Author).offset(skip).limit(limit)).all()
@@ -40,9 +40,12 @@ def create_book(db: Session, book: schemas.BookCreate, author_id: int):
     db.refresh(db_book)
     return db_book
 
-def get_books(db: Session, skip: int = 0, limit: int = 10):
+def get_books(db: Session, skip: int = 0, limit: int = 10, author_id: int | None = None,):
+    query = select(models.Book)
+    if author_id is not None:
+        query = query.where(models.Book.author_id == author_id)
     return db.scalars(
-        select(models.Book).offset(skip).limit(limit)
+        query.offset(skip).limit(limit)
     ).all()
 
 def get_books_by_author(db: Session, author_id: int):
