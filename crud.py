@@ -3,10 +3,7 @@ from sqlalchemy.orm import Session
 
 import schemas
 from db import models
-from db.database import Base, engine
 
-
-Base.metadata.create_all(bind=engine)
 
 def get_all_authors(db: Session, skip: int = 0, limit: int = 3):
     return db.scalars(select(models.Author).offset(skip).limit(limit)).all()

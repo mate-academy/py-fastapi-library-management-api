@@ -4,8 +4,10 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from crud import get_all_authors
-from db.database import SessionLocal
+from db.database import SessionLocal, Base, engine
+
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
