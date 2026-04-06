@@ -5,14 +5,20 @@ import schemas
 from db import models
 
 
-def get_all_author(db: Session):
-    return db.scalars(select(models.DBAuthor)).all()
+def get_all_author(db: Session, skip: int = 0, limit: int = 10):
+    return db.scalars(select(models.DBAuthor).offset(skip).limit(limit)).all()
 
 
 def get_author_by_name(db: Session, name: str):
     return (
         db.scalars(select(models.DBAuthor).where(models.DBAuthor.name == name)).first()
     )
+
+
+def get_author_by_id(db: Session, author_id: int):
+    return db.scalars(
+        select(models.DBAuthor).where(models.DBAuthor.id == author_id)
+    ).first()
 
 
 def create_author(db: Session, author: schemas.AuthorCreate):
@@ -27,12 +33,21 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return db_author
 
 
-def get_all_book(db: Session):
-    return db.scalars(select(models.DBBook)).all()
+def get_all_book(db: Session, skip: int = 0, limit: int = 10):
+    return db.scalars(select(models.DBBook).offset(skip).limit(limit)).all()
 
 
 def get_book_by_id(db: Session, book_id: int):
     return db.scalars(select(models.DBBook).where(models.DBBook.id == book_id)).first()
+
+
+def get_books_by_author_id(db: Session, author_id: int, skip: int = 0, limit: int = 10):
+    return db.scalars(
+        select(models.DBBook)
+        .where(models.DBBook.author_id == author_id)
+        .offset(skip)
+        .limit(limit)
+    ).all()
 
 
 def create_book(db: Session, book: schemas.BookCreate, author_id: int):
@@ -40,7 +55,7 @@ def create_book(db: Session, book: schemas.BookCreate, author_id: int):
         title=book.title,
         summary=book.summary,
         author_id=author_id,
-        pub_date=book.pub_date,
+        publication_date=book.publication_date,
     )
 
     db.add(db_book)

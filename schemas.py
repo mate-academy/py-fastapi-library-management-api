@@ -23,8 +23,7 @@ class Author(AuthorBase):
 class BookBase(BaseModel):
     title: str
     summary: Optional[str] = None
-    authors: List[AuthorCreate]
-    pub_date: Optional[datetime.date] = None
+    publication_date: Optional[datetime.date] = None
 
 
 class BookCreate(BookBase):
@@ -36,4 +35,4 @@ class Book(BookBase):
 
     id: int
     author_id: int
-    authors: Optional[Author] = None
+    author: Optional[Author] = None

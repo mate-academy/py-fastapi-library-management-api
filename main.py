@@ -1,8 +1,9 @@
 # main.py
-from typing import List
+from typing import List, Optional
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.testing import skip
 
 import crud
 import schemas
@@ -24,8 +25,10 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/authors/", response_model=List[schemas.Author])
-def read_authors(db: Session = Depends(get_db)):
-    return crud.get_all_author(db=db)
+def read_authors(skip: int = 0,
+                 limit: int = 10,
+                 db: Session = Depends(get_db)):
+    return crud.get_all_author(db=db, skip=skip, limit=limit)
 
 
 @app.post("/authors/", response_model=schemas.Author)
@@ -41,16 +44,22 @@ def create_author(
     return crud.create_author(db=db, author=author)
 
 @app.get("/books/", response_model=List[schemas.Book])
-def read_books(db: Session = Depends(get_db)):
-    return crud.get_all_book(db=db)
+def read_books(skip: int = 0,
+               limit: int = 10,
+               author_id: Optional[int] = None,
+               db: Session = Depends(get_db)):
+    if author_id:
+        return crud.get_book_by_author_id(db=db, author_id=author_id, skip=skip, limit=limit)
+    return crud.get_all_book(db=db, skip=skip, limit=limit)
 
 
 @app.post("/books/", response_model=schemas.Book)
 def create_book(
+        author_id : int,
         book : schemas.BookCreate,
         db: Session = Depends(get_db),
 ):
-    return crud.create_book(db=db, book=book)
+    return crud.create_book(db=db, book=book, author_id=author_id)
 
 
 @app.get("/books/{id}", response_model=schemas.Book)
