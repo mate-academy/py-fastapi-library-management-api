@@ -3,11 +3,15 @@ from typing import List, Optional
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy.testing import skip
 
 import crud
 import schemas
-from db.database import SessionLocal
+from db.database import SessionLocal, engine
+from db import models
+
+
+models.Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI()
 
@@ -29,6 +33,14 @@ def read_authors(skip: int = 0,
                  limit: int = 10,
                  db: Session = Depends(get_db)):
     return crud.get_all_author(db=db, skip=skip, limit=limit)
+
+
+@app.get("/authors/{author_id}", response_model=schemas.Author)
+def read_author(author_id: int, db: Session = Depends(get_db)):
+    db_author = crud.get_author_by_id(db=db, author_id=author_id)
+    if db_author is None:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return db_author
 
 
 @app.post("/authors/", response_model=schemas.Author)
