@@ -6,7 +6,7 @@ from db.models import Author, Book
 from db.schemas import AuthorCreate, BookCreate
 
 
-def get_all_authors_by_skip_and_limit(db: Session, skip: int, limit: int):
+def get_all_authors_by_skip_and_limit(db: Session, skip: int | None, limit: int | None):
     stmt = select(Author)
 
     if skip is not None:
