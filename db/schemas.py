@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-from datetime import date
+from datetime import datetime
 
 
 class AuthorBase(BaseModel):
@@ -10,7 +10,7 @@ class AuthorBase(BaseModel):
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: date
+    publication_date: datetime
 
 
 class AuthorCreate(AuthorBase):

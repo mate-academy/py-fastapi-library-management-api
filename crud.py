@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -6,8 +7,15 @@ from db.schemas import AuthorCreate, BookCreate
 
 
 def get_all_authors_by_skip_and_limit(db: Session, skip: int, limit: int):
-    authors = db.scalars(select(Author)).all()
-    return authors[skip:skip + limit]
+    stmt = select(Author)
+
+    if skip is not None:
+        stmt = stmt.offset(skip)
+
+    if limit is not None:
+        stmt = stmt.limit(limit)
+
+    return db.execute(stmt).scalars().all()
 
 def create_new_author(db: Session, author: AuthorCreate):
     db_author = Author(name=author.name, bio=author.bio)
@@ -19,12 +27,13 @@ def create_new_author(db: Session, author: AuthorCreate):
     return db_author
 
 def get_author_by_id(db: Session, item_id: int):
-    stmt = select(Author).where(Author.id == item_id)
-
-    result = db.execute(stmt)
-    return result.scalars().first()
+    return db.scalar(select(Author).where(Author.id == item_id))
 
 def create_book_for_author(db: Session, book: BookCreate):
+    author = db.scalar(select(Author).where(Author.id == book.author_id))
+    if author is None:
+        raise HTTPException(status_code=404, detail="Author with such id does not exist")
+
     db_book = Book(
         title=book.title,
         summary=book.summary,
@@ -40,13 +49,17 @@ def create_book_for_author(db: Session, book: BookCreate):
     return db_book
 
 
-def get_books_by_skip_limit(db: Session, skip: int, limit: int):
-    db_books = db.scalars(select(Book)).all()
-    return db_books[skip:skip + limit]
 
+def get_books_by_filtering(db: Session, skip: int | None, limit: int | None, author_id: int | None):
+    stmt = select(Book)
 
-def retrieve_book_by_id(db: Session, item_id: int):
-    stmt = select(Book).where(Book.id == item_id)
+    if author_id is not None:
+        stmt = stmt.where(Book.author_id == author_id)
 
-    result = db.execute(stmt)
-    return result.scalars().first()
+    if skip is not None:
+        stmt = stmt.offset(skip)
+
+    if limit is not None:
+        stmt = stmt.limit(limit)
+
+    return db.execute(stmt).scalars().all()
