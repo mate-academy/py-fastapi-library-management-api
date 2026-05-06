@@ -33,7 +33,7 @@ def get_db():
         db.close()
 
 
-@app.get("/books/", response_model=Page[list[BookList]])
+@app.get("/books/", response_model=Page[BookList])
 def read_books(
     author_id: int = None,
     db: Session = Depends(get_db)
@@ -62,7 +62,7 @@ def write_book(
     return create_book(db, book_data)
 
 
-@app.get("/authors/", response_model=Page[list[AuthorList]])
+@app.get("/authors/", response_model=Page[AuthorList])
 def read_authors(
     db: Session = Depends(get_db)
 ) -> Page[list[Author]]:
