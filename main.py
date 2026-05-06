@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi_pagination import Page, add_pagination, paginate
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
@@ -20,6 +21,7 @@ from crud import (
 
 
 app = FastAPI()
+add_pagination(app)
 
 
 def get_db():
@@ -31,12 +33,12 @@ def get_db():
         db.close()
 
 
-@app.get("/books/", response_model=list[BookList])
+@app.get("/books/", response_model=Page[list[BookList]])
 def read_books(
     author_id: int = None,
     db: Session = Depends(get_db)
-) -> list[Book]:
-    return get_book_list(db, author_id)
+) -> Page[list[Book]]:
+    return paginate(get_book_list(db, author_id))
 
 
 @app.get("/books/{book_id}/", response_model=BookList)
@@ -60,9 +62,11 @@ def write_book(
     return create_book(db, book_data)
 
 
-@app.get("/authors/", response_model=list[AuthorList])
-def read_authors(db: Session = Depends(get_db)) -> list[Author]:
-    return get_author_list(db)
+@app.get("/authors/", response_model=Page[list[AuthorList]])
+def read_authors(
+    db: Session = Depends(get_db)
+) -> Page[list[Author]]:
+    return paginate(get_author_list(db))
 
 
 @app.get("/authors/{author_id}/", response_model=AuthorList)
