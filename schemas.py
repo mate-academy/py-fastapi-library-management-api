@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from pydantic import BaseModel, ConfigDict
 
@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: datetime
+    publication_date: date
     author_id: int
 
 
