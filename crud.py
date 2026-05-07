@@ -51,10 +51,9 @@ def get_all_books(db: Session,
                   limit: int = 10,
                   author_id: int | None = None):
     query = select(models.DBBook).offset(skip).limit(limit)
+    if author_id is not None:
+        query = query.where(models.DBBook.author_id == author_id)
 
     return db.scalars(query).all()
 
 
-def get_books_by_author(db: Session, author_id: int):
-    return db.scalars(select(models.DBBook)
-                      .where(models.DBBook.author_id == author_id)).all()
