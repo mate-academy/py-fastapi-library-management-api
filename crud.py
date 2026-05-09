@@ -23,8 +23,18 @@ def create_author(
 def retrieve_author_by_id(
     db: Session,
     author_id: int
-) -> models.DBAuthor | None:
+) -> models.DBAuthor:
+
     return db.get(models.DBAuthor, author_id)
+
+
+def get_author_by_name(
+    db: Session,
+    name: str
+) -> models.DBAuthor:
+    stmt = select(models.DBAuthor).where(models.DBAuthor.name == name)
+
+    return db.scalars(stmt).first()
 
 
 def retrieve_authors(
@@ -35,14 +45,6 @@ def retrieve_authors(
     stmt = select(models.DBAuthor).offset(skip).limit(limit)
 
     return list(db.scalars(stmt).all())
-
-
-def get_author_by_name(
-    db: Session,
-    name: str
-) -> models.DBAuthor | None:
-    stmt = select(models.DBAuthor).where(models.DBAuthor.name == name)
-    return db.scalars(stmt).first()
 
 
 def create_book(
@@ -66,25 +68,13 @@ def create_book(
 def retrieve_books(
     db: Session,
     skip: int = 0,
-    limit: int = 100
+    limit: int = 100,
+    author_id: int | None = None
 ) -> list[models.DBBook]:
     stmt = select(models.DBBook).offset(skip).limit(limit)
+    if author_id:
+        stmt = stmt.where(
+            models.DBBook.author_id == author_id
+        )
 
     return list(db.scalars(stmt).all())
-
-
-def retrieve_books_by_author_id(
-    db: Session,
-    author_id: int
-) -> list[models.DBBook] | None:
-
-    stmt = select(models.DBBook).where(models.DBBook.author_id == author_id)
-
-    return list(db.scalars(stmt).all())
-
-
-def is_author_exists(
-    db: Session,
-    author_id: int
-) -> bool:
-    return db.get(models.DBAuthor, author_id) is not None
