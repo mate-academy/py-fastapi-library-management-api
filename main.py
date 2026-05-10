@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 import crud
 import schemas
 from db import models
-from db.engine import SessionLocal, engine
+from db.database import SessionLocal, engine
 
 
 # Створюємо таблиці в БД на основі SQLAlchemy моделей
