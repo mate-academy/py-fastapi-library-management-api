@@ -4,11 +4,34 @@ from db import models
 import schemas
 
 
+# ---------- Authors ----------
 def get_all_authors(db: Session):
     return db.query(models.Author).all()
 
-def get_author_type_by_name(db: Session, name: str):
+
+def get_author(db: Session, author_id: int):
+    return db.query(models.Author).filter(models.Author.id == author_id).first()
+
+
+def get_author_by_name(db: Session, name: str):
     return db.query(models.Author).filter(models.Author.name == name).first()
+
+
+def get_authors_list(
+    db: Session,
+    name: str | None = None,
+    bio: str | None = None,
+):
+    queryset = db.query(models.Author)
+
+    if name is not None:
+        queryset = queryset.filter(models.Author.name == name)
+
+    if bio is not None:
+        queryset = queryset.filter(models.Author.bio.ilike(f"%{bio}%"))
+
+    return queryset.all()
+
 
 def create_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.Author(
@@ -18,25 +41,22 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     db.add(db_author)
     db.commit()
     db.refresh(db_author)
-
     return db_author
 
-def get_authors_list(db: Session,
-                    name: str | None = None,
-                    bio: schemas.Author | None = None,):
-    queryset = db.query(models.Author)
 
-    if name is not None:
-        queryset = queryset.filter(
-            models.Author.name == name.value
-        )
-    if bio is not None:
-        queryset = queryset.filter(models.Author.bio.has(name=bio))
+# ---------- Books ----------
+def get_book(db: Session, book_id: int):
+    return db.query(models.Book).filter(models.Book.id == book_id).first()
+
+
+def get_books(db: Session, author_id: int | None = None):
+    queryset = db.query(models.Book)
+
+    if author_id is not None:
+        queryset = queryset.filter(models.Book.author_id == author_id)
 
     return queryset.all()
 
-def get_book(db: Session, author_id: int):
-    return db.query(models.Book).filter(models.Book.id == author_id).first()
 
 def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.Book(
