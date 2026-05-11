@@ -6,13 +6,17 @@ from sqlalchemy import pool
 from alembic import context
 
 from db.database import Base, SQLALCHEMY_DATABASE_URL
-# import models so they are registered on Base.metadata for autogenerate
+# Import the application's Base and DB URL so Alembic can:
+#  - register SQLAlchemy models on Base.metadata (required for autogenerate)
+#  - reuse the same SQLALCHEMY_DATABASE_URL the application uses
+# Importing db.models ensures model classes are imported and registered on Base.
+# Avoid importing app startup code here to prevent circular imports (keep imports minimal).
 import db.models  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-# ensure alembic uses the same database URL as the application
+# ensure Alembic uses the same database URL as the application
 config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
 # Interpret the config file for Python logging.
