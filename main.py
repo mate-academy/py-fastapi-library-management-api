@@ -7,7 +7,6 @@ from db import models
 from db.database import SessionLocal, engine
 
 
-# Створюємо таблиці в БД на основі SQLAlchemy моделей
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Library API")
