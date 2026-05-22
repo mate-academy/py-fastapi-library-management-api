@@ -29,7 +29,7 @@ def read_books(
     return crud.get_all_books(db, page=page, author_id=author_id)
 
 
-@app.post("/books/", response_model=schemas.BookCreate)
+@app.post("/books/", response_model=schemas.Book)
 def create_book(
     book: schemas.BookCreate,
     db: Session = Depends(get_db),
@@ -61,7 +61,7 @@ def read_authors(
     return crud.get_all_authors(db, page=page)
 
 
-@app.post("/authors/", response_model=schemas.AuthorCreate)
+@app.post("/authors/", response_model=schemas.Author)
 def create_author(
     author: schemas.AuthorCreate,
     db: Session = Depends(get_db),
