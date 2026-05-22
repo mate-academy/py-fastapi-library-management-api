@@ -24,9 +24,10 @@ def hello_world():
 def read_books(
     author_id: int | None = None,
     db: Session = Depends(get_db),
-    page: int = Query(1, ge=1),
+    skip: int = Query(1, ge=1),
+    limit: int = Query(2, ge=2),
 ):
-    return crud.get_all_books(db, page=page, author_id=author_id)
+    return crud.get_all_books(db, skip=skip, limit=limit, author_id=author_id)
 
 
 @app.post("/books/", response_model=schemas.Book)
@@ -56,9 +57,10 @@ def read_book_details(
 @app.get("/authors/", response_model=list[schemas.Author])
 def read_authors(
     db: Session = Depends(get_db),
-    page: int = Query(1, ge=1),
+    skip: int = Query(1, ge=1),
+    limit: int = Query(2, ge=2),
 ):
-    return crud.get_all_authors(db, page=page)
+    return crud.get_all_authors(db, skip=skip, limit=limit)
 
 
 @app.post("/authors/", response_model=schemas.Author)

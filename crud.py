@@ -5,10 +5,7 @@ import models
 import schemas
 
 
-def get_all_books(db: Session, page: int, author_id: int | None = None):
-    page_size = 10
-    offset = (page - 1) * page_size
-
+def get_all_books(db: Session,  skip: int, limit: int, author_id: int | None = None):
     queryset = db.query(models.Book)
 
     if author_id:
@@ -16,7 +13,7 @@ def get_all_books(db: Session, page: int, author_id: int | None = None):
             models.Book.author_id == author_id
         )
 
-    return queryset.offset(offset).limit(page_size).all()
+    return queryset.offset(skip).limit(limit).all()
 
 
 def get_book_by_id(db: Session, id: int):
@@ -44,10 +41,8 @@ def create_book(db: Session, book: schemas.BookCreate):
     return db_book
 
 
-def get_all_authors(db: Session, page: int):
-    page_size = 10
-    offset = (page - 1) * page_size
-    return db.query(models.Author).offset(offset).limit(page_size).all()
+def get_all_authors(db: Session, skip: int, limit: int, ):
+    return db.query(models.Author).offset(skip).limit(limit).all()
 
 
 def get_author_by_id(db: Session, id: int):
