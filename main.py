@@ -19,12 +19,15 @@ def get_db():
 
 
 @app.get("/books/")
-def read_books(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return crud.get_books(db, skip=skip, limit=limit)
+def read_books(skip: int = 0, limit: int = 10, author_id: int = None, db: Session = Depends(get_db)):
+    return crud.get_books(db, skip=skip, limit=limit, author_id=author_id)
 
 
 @app.post("/authors/{author_id}/books")
 def create_book(author_id: int, book: BookCreate, db: Session = Depends(get_db)):
+    author = crud.get_author(db, author_id=author_id)
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
     book.author_id = author_id
     return crud.create_book(db, book=book)
 
