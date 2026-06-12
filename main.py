@@ -1,6 +1,6 @@
 from typing import Annotated, Generator
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 import crud
@@ -25,8 +25,13 @@ def root():
 
 
 @app.get("/author/", response_model=list[schemas.Author])
-def read_author(db: Annotated[Session, Depends(get_db)]):
-    return crud.get_all_authors(db=db)
+def read_author(
+    db: Annotated[Session, Depends(get_db)],
+    skip: int = Query(default=0, ge=0, description="Authors that are skeeped."),
+    limit: int = Query(default=10, ge=1, le=100, description="Maxim count of authors in page.")
+):
+    return crud.get_all_authors(db=db, skip=skip, limit=limit)
+
 
 
 @app.post("/author/", response_model=schemas.Author)
@@ -49,10 +54,15 @@ def create_author(
 @app.get("/book/", response_model=list[schemas.Book])
 def read_book(
     db: Annotated[Session, Depends(get_db)],
-    author: str | None = None,
+    authors_id: int | None = None,
+    skip: int = Query(default=0, ge=0, description="Pages that are skeeped."),
+    limit: int = Query(default=10, ge=1, le=100, description="Maxim count of books in page.")
 ):
     return crud.get_book_list(
-        db=db, authors=[author] if author else None
+        db=db,
+        authors_id=authors_id,
+        skip=skip,
+        limit=limit
     )
 
 

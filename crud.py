@@ -5,8 +5,9 @@ import schemas
 import models
 
 
-def get_all_authors(db: Session) -> list[models.Author]:
-    return db.scalars(select(models.Author)).all()
+def get_all_authors(db: Session, skip: int = 0, limit: int = 100) -> list[models.Author]:
+    stmt = select(models.Author).offset(skip).limit(limit)
+    return list(db.scalars(stmt).all())
 
 
 def get_author_by_id(
@@ -40,14 +41,18 @@ def get_author_by_name(db: Session, name: str) -> models.Author | None:
 
 def get_book_list(
     db: Session,
-    authors: str | None = None,
+    authors_id: int | None = None,
+    skip: int = 0,
+    limit: int = 10
 ) -> list[models.Book]:
     stmt = select(models.Book)
 
-    if authors:
-        stmt = stmt.join(models.Author).where(models.Author.name == authors)
+    if authors_id:
+        stmt = stmt.join(models.Author).where(models.Author.id == authors_id)
 
-    return db.scalars(stmt).all()
+    stmt = stmt.offset(skip).limit(limit)
+
+    return list(db.scalars(stmt).all())
 
 
 def get_book_by_id(db: Session, book_id: int) -> models.Book | None:
@@ -62,8 +67,8 @@ def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
     db_book = models.Book(
         author_id=book.author_id,
         title=book.title,
-        price=book.price,
-        packaging_type=book.packaging_type,
+        summary=book.summary,
+        publish_date=book.publish_date,
     )
     db.add(db_book)
     db.commit()
