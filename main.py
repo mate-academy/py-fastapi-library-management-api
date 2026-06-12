@@ -5,7 +5,10 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from database import SessionLocal
+import models
+from database import SessionLocal, engine
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -27,11 +30,21 @@ def root():
 @app.get("/author/", response_model=list[schemas.Author])
 def read_author(
     db: Annotated[Session, Depends(get_db)],
-    skip: int = Query(default=0, ge=0, description="Authors that are skeeped."),
-    limit: int = Query(default=10, ge=1, le=100, description="Maxim count of authors in page.")
+    skip: int = Query(default=0, ge=0, description="Authors that are skipped."),
+    limit: int = Query(default=10, ge=1, le=100, description="Maximum count of authors in page.")
 ):
     return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
+
+@app.get("/author/{author_id}/", response_model=schemas.Author)
+def read_single_author(
+    author_id: int,
+    db: Annotated[Session, Depends(get_db)]
+):
+    db_author = crud.get_author_by_id(db=db, author_id=author_id)
+    if not db_author:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return db_author
 
 
 @app.post("/author/", response_model=schemas.Author)
@@ -54,13 +67,13 @@ def create_author(
 @app.get("/book/", response_model=list[schemas.Book])
 def read_book(
     db: Annotated[Session, Depends(get_db)],
-    authors_id: int | None = None,
-    skip: int = Query(default=0, ge=0, description="Pages that are skeeped."),
-    limit: int = Query(default=10, ge=1, le=100, description="Maxim count of books in page.")
+    author_id: int | None = None,
+    skip: int = Query(default=0, ge=0, description="Pages that are skipped."),
+    limit: int = Query(default=10, ge=1, le=100, description="Maximum count of books in page.")
 ):
     return crud.get_book_list(
         db=db,
-        authors_id=authors_id,
+        author_id=author_id,
         skip=skip,
         limit=limit
     )
@@ -92,4 +105,4 @@ def create_book(
     if not author:
         raise HTTPException(status_code=400, detail="Author not found")
 
-    return crud.create_author(db=db, author=author)
+    return crud.create_book(db=db, book=book)

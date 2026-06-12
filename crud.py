@@ -41,14 +41,14 @@ def get_author_by_name(db: Session, name: str) -> models.Author | None:
 
 def get_book_list(
     db: Session,
-    authors_id: int | None = None,
+    author_id: int | None = None,
     skip: int = 0,
     limit: int = 10
 ) -> list[models.Book]:
     stmt = select(models.Book)
 
-    if authors_id:
-        stmt = stmt.join(models.Author).where(models.Author.id == authors_id)
+    if author_id:
+        stmt = stmt.where(models.Book.author_id == author_id)
 
     stmt = stmt.offset(skip).limit(limit)
 
@@ -68,7 +68,7 @@ def create_book(db: Session, book: schemas.BookCreate) -> models.Book:
         author_id=book.author_id,
         title=book.title,
         summary=book.summary,
-        publish_date=book.publish_date,
+        publication_date=book.publication_date,
     )
     db.add(db_book)
     db.commit()

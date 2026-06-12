@@ -1,5 +1,5 @@
+from datetime import date
 from pydantic import BaseModel, ConfigDict
-from sqlalchemy import Date
 
 
 class AuthorBase(BaseModel):
@@ -20,7 +20,7 @@ class Author(AuthorBase):
 class BookBase(BaseModel):
     title: str
     summary: str
-    publish_date: Date
+    publication_date: date
 
 
 class BookCreate(BookBase):
