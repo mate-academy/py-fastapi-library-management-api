@@ -5,8 +5,17 @@ import schemas
 import models
 
 
-def get_all_authors(db: Session) -> list[models.Author]:
-    return db.scalars(select(models.Author)).all()
+def get_all_authors(
+        db: Session,
+        skip: int,
+        limit: int
+) -> list[models.Author]:
+    stmt = select(models.Author)
+    if skip:
+        stmt = stmt.offset(skip)
+    if limit:
+        stmt = stmt.limit(limit)
+    return db.scalars(stmt).all()
 
 
 def get_author_by_id(
@@ -40,9 +49,17 @@ def get_author_by_name(db: Session, name: str) -> models.Author | None:
 
 def get_book_list(
     db: Session,
+    skip: int,
+    limit: int,
     author_id: int | None = None,
 ) -> list[models.Book]:
     stmt = select(models.Book)
+
+    if skip:
+        stmt = stmt.offset(skip)
+
+    if limit:
+        stmt = stmt.limit(limit)
 
     if author_id:
         stmt = stmt.where(models.Book.author_id == author_id)

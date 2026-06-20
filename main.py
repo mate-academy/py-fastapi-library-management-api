@@ -1,17 +1,14 @@
 from typing import Annotated, Generator
 
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi_pagination import add_pagination, Page
-from fastapi_pagination.paginator import paginate
 from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from database import SessionLocal
-
+from database import SessionLocal, Base, engine
 
 app = FastAPI()
-add_pagination(app)
+Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Generator[Session, None, None]:
@@ -28,9 +25,13 @@ def root():
     return {"message": "Hello World"}
 
 
-@app.get("/authors/", response_model=Page[schemas.Author])
-def read_authors(db: Annotated[Session, Depends(get_db)]):
-    return paginate(crud.get_all_authors(db=db))
+@app.get("/authors/", response_model=list[schemas.Author])
+def read_authors(
+        db: Annotated[Session, Depends(get_db)],
+        skip: int = 0,
+        limit: int = 10,
+):
+    return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.get("/authors/{author_id}/", response_model=schemas.Author)
@@ -63,14 +64,19 @@ def create_authors(
     )
 
 
-@app.get("/books/", response_model=Page[schemas.Book])
+@app.get("/books/", response_model=list[schemas.Book])
 def read_books(
     db: Annotated[Session, Depends(get_db)],
     author_id: int | None = None,
+    skip: int = 0,
+    limit: int = 10,
 ):
-    return paginate(crud.get_book_list(
-        db=db, author_id=author_id
-    ))
+    return crud.get_book_list(
+        db=db,
+        author_id=author_id,
+        skip=skip,
+        limit=limit
+    )
 
 
 @app.get("/books/{book_id}/", response_model=schemas.Book)
