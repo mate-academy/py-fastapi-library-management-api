@@ -3,33 +3,33 @@ from datetime import date
 from pydantic import BaseModel, ConfigDict
 
 
-class AuthorTypeBase(BaseModel):
+class AuthorBase(BaseModel):
     name: str
     bio: str
 
 
-class AuthorTypeCreate(AuthorTypeBase):
+class AuthorCreate(AuthorBase):
     pass
 
 
-class Author(AuthorTypeBase):
+class Author(AuthorBase):
     id: int
     books: list["Book"] = []
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class BookTypeBase(BaseModel):
+class BookBase(BaseModel):
     title: str
     summary: str
     publication_date: date
 
 
-class BookTypeCreate(BookTypeBase):
+class BookCreate(BookBase):
     author_id: int
 
 
-class Book(BookTypeBase):
+class Book(BookBase):
     id: int
     author_id: int
 
