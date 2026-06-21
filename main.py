@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from database import SessionLocal
+from database import SessionLocal, engine, Base
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -18,7 +20,7 @@ def get_db() -> Generator[Session, None, None]:
 
 CurrentSession = Annotated[Session, Depends(get_db)]
 
-@app.get("/authors/")
+@app.get("/authors/", response_model=list[schemas.Author])
 def get_authors(
         db: CurrentSession,
         skip: int = 0,
@@ -26,7 +28,7 @@ def get_authors(
 ) -> list[schemas.Author]:
     return crud.get_all_authors_with_pagination(db, skip, limit)
 
-@app.get("/authors/{author_id}/")
+@app.get("/authors/{author_id}/", response_model=schemas.Author)
 def get_author_by_id(
         db: CurrentSession,
         author_id: int
@@ -38,14 +40,14 @@ def get_author_by_id(
 
     return author
 
-@app.post("/authors/")
+@app.post("/authors/", response_model=schemas.Author)
 def create_author(
         db: CurrentSession,
         author: schemas.AuthorCreate
 ) -> schemas.Author:
     return crud.create_author(db, author)
 
-@app.get("/books/")
+@app.get("/books/", response_model=list[schemas.Book])
 def get_books(
         db: CurrentSession,
         skip: int = 0,
@@ -54,7 +56,7 @@ def get_books(
 ) -> list[schemas.Book]:
     return crud.get_all_books_with_pagination(db, skip, limit, author_id)
 
-@app.post("/books/")
+@app.post("/books/", response_model=schemas.Book)
 def create_book(
         db: CurrentSession,
         book: schemas.BookCreate

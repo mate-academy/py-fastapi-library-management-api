@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AuthorBase(BaseModel):
@@ -14,7 +14,7 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-    books: list["Book"] = []
+    books: list["Book"] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 
