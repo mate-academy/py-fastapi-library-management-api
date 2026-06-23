@@ -46,6 +46,12 @@ def create_book_for_author(
     return db_book
 
 
+def get_books_for_author(db: Session, author_id: int):
+    stmt = select(Book).where(Book.author_id == author_id)
+    result = db.execute(stmt)
+    return result.scalars().all()
+
+
 def get_books(db: Session, skip: int = 0, limit: int = 100):
     stmt = select(Book).offset(skip).limit(limit)
     result = db.execute(stmt)
