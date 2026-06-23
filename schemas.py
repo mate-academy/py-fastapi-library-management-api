@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BookCreate(BaseModel):
@@ -23,7 +23,7 @@ class AuthorCreate(BaseModel):
 
 class Author(AuthorCreate):
     id: int
-    books: list[Book] = []
+    books: list[Book] = Field(default_factory=list)
 
     class Config:
         from_attributes = True

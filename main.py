@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 import models
 import schemas
 import crud
-from database import SessionLocal
+from database import engine, Base, SessionLocal
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Library Management API")
 
