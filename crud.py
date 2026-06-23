@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 import schemas
-from models import Author
+from models import Author, Book
 
 
 def get_authors(db: Session, skip: int = 0, limit: int = 100):
@@ -29,3 +29,18 @@ def get_author_by_id(db: Session, author_id: int):
     stmt = select(Author).where(Author.id == author_id)
     result = db.execute(stmt)
     return result.scalar_one_or_none()
+
+
+def create_book_for_author(
+    db: Session, book: schemas.BookCreate, author_id: int
+):
+    db_book = Book(
+        title=book.title,
+        summary=book.summary,
+        publication_date=book.publication_date,
+        author_id=author_id,
+    )
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+    return db_book

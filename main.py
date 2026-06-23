@@ -18,7 +18,11 @@ def read_authors(
     return crud.get_authors(db=db, skip=skip, limit=limit)
 
 
-@app.post("/authors/", response_model=schemas.AuthorRead)
+@app.post(
+    "/authors/",
+    response_model=schemas.AuthorRead,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_author(
     author: schemas.AuthorCreate, db: Session = Depends(database.get_db)
 ):
@@ -40,3 +44,22 @@ def create_author(author_id: int, db: Session = Depends(database.get_db)):
             detail="Author not found",
         )
     return db_author
+
+
+@app.post(
+    "/authors/{author_id}/books/",
+    response_model=schemas.Book,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_book_for_author(
+    author_id: int,
+    book: schemas.BookCreate,
+    db: Session = Depends(database.get_db),
+):
+    db_author = crud.get_author_by_id(db=db, author_id=author_id)
+    if db_author is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Author not found",
+        )
+    return crud.create_book_for_author(db=db, book=book, author_id=author_id)
