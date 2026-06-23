@@ -63,3 +63,10 @@ def create_book_for_author(
             detail="Author not found",
         )
     return crud.create_book_for_author(db=db, book=book, author_id=author_id)
+
+
+@app.get("/books/", response_model=list[schemas.Book])
+def read_books(
+    skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)
+):
+    return crud.get_books(db=db, skip=skip, limit=limit)
