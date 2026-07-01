@@ -86,10 +86,7 @@ def get_books(
 def get_books_by_author(
         author_id: int,
         db: Session = Depends(get_db)) -> List[BookResponse]:
-    try:
-        return crud.get_books_by_author(db, author_id)
-    except AuthorNotFound as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return crud.get_books_by_author(db, author_id)
 
 
 @app.get("/books/{book_id}", response_model=BookResponse)

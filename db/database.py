@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import BaseModel
+from db.models import BaseModel
 
 SQLITE_URL = 'sqlite:///./library.db'
 
