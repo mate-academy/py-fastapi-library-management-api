@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import Optional
 import models, schemas
 
 # --- Author CRUD Operations ---
