@@ -1,14 +1,15 @@
-from typing import Annotated, Generator
+from typing import Generator
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import SessionLocal
+from database import SessionLocal, Base, engine
 
 import crud
 import schemas
-from models import Author, Book
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Generator[Session, None, None]:

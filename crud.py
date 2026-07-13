@@ -93,9 +93,6 @@ def get_all_books(
 
 
 def get_book_by_id(db: Session, book_id: int) -> models.Book | None:
-    result = db.execute(
-        select(models.Book).where(models.Book.id == book_id)
-    )
     return db.scalar(
         select(models.Book).where(models.Book.id == book_id)
     )
