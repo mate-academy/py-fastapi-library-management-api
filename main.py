@@ -1,12 +1,15 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.database import SessionLocal
+from db.database import SessionLocal, Base, engine
 
 import db.models
 import schemas
 import crud
 
 app = FastAPI()
+
+
+Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Session:
@@ -52,7 +55,13 @@ def get_author_by_id(
     id: int,
     db: Session = Depends(get_db)
 ):
-    return crud.get_author_by_id(db=db, id=id)
+    db_author = crud.get_author_by_id(db=db, id=id)
+    if db_author is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Author do not exist!"
+        )
+    return db_author
 
 
 # Book

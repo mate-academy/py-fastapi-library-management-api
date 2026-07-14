@@ -1,12 +1,12 @@
 from pydantic import BaseModel
-from typing import List
+from datetime import date
 
 
 # Book schemas
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: str
+    publication_date: date
     
 
 class BookCreate(BookBase):

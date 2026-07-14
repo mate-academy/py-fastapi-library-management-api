@@ -10,7 +10,7 @@ class DBBook(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(256), nullable=False)
     summary = Column(String(512), nullable=False)
-    publication_date = Column(String(100))
+    publication_date = Column(Date, nullable=True)
     author_id = Column(Integer, ForeignKey("Author.id"))
 
 
