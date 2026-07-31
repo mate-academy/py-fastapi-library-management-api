@@ -14,18 +14,14 @@ class AuthorShort(BaseModel):
 
 class BookBase(BaseModel):
     title: str
-    author: AuthorShort
+    author_id: int
     summary: str
     publication_date: datetime
     cover_type: CoverType
 
 
 class BookCreate(BaseModel):
-    title: str
-    summary: str
-    publication_date: datetime
-    cover_type: CoverType
-    author_id: int
+    pass
 
 class Book(BookBase):
     id: int

@@ -30,10 +30,10 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     db.refresh(db_author)
     return db_author
 
-def create_book(db: Session, book: schemas.BookCreate, author_id: int):
+def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.Book(
         title=book.title,
-        author_id=author_id,
+        author_id=book.author_id,
         summary=book.summary,
         publication_date=book.publication_date,
         cover_type=book.cover_type,

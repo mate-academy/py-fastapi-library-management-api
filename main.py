@@ -48,6 +48,6 @@ def get_author(id: int, db: Session = Depends(get_db)):
     return crud.get_author_by_id(db, id)
 
 @app.get("/author/{id}/books/", response_model=schemas.Author)
-def get_author(id: int, db: Session = Depends(get_db)):
+def get_book_by_author(id: int, db: Session = Depends(get_db)):
     return crud.filter_books_by_author(db, id)
 
