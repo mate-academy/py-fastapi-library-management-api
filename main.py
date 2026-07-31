@@ -24,14 +24,14 @@ def books(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_all_books(db, skip, limit)
 
 @app.get("/book/{id}", response_model=schemas.Book)
-def book(id: int, db: Session = Depends(get_db)) -> BookBase:
+def book(id: int, db: Session = Depends(get_db)) -> schemas.Book:
     return crud.get_book_by_id(db, id)
 
 @app.post("/book/", response_model=schemas.Book)
 def create_book(
         book_data: schemas.BookCreate, db: Session = Depends(get_db)
 ):
-    return crud.create_book(db, book_data, book_data.author_id)
+    return crud.create_book(db, book_data)
 
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(
@@ -47,7 +47,7 @@ def authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 def get_author(id: int, db: Session = Depends(get_db)):
     return crud.get_author_by_id(db, id)
 
-@app.get("/author/{id}/books/", response_model=schemas.Author)
+@app.get("/author/{id}/books/", response_model=list[schemas.Book])
 def get_book_by_author(id: int, db: Session = Depends(get_db)):
     return crud.filter_books_by_author(db, id)
 
