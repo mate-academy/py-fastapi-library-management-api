@@ -1,9 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+import models
 import schemas
-from db import models
-
 
 def get_author(db: Session, author_id: int) -> models.Author | None:
     return db.scalar(select(models.Author).where(models.Author.id == author_id))
@@ -20,7 +19,6 @@ def create_author(db: Session, author: schemas.AuthorCreate) -> models.Author:
     db.commit()
     db.refresh(db_author)
     return db_author
-
 
 def get_books(db: Session, skip: int = 0, limit: int = 10) -> list[models.Book]:
     return list(db.scalars(select(models.Book).offset(skip).limit(limit)).all())
