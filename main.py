@@ -45,11 +45,11 @@ def create_book_for_author(author_id: int,
     return crud.create_book(db=db, book=book, author_id=author_id)
 
 
-app.get("/books/", response_model=list[schemas.Book])
-def read_nbooks(
+@app.get("/books/", response_model=list[schemas.Book])
+def read_books(
         skip: int = 0,
           limit: int = 10,
-          aurhor_id: int | None = None,
+          author_id: int | None = None,
       db: Session = Depends(get_db)
 ):
     if author_id:
