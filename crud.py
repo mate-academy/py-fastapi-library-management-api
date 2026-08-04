@@ -25,7 +25,7 @@ def create_book(db: Session, book: schemas.BookCreate, author_id: int):
     db_book = models.Book(
         title=book.title,
         summary=book.summary,
-        published_date=book.published_date,
+        publication_date=book.publication_date,
         author_id=author_id
     )
     db.add(db_book)
@@ -40,3 +40,9 @@ def get_books(db: Session, skip: int = 0, limit: int = 10):
 
 def get_books_by_author(db: Session, author_id:int):
     return db.query(models.Book).filter(models.Book.author_id == author_id).all()
+
+
+def get_author(db: Session, author_id: int):
+    return db.query(models.Author).filter(
+        models.Author.id == author_id
+    ).first()

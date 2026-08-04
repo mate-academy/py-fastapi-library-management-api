@@ -55,3 +55,19 @@ def read_books(
     if author_id:
         return crud.get_books_by_author(db, author_id=author_id)
     return crud.get_books(db, skip=skip, limit=limit)
+
+
+@app.get("/authors/{author_id}", response_model=schemas.Author)
+def read_author(
+    author_id: int,
+    db: Session = Depends(get_db)
+):
+    author = crud.get_author(db, author_id)
+
+    if author is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Author not found"
+        )
+
+    return author
