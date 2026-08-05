@@ -3,6 +3,7 @@ name = "py-fastapi-library-management-api"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "aiosqlite>=0.22.1",
     "alembic>=1.18.5",
     "asyncpg>=0.31.0",
     "fastapi>=0.141.1",

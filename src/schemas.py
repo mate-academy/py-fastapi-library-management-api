@@ -1,13 +1,19 @@
 from pydantic import BaseModel
+from datetime import date
 
 
 class BookBase(BaseModel):
     title: str
     summary: str
+    publication_date: date
 
 
 class BookList(BookBase):
     pass
+
+
+class BookFilter(BaseModel):
+    author_id: int | None = None
 
 
 class BookDetail(BookBase):
@@ -35,8 +41,8 @@ class AuthorDetail(AuthorBase):
     books: list[BookBase] | None = None
 
 
-class AuthorCreate(AuthorDetail):
-    books: list[BookBase] | None = None
+class AuthorCreate(AuthorBase):
+    pass
 
 
 class AuthorUpdate(AuthorDetail):
