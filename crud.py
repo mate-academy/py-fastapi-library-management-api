@@ -3,8 +3,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from database import DatabaseDependency
-from src.models import Author, Book
-from src.schemas import (
+from models import Author, Book
+from schemas import (
     AuthorCreate,
     AuthorDetail,
     AuthorList,
@@ -26,7 +26,7 @@ async def get_books(
 ):
     query = select(Book).offset(skip).limit(limit)
     if author_filter.author_id:
-        query = query.where(Author.id == author_filter.author_id)
+        query = query.where(Book.author_id == author_filter.author_id)
     result = await db.execute(query)
     return result.scalars().all()
 

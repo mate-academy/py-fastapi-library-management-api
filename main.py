@@ -1,7 +1,7 @@
 from fastapi import APIRouter, FastAPI
 from fastapi_pagination import add_pagination
 
-from src.crud import library_router
+from crud import library_router
 
 app = FastAPI()
 add_pagination(app)

@@ -17,9 +17,9 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
 - schemas.py
 - crud.py
 ```
-2. Set up a SQLite database connection in the `src/database.py` file.
+2. Set up a SQLite database connection in the `database.py` file.
 
-3. Create SQLAlchemy models for 'Author' and 'Book' in the `src/models.py` file.
+3. Create SQLAlchemy models for 'Author' and 'Book' in the `models.py` file.
 
 4. The 'Author' model should have the following fields:
 ```
@@ -36,9 +36,9 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
 - publication_date (date)
 - author_id (foreign key referencing 'Author' model)
 ```
-6. Create Pydantic models for data validation and serialization in the `src/schemas.py` file.
+6. Create Pydantic models for data validation and serialization in the `schemas.py` file.
 
-7. Create CRUD utility functions for authors and books in the `src/crud.py` file.
+7. Create CRUD utility functions for authors and books in the `crud.py` file.
 
 8. In the `main.py` file, integrate the parts created in previous steps to build the FastAPI application:
    - Create the database tables using the SQLAlchemy models.
