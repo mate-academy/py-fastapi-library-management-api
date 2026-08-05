@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 
-from db.models import DBBook, DBAuthor
+from models import Book, Author
 from schemas import BookCreate, AuthorCreate
 
 
 
 def get_book_by_title(db: Session, title: str):
     return (
-        db.query(DBBook).filter(DBBook.title == title).first()
+        db.query(Book).filter(Book.title == title).first()
     )
 
 def get_all_books(
@@ -16,9 +16,9 @@ def get_all_books(
         limit: int = 100,
         author_id: int = None
 ):
-    query = db.query(DBBook)
+    query = db.query(Book)
     if author_id is not None:
-        query = query.filter(DBBook.author_id == author_id)
+        query = query.filter(Book.author_id == author_id)
 
     return (
         query
@@ -28,7 +28,7 @@ def get_all_books(
     )
 
 def create_book(db: Session, book: BookCreate):
-    db_book = DBBook(
+    db_book = Book(
         title=book.title,
         summary=book.summary,
         publication_date=book.publication_date,
@@ -45,17 +45,17 @@ def get_all_authors(
         limit: int = 100
 ):
     return (
-        db.query(DBAuthor)
+        db.query(Author)
         .offset(skip)
         .limit(limit)
         .all()
     )
 
 def get_author(db: Session, author_id: int):
-    return db.query(DBAuthor).filter(DBAuthor.id == author_id).first()
+    return db.query(Author).filter(Author.id == author_id).first()
 
 def create_author(db: Session, author: AuthorCreate):
-    db_author = DBAuthor(
+    db_author = Author(
         name=author.name,
         bio=author.bio,
     )
