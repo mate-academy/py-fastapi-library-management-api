@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Generator
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-def get_database() -> Session:
+def get_database() -> Generator[Session, None, None]:
     database = SessionLocal()
 
     try:
@@ -52,7 +52,7 @@ def read_single_author(
 @app.post("/authors/", response_model=schemas.AuthorRead, status_code=201)
 def create_author(
         author: schemas.AuthorCreate,
-        database: Session = Depends(get_database),
+        database: Annotated[Session, Depends(get_database)],
 ):
     database_author = crud.get_author_by_name(
         database=database,
@@ -110,7 +110,7 @@ def read_single_book(
 def create_book(
         author_id: int,
         book: schemas.BookCreate,
-        database: Session = Depends(get_database),
+        database: Annotated[Session, Depends(get_database)],
 ):
     database_author = crud.get_author_by_id(
         database=database,
