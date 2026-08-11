@@ -1,12 +1,13 @@
 from sqlalchemy.orm import Session
-import models, schemas
+import models
+import schemas
 
 
 def get_authors(
         db: Session,
-        skip : int = 10,
+        skip: int = 0,
         limit: int = 10
-)  -> list[schemas.Author]:
+) -> list[schemas.Author]:
     return (
         db.query(models.DBAuthor)
         .offset(skip)
@@ -44,10 +45,10 @@ def create_author(
 
 def get_books(
         db: Session,
-        skip = 0,
-        limit = 10
+        skip=0,
+        limit=10
 ) -> list[schemas.Book]:
-    return(
+    return (
         db.query(models.DBBook)
         .offset(skip)
         .limit(limit)
@@ -57,11 +58,15 @@ def get_books(
 
 def get_books_by_author_id(
         db: Session,
-        author_id
-)-> list[schemas.Book]:
+        author_id,
+        skip=0,
+        limit=10
+) -> list[schemas.Book]:
     return (
         db.query(models.DBBook)
         .filter(models.DBBook.author_id == author_id)
+        .offset(skip)
+        .limit(limit)
         .all()
     )
 
@@ -70,7 +75,7 @@ def create_book(
         db: Session,
         book: schemas.BookCreate,
         author_id: int
-)-> schemas.Book:
+) -> schemas.Book:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,

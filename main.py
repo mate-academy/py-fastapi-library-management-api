@@ -1,14 +1,16 @@
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from fastapi import FastAPI, Depends, HTTPException
-import schemas, crud
+import schemas
+import crud
+
 
 app = FastAPI(
     docs_url="/docx"
 )
 
 
-def get_db() -> Session: # type: ignore
+def get_db() -> Session:  # type: ignore
     db = SessionLocal()
     try:
         yield db
@@ -51,7 +53,7 @@ def get_authors(
 def create_author(
     author: schemas.AuthorBase,
     db: Session = Depends(get_db)
-)-> schemas.Author:
+) -> schemas.Author:
     db_author = crud.get_author_by_name(db=db, name=author.name)
     if db_author:
         raise HTTPException(
@@ -61,29 +63,28 @@ def create_author(
 
 
 @app.get("/books/", response_model=list[schemas.Book])
-def get_book(
+def get_books(
     skip: int = 0,
     limit: int = 10,
-    db: Session = Depends(get_db)
-)-> list[schemas.Book]:
+    author_id: int | None = None,
+    db: Session = Depends(get_db),
+):
+    if author_id:
+        books = crud.get_books_by_author_id(
+            db=db,
+            author_id=author_id,
+            skip=skip,
+            limit=limit)
+        if books:
+            return books
+        raise HTTPException(
+            status_code=404,
+            detail="No books found"
+        )
     return crud.get_books(
         db,
         skip=skip,
         limit=limit
-    )
-
-
-@app.get("/books/{author_id}", response_model=list[schemas.Book])
-def get_books(
-    author_id: int,
-    db: Session = Depends(get_db)
-)-> list[schemas.Book]:
-    books = crud.get_books_by_author_id(db=db, author_id=author_id)
-    if books:
-        return books
-    raise HTTPException(
-        status_code=404,
-        detail="No books found"
     )
 
 
@@ -92,8 +93,8 @@ def create_book(
     author_id: int,
     book: schemas.BookBase,
     db: Session = Depends(get_db)
-)-> schemas.Book:
-    autor = crud.get_books_by_author_id(
+) -> schemas.Book:
+    autor = crud.get_author_by_id(
         db=db,
         author_id=author_id
     )
