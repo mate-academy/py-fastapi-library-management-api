@@ -1,6 +1,6 @@
 from logging.config import fileConfig
 from alembic import context
-from db.engine import engine, Base
+from database import engine, Base
 
 
 config = context.config
