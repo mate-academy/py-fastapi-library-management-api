@@ -51,7 +51,7 @@ def create_book_for_author(
     db_author = crud.get_author(db, author_id=author_id)
     if db_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
-    return crud.create_author_book(db=db, book=book, author_id=author_id)
+    return crud.create_book_for_author(db=db, book=book, author_id=author_id)
 
 
 @app.get("/books/", response_model=list[schemas.Book])

@@ -36,7 +36,7 @@ def get_books(
     return query.offset(skip).limit(limit).all()
 
 
-def create_author_book(
+def create_book_for_author(
     db: Session, book: schemas.BookCreate, author_id: int
 ) -> models.Book:
     db_book = models.Book(**book.model_dump(), author_id=author_id)
