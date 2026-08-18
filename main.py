@@ -23,6 +23,11 @@ def get_db() -> Generator[Session, None, None]:
 
 @app.post("/authors/", response_model=schemas.Author)
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
+    db_author = crud.get_author_by_name(db, name=author.name)
+    if db_author is not None:
+        raise HTTPException(
+            status_code=400, detail="Author with this name already exists"
+        )
     return crud.create_author(db=db, author=author)
 
 
