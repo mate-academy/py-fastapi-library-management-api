@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-import models
-import schemas
+from library_api import models
+from library_api import schemas
 
 
 # --- Author CRUD Operations ---
@@ -24,7 +24,7 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 # --- Book CRUD Operations ---
 def get_books(db: Session, skip: int = 0, limit: int = 100, author_id: int = None):
     query = db.query(models.Book)
-    if author_id:
+    if author_id is not None:
         query = query.filter(models.Book.author_id == author_id)
     return query.offset(skip).limit(limit).all()
 
