@@ -6,7 +6,7 @@ from database import Base
 class Author(Base):
     __tablename__ = "authors"
 
-    id = Column(Integer, primary key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True, nullable=False)
     bio = Column(String, nullable=True)
 
@@ -17,7 +17,7 @@ class Author(Base):
 class Book(Base):
     __tablename__ = "books"
 
-    id = Column(Integer, primary key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True, nullable=False)
     summary = Column(String, nullable=True)
     publication_date = Column(Date, nullable=False)
