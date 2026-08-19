@@ -32,7 +32,7 @@ def read_book_list(
     author_id: int | None = None,
 ):
     return crud.get_all_books(
-        db=db, skip=skip, limit=limit, auhtor_id=author_id
+        db=db, skip=skip, limit=limit, author_id=author_id
     )
 
 
@@ -64,7 +64,7 @@ def create_book(
 def read_author_list(
     db: Session = Depends(get_db), skip: int = 0, limit: int = 100
 ):
-    return crud.get_all_authors(db=db, ski=skip, limit=limit)
+    return crud.get_all_authors(db=db, slip=skip, limit=limit)
 
 
 @app.get("/author/{author_id}/", response_model=schemas.Author)

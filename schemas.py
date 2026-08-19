@@ -23,9 +23,10 @@ class BookBase(BaseModel):
 
 
 class BookCreate(BookBase):
-    author_id: int
+    pass
 
 
 class Book(BookBase):
     id: int
+    author_id: int
     model_config = ConfigDict(from_attributes=True)
