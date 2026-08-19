@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from library_api import models
-from library_api import schemas
+from . import models
+from . import schemas
 
 
 # --- Author CRUD Operations ---

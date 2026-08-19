@@ -2,10 +2,8 @@ from typing import List, Optional
 from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy.orm import Session
 
-from library_api import crud
-from library_api import models
-from library_api import schemas
-from library_api.database import SessionLocal, engine
+from . import crud, models, schemas
+from .database import SessionLocal, engine
 
 
 # Create the database tables on startup
