@@ -23,7 +23,7 @@ class BookBase(BaseModel):
 
 
 class BookCreate(BookBase):
-    pass
+    author_id: int
 
 
 class Book(BookBase):

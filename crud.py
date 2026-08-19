@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from db.models import DBBook, DBAuthor
+from models import DBBook, DBAuthor
 from schemas import BookCreate, AuthorCreate
 
 
@@ -34,8 +34,8 @@ def get_book_by_title(db: Session, title: str):
     return db.scalar(select(DBBook).where(DBBook.title == title))
 
 
-def get_all_authors(db: Session):
-    return db.scalars(select(DBAuthor)).all()
+def get_all_authors(db: Session, skip: int = 0, limit: int = 100):
+    return db.scalars(select(DBAuthor)).offset(skip).limit(limit).all()
 
 
 def get_author(db: Session, author_id: int):

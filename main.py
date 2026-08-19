@@ -3,9 +3,11 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from db.engine import SessionLocal
+from database import SessionLocal, Base, engine
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 
 def get_db() -> Session:
@@ -23,8 +25,15 @@ def root() -> dict:
 
 
 @app.get("/book/", response_model=list[schemas.Book])
-def read_book_list(db: Session = Depends(get_db)):
-    return crud.get_all_books(db=db)
+def read_book_list(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
+    author_id: int | None = None,
+):
+    return crud.get_all_books(
+        db=db, skip=skip, limit=limit, auhtor_id=author_id
+    )
 
 
 @app.get("/book/{book_id}/", response_model=schemas.Book)
@@ -52,8 +61,10 @@ def create_book(
 
 
 @app.get("/author/", response_model=list[schemas.Author])
-def read_author_list(db: Session = Depends(get_db)):
-    return crud.get_all_authors(db=db)
+def read_author_list(
+    db: Session = Depends(get_db), skip: int = 0, limit: int = 100
+):
+    return crud.get_all_authors(db=db, ski=skip, limit=limit)
 
 
 @app.get("/author/{author_id}/", response_model=schemas.Author)
