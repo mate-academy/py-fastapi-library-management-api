@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from db.database import SessionLocal
+from db import models
+from db.database import SessionLocal, engine
 
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
@@ -96,6 +98,8 @@ def read_book(book_id: int, db: Session = Depends(get_db)):
 
     if db_book is None:
         raise HTTPException(status_code=404, detail="Book not found")
+
+    return db_book
 
 
 @app.post("/books/", response_model=schemas.Book)

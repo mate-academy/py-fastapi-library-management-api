@@ -98,7 +98,7 @@ def get_all_books(
             models.Book.author_id == author_id
         )
     return db.scalars(
-        select(models.Book)
+        queryset
         .order_by(models.Book.id)
         .offset(skip)
         .limit(limit)
