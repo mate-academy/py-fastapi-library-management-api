@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 import models, schemas, crud
 from database import SessionLocal, engine
-from typing import Generator
+from typing import Generator, Optional
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -43,3 +43,8 @@ def create_book_for_author(book: schemas.BookCreate, author_id: int, db: Session
 
     new_book = crud.create_book(db=db, book=book, author_id=author_id)
     return new_book
+
+@app.get("/books/", response_model=list[schemas.BookResponse])
+def read_books_endpoint(author_id: Optional[int] = None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    books = crud.get_books(db, author_id=author_id, skip=skip, limit=limit)
+    return books

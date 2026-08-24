@@ -20,9 +20,10 @@ def get_books(
         limit: int = 100,
         author_id: Optional[int] = None
 ) -> list[models.DBBook]:
+    query = db.query(models.DBBook)
     if author_id is not None:
-        return db.query(models.DBBook).filter(models.DBBook.author_id == author_id).all()
-    return db.query(models.DBBook).offset(skip).limit(limit).all()
+       query = query.filter(models.DBBook.author_id == author_id)
+    return query.offset(skip).limit(limit).all()
 
 def create_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.DBAuthor(name=author.name, bio=author.bio)
