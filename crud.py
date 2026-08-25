@@ -21,9 +21,9 @@ def get_book_by_id(db: Session, book_id: int):
     )
 
 
-def get_book_by_title(db: Session, book_name: str):
+def get_book_by_title(db: Session, title: str):
     return db.scalar(
-        select(models.Book).where(models.Book.title == book_name)
+        select(models.Book).where(models.Book.title == title)
     )
 
 
@@ -78,8 +78,10 @@ def create_author(db: Session, author: schemas.AuthorCreate):
 
 def get_book_list(
         db: Session,
-        author_id: int | None = None,
         title: str | None = None,
+        author_id: int | None = None,
+        skip: int = 0,
+        limit: int = 100,
 ):
 
     queryset = select(models.Book)
@@ -91,5 +93,7 @@ def get_book_list(
 
     if title is not None:
         queryset = queryset.where(models.Book.title == title)
+
+    queryset = queryset.offset(skip).limit(limit)
 
     return db.scalars(queryset).all()
