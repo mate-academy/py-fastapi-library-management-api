@@ -4,11 +4,11 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
 import crud
-from db.database import SessionLocal
-
+from db.database import Base, SessionLocal, engine
 
 import schemas
 
+Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
