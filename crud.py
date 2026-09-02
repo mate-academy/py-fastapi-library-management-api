@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session, query
+from sqlalchemy.orm import Session
 
 import schemas
 from db import models
@@ -27,7 +27,7 @@ def get_authors_list(
 ):
     queryset = db.query(models.DBAuthor).offset(skip)
     if limit is not None:
-        queryset.limit(limit)
+        queryset = queryset.limit(limit)
 
     return queryset.all()
 
@@ -57,7 +57,7 @@ def get_books_list(
 ):
     queryset = db.query(models.DBBook).offset(skip)
     if limit is not None:
-        queryset.limit(limit)
+        queryset = queryset.limit(limit)
 
     return queryset.all()
 
