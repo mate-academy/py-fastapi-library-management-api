@@ -4,7 +4,7 @@ from db_library import models
 import schemas
 
 
-def create_author(db: Session, author: schemas.Author):
+def create_author(db: Session, author: schemas.AuthorCreate):
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -15,12 +15,11 @@ def create_author(db: Session, author: schemas.Author):
 
     return db_author
 
-def get_author(db: Session):
-    return db.query(models.DBAuthor).filter(models.DBAuthor.id == id).first()
+def get_author_name(db: Session, name: str):
+    return db.query(models.DBAuthor).filter(models.DBAuthor.name == name).first()
 
-def get_all_authors(db: Session):
-    authors = db.query(models.DBAuthor).offset(skip=0).limit(10)
-    authors = authors.all()
+def get_all_authors(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.DBAuthor).offset(skip).limit(limit).all()
 
-    return authors
-
+def get_author_by_id(db: Session, author: int):
+    return db.query(models.DBAuthor).filter(models.DBAuthor.id == author).first()
