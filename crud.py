@@ -23,3 +23,19 @@ def get_all_authors(db: Session, skip: int = 0, limit: int = 100):
 
 def get_author_by_id(db: Session, author: int):
     return db.query(models.DBAuthor).filter(models.DBAuthor.id == author).first()
+
+
+def create_book(db: Session, book: schemas.BookCreate):
+    db_book = models.DBBook(
+        title=book.title,
+        summary=book.summary,
+        author_id=book.author_id
+    )
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+
+    return db_book
+
+
+
