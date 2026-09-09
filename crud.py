@@ -37,5 +37,5 @@ def create_book(db: Session, book: schemas.BookCreate):
 
     return db_book
 
-
-
+def get_all_book_paginate(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.DBBook).offset(skip).limit(limit).all()

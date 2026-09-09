@@ -48,6 +48,15 @@ def create_author(
     return crud.create_author(db=db, author=author)
 
 
+@app.get("/book/", response_model=list[schemas.Book])
+def get_author_all(
+        db: Session = Depends(get_db),
+        skip: int = 0,
+        limit: int = 100,
+):
+    return crud.get_all_book_paginate(db=db, limit=limit, skip=skip)
+
+
 @app.post("/book/", response_model=schemas.Book)
 def create_book(
         book: schemas.BookCreate,
