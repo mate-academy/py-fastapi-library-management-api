@@ -39,3 +39,11 @@ def create_book(db: Session, book: schemas.BookCreate):
 
 def get_all_book_paginate(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.DBBook).offset(skip).limit(limit).all()
+
+def get_book_on_author(
+        db: Session,
+        author: int,
+        skip: int = 0,
+        limit: int = 100
+):
+    return db.query(models.DBBook).filter(models.DBBook.author_id == author).offset(skip).limit(limit).all()

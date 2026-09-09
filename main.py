@@ -63,3 +63,11 @@ def create_book(
         db: Session = Depends(get_db),
 ):
     return crud.create_book(db=db, book=book)
+
+
+@app.get("/book/{author_id}/")
+def get_author_id(
+        author: int,
+        db: Session = Depends(get_db),
+):
+    return crud.get_book_on_author(db=db, author=author)
