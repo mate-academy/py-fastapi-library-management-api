@@ -59,6 +59,7 @@ def get_books(
 ):
     return crud.get_books(db=db, author_id=author_id, skip=skip, limit=limit)
 
+
 @app.post("/author/{author_id}/book/", response_model=schemas.Book)
 def create_book(
         book: schemas.BookCreate,
