@@ -2,7 +2,7 @@ from datetime import date
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
-from db_library.engine import Base
+from db_library.database import Base
 
 
 class DBAuthor(Base):
