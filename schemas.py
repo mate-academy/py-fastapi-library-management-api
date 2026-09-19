@@ -22,7 +22,7 @@ class AuthorRead(AuthorBase):
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: datetime
+    publication_date: str
     author_id: int
 
 
