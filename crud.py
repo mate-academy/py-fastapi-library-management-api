@@ -11,7 +11,12 @@ def get_all_authors(
         skip: int = 0,
         limit: int = 10,
 ):
-    return db.scalars(select(models.Author)).all()
+    stmt = (
+        select(models.Author)
+        .offset(skip)
+        .limit(limit)
+    )
+    return db.scalars(stmt).all()
 
 def create_author(db: Session, author: schemas.CreateAuthor):
     db_author = models.Author(name=author.name, bio=author.bio)

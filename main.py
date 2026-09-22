@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from database import SessionLocal
+from database import SessionLocal, Base, engine
 
-
+Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 def get_db() -> Session:
@@ -31,9 +31,10 @@ def read_authors(
         limit: int = 10,
         db: Session = Depends(get_db)):
     return crud.get_all_authors(
+        db=db,
         skip=skip,
         limit=limit,
-        db=db)
+    )
 
 @app.post(
     "/authors/",
