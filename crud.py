@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from db.models import Author, Book
+from models import Author, Book
 
 
 def get_all_authors(db: Session, skip, limit):

@@ -3,9 +3,9 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from db import schemas, crud
-from db.database import Base, engine, SessionLocal
-from db.models import Book, Author
+import schemas, crud
+from database import Base, engine, SessionLocal
+from models import Book, Author
 
 
 app = FastAPI()
