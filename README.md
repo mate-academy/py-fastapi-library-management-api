@@ -1,5 +1,4 @@
 # Library Management API
-
 ## Task
 
 Create a Simple Library Management API
