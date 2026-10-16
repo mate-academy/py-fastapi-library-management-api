@@ -20,7 +20,7 @@ class AuthorCreate(AuthorBase):
 class BookBase(BaseModel):
     title: str
     summary: str
-    publication_date: date
+    date: date
 
 class BookRead(BookBase):
     id: int
