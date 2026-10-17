@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException
-from typing import Generator
+from typing import Generator, Annotated
 
 from sqlalchemy.orm import Session
 from database import SessionLocal
 
 import schemas
+from schemas import FilterParams
 import crud
-
 
 app = FastAPI()
 
@@ -23,8 +23,8 @@ def root():
     return {"message": "Hello World and Sasha"}
 
 @app.get("/authors", response_model=list[schemas.AuthorRead])
-def get_authors(db: Session = Depends(get_db)):
-    return crud.get_author_list(db=db)
+def get_authors(filter_query: Annotated[FilterParams, Depends()], db: Session = Depends(get_db)):
+    return crud.get_author_list(db=db, skip=filter_query.skip, limit=filter_query.limit)
 
 @app.get("/authors/{author_id}", response_model=schemas.AuthorRead)
 def get_author_by_id(author_id: int, db: Session = Depends(get_db)):
@@ -36,20 +36,20 @@ def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/books", response_model=list[schemas.BookRead])
-def get_books(db: Session = Depends(get_db)):
-    return crud.get_book_list(db=db)
+def get_books(filter_query: Annotated[FilterParams, Depends()], db: Session = Depends(get_db)):
+    return crud.get_book_list(db=db, skip=filter_query.skip, limit=filter_query.limit)
 
 
-@app.get("/books/{author_id}", response_model=schemas.BookRead)
+@app.get("/books/{author_id}", response_model=list[schemas.BookRead])
 def get_book_by_author_id(author_id: int, db: Session = Depends(get_db)):
     current_author = crud.get_author_by_id(db=db, author_id=author_id)
 
-    if current_author:
+    if current_author is None:
         raise HTTPException(status_code=404, detail="Author not found")
 
     founded_book = crud.get_book_by_author_id(db=db, author_id=current_author.id)
 
-    if founded_book:
+    if founded_book is None:
         raise HTTPException(status_code=404, detail="Author not found")
 
     return founded_book

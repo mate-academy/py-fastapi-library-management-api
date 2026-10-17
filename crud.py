@@ -1,9 +1,5 @@
-from idlelib import query
-
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-import database
 import models
 import schemas
 
@@ -27,7 +23,7 @@ def get_book_list(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.DBBook).offset(skip).limit(limit).all()
 
 def get_book_by_author_id(db: Session, author_id: int):
-    return db.query(models.DBBook).filter(models.DBBook.author_id == author_id).first()
+    return db.query(models.DBBook).filter(models.DBBook.author_id == author_id)
 
 def create_book(db: Session, book: schemas.BookCreate):
     db_book = models.DBBook(**book.dict())
