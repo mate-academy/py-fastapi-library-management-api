@@ -23,10 +23,10 @@ def get_book_list(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.DBBook).offset(skip).limit(limit).all()
 
 def get_book_by_author_id(db: Session, author_id: int):
-    return db.query(models.DBBook).filter(models.DBBook.author_id == author_id)
+    return db.query(models.DBBook).filter(models.DBBook.author_id == author_id).all()
 
 def create_book(db: Session, book: schemas.BookCreate):
-    db_book = models.DBBook(**book.dict())
+    db_book = models.DBBook(**book.model_dump())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)

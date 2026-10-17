@@ -44,12 +44,12 @@ def get_books(filter_query: Annotated[FilterParams, Depends()], db: Session = De
 def get_book_by_author_id(author_id: int, db: Session = Depends(get_db)):
     current_author = crud.get_author_by_id(db=db, author_id=author_id)
 
-    if current_author is None:
+    if not current_author:
         raise HTTPException(status_code=404, detail="Author not found")
 
     founded_book = crud.get_book_by_author_id(db=db, author_id=current_author.id)
 
-    if founded_book is None:
+    if not founded_book:
         raise HTTPException(status_code=404, detail="Author not found")
 
     return founded_book
