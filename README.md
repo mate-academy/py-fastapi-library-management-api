@@ -53,3 +53,27 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
      - Filter books by author ID.
      
 Upon completion, you should have a functional library management API that allows the user to manage authors and their books.
+
+## Run the API
+
+Create a virtual environment, install the dependencies, and start the development
+server:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+The interactive API documentation is available at
+`http://127.0.0.1:8000/docs`.
+
+### Endpoints
+
+- `POST /authors/` — create an author.
+- `GET /authors/?skip=0&limit=100` — list authors.
+- `GET /authors/{author_id}` — retrieve one author and their books.
+- `POST /authors/{author_id}/books/` — create a book for an author.
+- `GET /books/?skip=0&limit=100` — list books.
+- `GET /books/?author_id={author_id}` — filter books by author.
