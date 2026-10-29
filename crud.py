@@ -5,8 +5,16 @@ import models
 import schemas
 
 
-def get_all_authors(db: Session):
-    return db.scalars(select(models.Author)).all()
+def get_all_authors(
+        db: Session,
+        skip: int = 0,
+        limit: int = 100,
+):
+    return db.scalars(
+        select(
+            models.Author
+        ).offset(skip).limit(limit)
+    ).all()
 
 
 def get_author(db: Session, author_id: int):
@@ -24,11 +32,16 @@ def create_author(db: Session, author: schemas.AuthorCreate):
     return author
 
 
-def get_all_books(db: Session, author_id: int | None = None):
+def get_all_books(
+        db: Session,
+        author_id: int | None = None,
+        skip: int = 0,
+        limit: int = 100,
+):
     queryset = select(models.Book)
     if author_id is not None:
         queryset = queryset.where(models.Book.author_id == author_id)
-    return db.scalars(queryset).all()
+    return db.scalars(queryset.offset(skip).limit(limit)).all()
 
 
 def get_book(db: Session, book_id: int):
