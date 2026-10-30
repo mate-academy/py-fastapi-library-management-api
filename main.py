@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from database import Base, SessionLocal, engine
 import crud
