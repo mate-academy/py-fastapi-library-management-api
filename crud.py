@@ -13,6 +13,9 @@ def get_authors(db: Session, skip: int = 0, limit: int = 10) -> list[AuthorModel
     stmt = select(AuthorModel).offset(skip).limit(limit)
     return list(db.scalars(stmt).all())
 
+def get_author_by_name(db: Session, name: str) -> AuthorModel | None:
+    return db.query(AuthorModel).filter(AuthorModel.name == name).first()
+
 def create_author(db: Session, author: AuthorCreate) -> AuthorModel:
     db_author = AuthorModel(name=author.name, bio=author.bio)
     db.add(db_author)
