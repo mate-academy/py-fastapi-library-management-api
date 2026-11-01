@@ -20,7 +20,7 @@ class Author(AuthorBase):
 
 class BookBase(BaseModel):
     title: str
-    summary: str | None = None
+    summary: str
     publication_date: date
     author_id: int
 
@@ -31,7 +31,6 @@ class BookCreate(BookBase):
 
 class Book(BookBase):
     id: int
-    author: Author
 
     class Config:
         from_attributes = True
