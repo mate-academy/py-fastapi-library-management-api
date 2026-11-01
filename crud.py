@@ -5,15 +5,13 @@ from models import AuthorModel, BookModel
 from schemas import AuthorCreate, BookCreate
 
 
-def get_author(db: Session, author_id: int) -> AuthorModel:
+def get_author(db: Session, author_id: int) -> AuthorModel | None:
     return db.get(AuthorModel, author_id)
 
-def get_author_by_name(db:Session, name: str) -> AuthorModel:
-    stmt = select(AuthorModel).where(AuthorModel.name == name)
-    return db.scalar(stmt)
 
-def get_author(db: Session, skip: int = 0, limit: int = 10) -> list[AuthorModel]:
+def get_authors(db: Session, skip: int = 0, limit: int = 10) -> list[AuthorModel]:
     stmt = select(AuthorModel).offset(skip).limit(limit)
+    return list(db.scalars(stmt).all())
 
 def create_author(db: Session, author: AuthorCreate) -> AuthorModel:
     db_author = AuthorModel(name=author.name, bio=author.bio)
