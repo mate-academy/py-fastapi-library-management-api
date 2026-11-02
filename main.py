@@ -3,8 +3,9 @@ from typing import Annotated
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.db import schemas, crud
-from src.db.session import get_db_session
+import schemas
+import crud
+from database import get_db_session
 
 app = FastAPI()
 

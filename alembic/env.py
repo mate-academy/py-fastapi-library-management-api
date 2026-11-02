@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from src.db import models  # noqa
-from src.db.base import Base
+from database import Base
 
 load_dotenv()
 # this is the Alembic Config object, which provides

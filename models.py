@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.db.base import Base
+from database import Base
 
 
 class Author(Base):
