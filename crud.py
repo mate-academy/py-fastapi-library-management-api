@@ -1,6 +1,3 @@
-from unittest import skip
-
-from sqlalchemy.dialects.mysql import limit
 from sqlalchemy.orm import Session
 
 import schemas
@@ -11,7 +8,7 @@ def get_all_authors(
     db: Session,
     skip: int = 0,
     limit: int = 10,
-):
+) -> list[models.DBAuthor]:
     return (
         db.query(models.DBAuthor)
         .order_by(models.DBAuthor.id)
@@ -20,17 +17,19 @@ def get_all_authors(
         .all()
     )
 
-def get_author(db: Session, author_id: int):
+
+def get_author(db: Session, author_id: int) -> models.DBAuthor | None:
     return (
         db.query(models.DBAuthor)
         .filter(models.DBAuthor.id == author_id)
         .first()
     )
 
+
 def create_author(
         db: Session,
         author: schemas.AuthorCreate
-):
+) -> models.DBAuthor:
     db_author = models.DBAuthor(
         name=author.name,
         bio=author.bio,
@@ -40,12 +39,13 @@ def create_author(
     db.refresh(db_author)
     return db_author
 
+
 def get_all_books(
         db: Session,
         skip: int = 0,
         limit: int = 10,
         author_id: int | None = None,
-):
+) -> list[models.DBBook]:
     query = db.query(models.DBBook)
     if author_id is not None:
         query = query.filter(models.DBBook.author_id == author_id)
@@ -56,13 +56,13 @@ def get_all_books(
         .limit(limit)
         .all()
     )
-    return db.query(models.DBBook).all()
+
 
 def create_book(
         db: Session,
         book: schemas.BookCreate,
         author_id: int,
-):
+) -> models.DBBook:
     db_book = models.DBBook(
         title=book.title,
         summary=book.summary,
@@ -73,4 +73,3 @@ def create_book(
     db.commit()
     db.refresh(db_book)
     return db_book
-
