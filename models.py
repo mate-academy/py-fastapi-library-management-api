@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
-from db.engine import Base
+from database import Base
 
 
 class DBAuthor(Base):

@@ -1,14 +1,16 @@
+from typing import Any
+
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from db.engine import SessionLocal
+from database import SessionLocal
 
 app = FastAPI()
 
 
-def get_db() -> Session:
+def get_db() -> Session | Any | None:
     db = SessionLocal()
     try:
         yield db
