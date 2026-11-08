@@ -7,12 +7,17 @@ import schemas
 from db import models
 
 
-def get_all_authors(db: Session):
-    return (db.query(models.DBAuthor)
-            .order_by(models.DBAuthor.id)
-            .offset(skip)
-            .limit(limit)
-            .all()
+def get_all_authors(
+    db: Session,
+    skip: int = 0,
+    limit: int = 10,
+):
+    return (
+        db.query(models.DBAuthor)
+        .order_by(models.DBAuthor.id)
+        .offset(skip)
+        .limit(limit)
+        .all()
     )
 
 def get_author(db: Session, author_id: int):
