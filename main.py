@@ -41,6 +41,8 @@ def get_books(
 ):
     if author_id is not None:
         return crud.get_books_by_author(db, author_id, skip, limit)
+    else:
+        return crud.get_books(db, skip, limit)
 
 
 @app.post("/books/")
