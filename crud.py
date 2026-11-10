@@ -21,7 +21,7 @@ def get_authors(db: Session, skip: int = 0, limit: int = 100) -> List[models.Aut
 
 
 def create_book(db: Session, book: schemas.BookCreate, author_id: int) -> models.Book:
-    db_book = models.Book(**book.model_dump(), author_id=author_id)
+    db_book = models.Book(**book.model_dump())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from database import engine, get_db
 from sqlalchemy.orm import Session
+from typing import Optional
 import models
 import crud
 import schemas
@@ -35,18 +36,19 @@ def get_authors(
 def get_books(
     skip: int = 0,
     limit: int = 100,
+    author_id: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
-    return crud.get_books(db, skip, limit)
+    if author_id is not None:
+        return crud.get_books_by_author(db, author_id, skip, limit)
 
 
 @app.post("/books/")
 def create_book(
     book: schemas.BookCreate,
-    author_id: int,
     db: Session = Depends(get_db)
 ):
-    return crud.create_book(db, book, author_id)
+    return crud.create_book(db, book)
 
 
 @app.get("/authors/{author_id}/books/")
