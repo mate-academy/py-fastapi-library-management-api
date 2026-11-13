@@ -31,6 +31,6 @@ class AuthorCreate(AuthorBase):
 
 class Author(AuthorBase):
     id: int
-    book: list[Book] = []
+    books: list[Book] = []
 
     model_config = {"from_attributes": True}

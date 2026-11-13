@@ -2,9 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 import crud
-from db import models
+import models
 import schemas
-from db.database import engine, SessionLocal
+from database import engine, SessionLocal
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -23,14 +23,16 @@ def get_db():
 def create_author(author: schemas.AuthorCreate, db: Session = Depends(get_db)):
     db_author = crud.get_author_by_name(db, name=author.name)
     if db_author:
-        raise HTTPException(status_code=400, detail="Author with this name already exists")
+        raise HTTPException(
+            status_code=400, detail="Author with this name already exists"
+        )
     return crud.create_author(db=db, author=author)
 
 
 @app.get("/authors/", response_model=list[schemas.Author])
-def read_authors(skip: int = 0,
-                 limit: int = 100,
-                 db: Session = Depends(get_db)):
+def read_authors(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     return crud.get_authors(db, skip=skip, limit=limit)
 
 
@@ -56,18 +58,13 @@ def read_books(
 def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
     db_author = crud.get_author(db, author_id=book.author_id)
     if db_author is None:
-        raise HTTPException(status_code=404,
-                            detail=f"Author with id {book.author_id} not found")
-
-    db_book = crud.get_book_by_title(db=db, title=book.title)
-    if db_book:
         raise HTTPException(
-            status_code=400,
-            detail=f"Book with title {book.title} already exists"
+            status_code=404, detail=f"Author with id {book.author_id} not found"
         )
     return crud.create_book(db=db, book=book)
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
