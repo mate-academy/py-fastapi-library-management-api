@@ -14,12 +14,11 @@ app = FastAPI()
 @app.get("/authors/", response_model=list[schemas.AuthorResponse])
 def read_authors(
     db: Annotated[Session, Depends(get_db)],
-    page: int = Query(1, ge=1),
-    page_size: int = Query(10, ge=1, le=100),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
 ):
-    skip = (page - 1) * page_size
 
-    return crud.get_all_authors(db=db, skip=skip, limit=page_size)
+    return crud.get_all_authors(db=db, skip=skip, limit=limit)
 
 
 @app.post("/authors/", response_model=schemas.AuthorResponse)
@@ -50,13 +49,12 @@ def read_single_author(db: Annotated[Session, Depends(get_db)], author_id: int):
 @app.get("/books/", response_model=list[schemas.BookResponse])
 def read_books(
     db: Annotated[Session, Depends(get_db)],
-    page: int = Query(1, ge=1),
-    page_size: int = Query(10, ge=1, le=100),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
     author_id: int | None = None,
 ):
-    skip = (page - 1) * page_size
 
-    return crud.get_all_books(db=db, skip=skip, limit=page_size, author_id=author_id)
+    return crud.get_all_books(db=db, skip=skip, limit=limit, author_id=author_id)
 
 
 @app.post("/books/", response_model=schemas.BookResponse)

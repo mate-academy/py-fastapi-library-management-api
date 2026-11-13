@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict
 
 class AuthorBase(BaseModel):
     name: str
-    bio: str | None = None
+    bio: str
 
 
 class AuthorCreate(AuthorBase):
@@ -20,7 +20,7 @@ class AuthorResponse(AuthorBase):
 
 class BookBase(BaseModel):
     title: str
-    summary: str | None = None
+    summary: str
     publication_date: date
 
 
