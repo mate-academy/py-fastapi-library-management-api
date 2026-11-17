@@ -11,7 +11,7 @@ from crud import (
     list_of_books,
     get_author_by_name,
 )
-from db.database import SessionLocal
+from database import SessionLocal
 from schemas import AuthorRead, AuthorCreate, BookRead, BookCreate
 
 app = FastAPI()

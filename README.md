@@ -20,7 +20,7 @@ You should develop a basic library management API using FastAPI and SQLAlchemy O
 - crud.py
 ```
 
-2. Set up a SQLite database connection in the `db/database.py` file.
+2. Set up a SQLite database connection in the `database.py` file.
 
 3. Create SQLAlchemy models for 'Author' and 'Book' in the `models.py` file.
 

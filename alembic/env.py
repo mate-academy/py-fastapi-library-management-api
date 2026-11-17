@@ -4,9 +4,9 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from db.database import Base, SQLITE_DATABASE_URL
+from database import Base, SQLITE_DATABASE_URL
 # noinspection PyUnresolvedReferences
-from db.models import Author, Book
+from models import Author, Book
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
