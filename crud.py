@@ -16,12 +16,16 @@ def create_author(db: Session, author_data: AuthorCreate) -> Author:
     return author
 
 
-def list_of_authors(db: Session, skip: int = 0, limit: int = 100) -> Sequence[Author]:
+def list_of_authors(db: Session, skip: int, limit: int) -> Sequence[Author]:
     return db.scalars(select(Author).offset(skip).limit(limit)).all()
 
 
-def get_author(db: Session, author_id: int) -> Author | None:
+def get_author_by_id(db: Session, author_id: int) -> Author | None:
     return db.get(Author, author_id)
+
+
+def get_author_by_name(db: Session, name: str) -> Author | None:
+    return db.scalar(select(Author).where(Author.name == name))
 
 
 def create_book(db: Session, book_data: BookCreate) -> Book:
