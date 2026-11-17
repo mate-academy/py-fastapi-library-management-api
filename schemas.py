@@ -29,11 +29,13 @@ class BookBase(BaseModel):
 
 class BookCreate(BookBase):
     author_id: int
+    publication_date: datetime.date
 
 
 class BookUpdate(BookBase):
     title: str | None = None
     author_id: int | None = None
+    publication_date: datetime.date | None = None
 
 
 class BookRead(BookBase):
