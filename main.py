@@ -11,11 +11,12 @@ from crud import (
     list_of_books,
     get_author_by_name,
 )
-from database import SessionLocal
+from database import SessionLocal, Base, engine
 from schemas import AuthorRead, AuthorCreate, BookRead, BookCreate
 
 app = FastAPI()
 
+Base.metadata.create_all(bind=engine)
 
 def get_db():
     with SessionLocal() as db_session:
