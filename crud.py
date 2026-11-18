@@ -1,15 +1,12 @@
-from typing import List
-
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from db.models import DBAuthor, DBBook
-from schemas import AuthorCreate, Book, BookCreate
+from models import DBAuthor, DBBook
+from schemas import AuthorCreate, BookCreate
 
 
-def get_authors(db: Session, offset: int = 0, limit: int = 1):
-    return db.scalars(select(DBAuthor).offset(offset).limit(limit)).all()
+def get_authors(db: Session, skip: int = 0, limit: int = 1):
+    return db.scalars(select(DBAuthor).offset(skip).limit(limit)).all()
 
 
 def get_author_id(db: Session, author_id: int):
@@ -39,7 +36,7 @@ def create_author(db: Session, author: AuthorCreate):
 
 def get_books(
         db: Session,
-        offset: int = 0,
+        skip: int = 0,
         limit: int = 1,
         author_id: int | None = None,
 ):
@@ -48,7 +45,7 @@ def get_books(
 
     if author_id is not None:
         stmt = stmt.where(DBBook.author_id == author_id)
-    stmt = stmt.order_by(DBBook.id).offset(offset).limit(limit)
+    stmt = stmt.order_by(DBBook.id).offset(skip).limit(limit)
 
     return db.scalars(stmt).all()
 
@@ -73,21 +70,4 @@ def create_book(db: Session, book: BookCreate):
     db.refresh(db_book)
     return db_book
 
-
-# def books_add_to_author(
-#         db: Session,
-#         author_id: int,
-#         book_ids: List[int]
-# ):
-#     author = db.scalar(select(DBAuthor).where(DBAuthor.id == author_id))
-#
-#     if not author:
-#         raise HTTPException(status_code=404, detail="Author not found")
-#
-#     book_list = db.scalars(select(DBBook).where(DBBook.id.in_(book_ids))).all()
-#
-#     author.books.extend(book_list)
-#     db.commit()
-#     db.refresh(author)
-#     return author
 

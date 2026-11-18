@@ -145,3 +145,6 @@ dmypy.json
 *.db
 *.sqlite
 *.sqlite3
+
+alembic/
+alembic.ini
