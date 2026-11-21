@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import Base
 
 
-class DBAuthor(Base):
+class Author(Base):
     __tablename__ = "author"
 
     id: Mapped[int] = mapped_column(
@@ -22,12 +22,12 @@ class DBAuthor(Base):
         String(511),
         nullable=False
     )
-    books: Mapped[list["DBBook"]] = relationship(
+    books: Mapped[list["Book"]] = relationship(
         back_populates="author"
     )
 
 
-class DBBook(Base):
+class Book(Base):
     __tablename__ = "book"
 
     id: Mapped[int] = mapped_column(
@@ -45,6 +45,6 @@ class DBBook(Base):
     author_id: Mapped[int] = mapped_column(
         ForeignKey("author.id")
     )
-    author: Mapped["DBAuthor"] = relationship(
+    author: Mapped["Author"] = relationship(
         back_populates="books"
     )
