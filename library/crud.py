@@ -14,7 +14,7 @@ def get_all_authors(
     queryset = select(models.DBAuthor)
 
     if id is not None:
-        queryset = queryset.where(models.DBAuthor.id == author_id)
+        queryset = queryset.where(models.DBAuthor.author_id == author_id)
 
     return db.scalars(queryset.offset(skip).limit(limit)).all()
 
@@ -38,15 +38,15 @@ def create_author(db: Session, author: AuthorCreate):
 
 def get_books_list(
         db: Session,
-        book_id: int | None = None,
+        author_id: int | None = None,
         skip: int = 0,
         limit: int = 100,
 ):
     queryset = select(models.DBBook)
 
-    if book_id is not None:
+    if author_id is not None:
         queryset = queryset.where(
-            models.DBBook.author_id == book_id
+            models.DBBook.author_id == author_id
         )
 
     return db.scalars(queryset.offset(skip).limit(limit)).all()
