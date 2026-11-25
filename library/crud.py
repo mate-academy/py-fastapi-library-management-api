@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from db import models
+import models
 from schemas import AuthorCreate, BookCreate
 
 
@@ -11,21 +11,26 @@ def get_all_authors(
         skip: int = 0,
         limit: int = 100,
 ):
-    queryset = select(models.DBAuthor)
+    queryset = select(models.Author)
 
-    if id is not None:
-        queryset = queryset.where(models.DBAuthor.author_id == author_id)
+    if author_id is not None:
+        queryset = queryset.where(models.Author.id == author_id)
 
     return db.scalars(queryset.offset(skip).limit(limit)).all()
 
 
+def get_author_by_id(db: Session, author_id: int) -> models.Author | None:
+    return db.scalar(
+        select(models.Author).where(models.Author.id == author_id)
+    )
+
 def get_author_by_name(db: Session, name: str):
     return (
-        db.scalar(select(models.DBAuthor).where(models.DBAuthor.name == name))
+        db.scalar(select(models.Author).where(models.Author.name == name))
     )
 
 def create_author(db: Session, author: AuthorCreate):
-    db_author = models.DBAuthor(
+    db_author = models.Author(
         name=author.name,
         bio=author.bio
     )
@@ -42,17 +47,17 @@ def get_books_list(
         skip: int = 0,
         limit: int = 100,
 ):
-    queryset = select(models.DBBook)
+    queryset = select(models.Book)
 
     if author_id is not None:
         queryset = queryset.where(
-            models.DBBook.author_id == author_id
+            models.Book.author_id == author_id
         )
 
     return db.scalars(queryset.offset(skip).limit(limit)).all()
 
 def create_book(db: Session, book: BookCreate):
-    db_book = models.DBBook(
+    db_book = models.Book(
         title=book.title,
         summary=book.summary,
         publication_date=book.publication_date,
